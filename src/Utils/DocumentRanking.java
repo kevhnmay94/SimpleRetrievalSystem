@@ -105,6 +105,41 @@ public class DocumentRanking {
         return Math.sqrt(sumSquareElement);
     }
 
+    public static HashMap<document, Double> rankDocuments(HashMap<document, Double> weightedDocs) {
+        HashMap<document, Double> temp = (HashMap<document, Double>) sortByComparator(weightedDocs);
+        HashMap<document, Double> retMap = new HashMap<>();
+        for (document doc : temp.keySet()) {
+            if (temp.get(doc) > 0.00000f)
+                retMap.put(doc, temp.get(doc));
+            else
+                break;
+        }
+        return retMap;
+    }
+
+    private static Map<document, Double> sortByComparator(Map<document, Double> unsortMap) {
+
+        // Convert Map to List
+        List<Map.Entry<document, Double>> list =
+                new LinkedList<Map.Entry<document, Double>>(unsortMap.entrySet());
+
+        // Sort list with comparator, to compare the Map values
+        Collections.sort(list, new Comparator<Map.Entry<document, Double>>() {
+            public int compare(Map.Entry<document, Double> o1,
+                               Map.Entry<document, Double> o2) {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        // Convert sorted map back to a Map
+        Map<document, Double> sortedMap = new LinkedHashMap<document, Double>();
+        for (Iterator<Map.Entry<document, Double>> it = list.iterator(); it.hasNext();) {
+            Map.Entry<document, Double> entry = it.next();
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedMap;
+    }
+
 
     public static void main(String[] arg) {
         // PENTING DIBUAT DULU KELASNYA
