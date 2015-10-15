@@ -103,6 +103,7 @@ public class EksternalFile {
      * @param rawFileContent
      */
     public static void loadListOfDocumentsPart(String rawFileContent) {
+        listPartStringBetweenTokens.clear();
         String partStringBetweenTokens = "";
         int counterDocument = 1;
         String tokenType = "";
@@ -133,6 +134,7 @@ public class EksternalFile {
      * @param rawFileContent
      */
     public static void loadQueryRelevances(String rawFileContent) {
+        listPartIndexInQrels.clear();
         ArrayList<String> rawQrelsSegmented = new ArrayList<String>();
         String[] lines = rawFileContent.split("\\r?\\n");
         for (String line : lines) {
