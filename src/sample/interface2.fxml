@@ -28,10 +28,31 @@
             <Label layoutX="30.0" layoutY="246.0" text="List of Documents" />
             <TableView layoutX="31.0" layoutY="273.0" prefHeight="200.0" prefWidth="548.0">
               <columns>
-                <TableColumn prefWidth="75.0" text="Number" />
-                <TableColumn prefWidth="472.0" text="Document Title" />
+                <TableColumn prefWidth="43.0" text="Rank" />
+                <TableColumn prefWidth="177.0" text="Title" />
+                  <TableColumn prefWidth="97.0" text="Author" />
+                  <TableColumn prefWidth="230.0" text="Content" />
               </columns>
             </TableView>
+            <TitledPane animated="false" layoutX="64.0" layoutY="142.0" prefHeight="269.0" prefWidth="466.0" text="Query Input">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="25.0" layoutY="23.0" text="Query 1" />
+                        <TextField layoutX="108.0" layoutY="19.0" prefHeight="25.0" prefWidth="331.0" />
+                        <TextField layoutX="108.0" layoutY="53.0" prefHeight="25.0" prefWidth="331.0" />
+                        <Label layoutX="25.0" layoutY="57.0" text="Query 2" />
+                        <Label layoutX="25.0" layoutY="91.0" text="Query 3" />
+                        <TextField layoutX="108.0" layoutY="87.0" prefHeight="25.0" prefWidth="331.0" />
+                        <TextField layoutX="108.0" layoutY="122.0" prefHeight="25.0" prefWidth="331.0" />
+                        <Label layoutX="25.0" layoutY="126.0" text="Query 4" />
+                        <Label layoutX="25.0" layoutY="162.0" text="Query 5" />
+                        <TextField layoutX="108.0" layoutY="158.0" prefHeight="25.0" prefWidth="331.0" />
+                        <Button layoutX="216.0" layoutY="196.0" mnemonicParsing="false" text="OK" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
             </children></AnchorPane>
     </content>
 </TitledPane>
