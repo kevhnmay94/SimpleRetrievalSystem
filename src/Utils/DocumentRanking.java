@@ -110,8 +110,8 @@ public class DocumentRanking {
         // PENTING DIBUAT DULU KELASNYA
         PreprocessWords wordProcessor = new PreprocessWords();
         EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
-        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
-        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathQueriesFile("test\\ADI\\query.txt");
+        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.txt");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
