@@ -105,6 +105,11 @@ public class DocumentRanking {
         return Math.sqrt(sumSquareElement);
     }
 
+    /**
+     * Return sorted HashMap of document and its weight
+     * @param weightedDocs unsorted HashMap of document and its weight
+     * @return
+     */
     public static HashMap<document, Double> rankDocuments(HashMap<document, Double> weightedDocs) {
         HashMap<document, Double> temp = (HashMap<document, Double>) sortByComparator(weightedDocs);
         HashMap<document, Double> retMap = new HashMap<>();

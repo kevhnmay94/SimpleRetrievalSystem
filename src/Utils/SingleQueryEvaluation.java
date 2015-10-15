@@ -2,6 +2,7 @@ package Utils;
 
 import model.document;
 import model.query;
+import model.queryRelevances;
 
 import java.util.*;
 
@@ -12,13 +13,12 @@ import java.util.*;
 /* Kelas untuk mengevaluasi SEBUAH query */
 public class SingleQueryEvaluation {
 
-    public enum evalType {cisi, adi};
     public double precision, recall, nonInterpolatedAvgPrecision;
     model.query query;
     ArrayList<document> retrievedDocuments;
     int queryNum;
     ArrayList<Integer> retDocNums;
-    evalType type;
+    queryRelevances qRelevances;
 
     // Retrieved document yg relevan
     HashMap <Integer, Boolean> relDocMap;
@@ -26,20 +26,20 @@ public class SingleQueryEvaluation {
     // Konstruktor - konstruktor
     public SingleQueryEvaluation() {}
 
-    public SingleQueryEvaluation(query query, ArrayList<document> docs, evalType type) {
+    public SingleQueryEvaluation(query query, ArrayList<document> docs, queryRelevances qRel) {
         this.query = query;
         this.retrievedDocuments = docs;
-        this.type = type;
+        this.qRelevances = qRel;
         queryNum = query.getIndex();
         retDocNums = new ArrayList<Integer>();
         for (document doc : retrievedDocuments) {
             retDocNums.add(doc.getIndex());
         }
     }
-    public SingleQueryEvaluation(int qNum, ArrayList<Integer> docNums, evalType type) {
+    public SingleQueryEvaluation(int qNum, ArrayList<Integer> docNums, queryRelevances qRel) {
         this.queryNum = qNum;
         this.retDocNums = docNums;
-        this.type = type;
+        this.qRelevances = qRel;
     }
 
     // Setter
@@ -62,9 +62,6 @@ public class SingleQueryEvaluation {
     }
 
     public void evaluate() {
-        if (!QueryRelevancesLoader.isLoaded)
-            QueryRelevancesLoader.ReadQrelsFile();
-
         // Evaluasi
         /* Perhatian ! Urutan jangan ditukar!
            Yang pertama dihitung harus non interpolated average precision !
@@ -79,15 +76,12 @@ public class SingleQueryEvaluation {
     }
 
     private void calculateRecall() {
-        double numRel = type==evalType.adi ? QueryRelevancesLoader.qrelsAdi.get(queryNum).size() :
-                                             QueryRelevancesLoader.qrelsCisi.get(queryNum).size();
+        double numRel = qRelevances.getListQueryRelevances().size();
         recall = (double)relDocMap.size()/numRel;
     }
 
     private void calculateNonInterpolatedAvgPrecision() {
-        // ADI / CISI
-        ArrayList<Integer> docRels = type==evalType.adi ? QueryRelevancesLoader.qrelsAdi.get(queryNum) :
-                QueryRelevancesLoader.qrelsCisi.get(queryNum);
+        ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
 
         // Map untuk mengecek agar tidak menghitung dokumen yang sama 2 kali
         relDocMap = new HashMap<Integer, Boolean>();
@@ -105,16 +99,14 @@ public class SingleQueryEvaluation {
     }
 
     public void printEvalSummary() {
-        String stype = type==evalType.adi ? "ADI" : "CISI";
-        System.out.println(stype + " file");
         System.out.println("Query number : " + queryNum);
         System.out.print("Retrieved document numbers : ");
         for(int dnum : retDocNums) {
             System.out.print (dnum + " ");
         }
         System.out.print("\nRelevant document numbers in collection : ");
-        ArrayList<Integer> docRels = type==evalType.adi ? QueryRelevancesLoader.qrelsAdi.get(queryNum) :
-                QueryRelevancesLoader.qrelsCisi.get(queryNum);
+        ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
+
         for(int dnum : docRels) {
             System.out.print (dnum + " ");
         }
@@ -125,6 +117,30 @@ public class SingleQueryEvaluation {
         System.out.println("\nRecall : " + recall);
         System.out.println("Precision : " + precision);
         System.out.println("Non Interpolated Average Precision : " + nonInterpolatedAvgPrecision);
+    }
+
+    public String getEvalSummary() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Query number : "); sb.append(queryNum); sb.append("\n");
+        for(int dnum : retDocNums) {
+            sb.append (dnum); sb.append(" ");
+        }
+        sb.append("\nRelevant document numbers in collection : ");
+
+        ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
+
+        for(int dnum : docRels) {
+            sb.append(dnum); sb.append(" ");
+        }
+        sb.append("\nRelevant retrieved document numbers : ");
+        for (int dnum : relDocMap.keySet()) {
+            sb.append(dnum); sb.append(" ");
+        }
+        sb.append("\nRecall : "); sb.append(recall);
+        sb.append("Precision : "); sb.append(precision);
+        sb.append("Non Interpolated Average Precision : "); sb.append(nonInterpolatedAvgPrecision);
+
+        return sb.toString();
     }
 
     public static void main(String [] args) {
