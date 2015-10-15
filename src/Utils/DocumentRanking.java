@@ -116,13 +116,13 @@ public class DocumentRanking {
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
-        TermsWeight.termFrecuencyWeighting(2, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
+        TermsWeight.termFrequencyWeighting(2, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
         TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY
         wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
-        TermsWeight.termFrecuencyWeightingQuery(2, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
-        TermsWeight.termFrecuencyWeightingQuery(1, wordProcessor.getInvertedFileQuery()); // IDS khusus query
+        TermsWeight.termFrequencyWeightingQuery(2, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
+        TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery()); // IDS khusus query
 
         // SIMILARITY DOCUMENT QUERY KE-1 (INDEX 0) DENGAN DOKUMEN 1-82 ADI.ALL
         for (int j=0; j<wordProcessor.getListDocumentsFinal().size(); j++) {

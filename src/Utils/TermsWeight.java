@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
 public class TermsWeight {
 
     /**
-     * Calculate raw term frecuency in a document with index : indexDocument
+     * Calculate raw term frequency in a document with index : indexDocument
      * @param indexDocument
      * @param term
      * @param invertedFile
@@ -32,7 +32,7 @@ public class TermsWeight {
     }
 
     /**
-     * Calculate raw term frecuency in a query
+     * Calculate raw term frequency in a query
      * @param termWeighting
      * @param term
      * @return integer
@@ -42,7 +42,7 @@ public class TermsWeight {
     }
 
     /**
-     * Calculate binary term frecuency in a document with index : indexDocument
+     * Calculate binary term frequency in a document with index : indexDocument
      * @param indexDocument
      * @param term
      * @param invertedFile
@@ -62,7 +62,7 @@ public class TermsWeight {
     }
 
     /**
-     * Calculate binary term frecuency in one query with counterTermInQuery
+     * Calculate binary term frequency in one query with counterTermInQuery
      * @param termWeighting
      * @param term
      * @return binaryCounter
@@ -140,11 +140,11 @@ public class TermsWeight {
 
 
     /**
-     * Update inverted file (weight per term per document) based on Term Frecuency
-     * @param termFrecuencyCode (0-4)
+     * Update inverted file (weight per term per document) based on Term Frequency
+     * @param termFrequencyCode (0-4)
      * @param invertedFile
      */
-    public static void termFrecuencyWeighting(int termFrecuencyCode, indexTabel invertedFile) {
+    public static void termFrequencyWeighting(int termFrequencyCode, indexTabel invertedFile) {
         indexTabel copyInvertedFile = invertedFile;
         for(Map.Entry m: invertedFile.getListTermWeights().entrySet()) {
             int numberDocument = numDocumentsContainTerm(m.getKey().toString(),invertedFile);
@@ -155,7 +155,7 @@ public class TermsWeight {
                 int binaryCountInDocument = binaryTermInOneDocument(indexDocument, keyTerm, copyInvertedFile);
                 int maxTermInDocument = maxTermInOneDocument(indexDocument, copyInvertedFile);
                 double oldWeight = ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().get(i);
-                switch (termFrecuencyCode)  {
+                switch (termFrequencyCode)  {
                     case 0 :        // No TF
                         oldWeight *= 1; break;
                     case 1 :        // Raw TF
@@ -175,18 +175,18 @@ public class TermsWeight {
     }
 
     /**
-     * Update inverted file for list of queries based on Term Frecuency
-     * @param termFrecuencyCode
+     * Update inverted file for list of queries based on Term Frequency
+     * @param termFrequencyCode
      * @param invertedFileQuery
      */
-    public static void termFrecuencyWeightingQuery(int termFrecuencyCode, indexTabelQuery invertedFileQuery) {
+    public static void termFrequencyWeightingQuery(int termFrequencyCode, indexTabelQuery invertedFileQuery) {
         for (int i=0; i<invertedFileQuery.getListQueryWeighting().size(); i++) {
             for (Map.Entry m : invertedFileQuery.getListQueryWeighting().get(i).getTermWeightInOneQuery().entrySet()) {
                 int rawTerm = rawTermsInOneQuery(invertedFileQuery.getListQueryWeighting().get(i),(String) m.getKey());
                 int maxTerm = maxTermInOneQuery(invertedFileQuery.getListQueryWeighting().get(i));
                 int binaryTerm = binaryTermInOneQuery(invertedFileQuery.getListQueryWeighting().get(i), (String) m.getKey());
                 double weightTerm = invertedFileQuery.getListQueryWeighting().get(i).getTermWeightInOneQuery().get(m.getKey());
-                switch (termFrecuencyCode) {
+                switch (termFrequencyCode) {
                     case 0:        // No TF
                         weightTerm *= 1.0; break;
                     case 1:        // Raw TF
@@ -256,7 +256,7 @@ public class TermsWeight {
 
     public static void main(String[] arg) {
         /* PreprocessWords.loadIndexTabel(true);
-        TermsWeight.termFrecuencyWeighting(2, PreprocessWords.getInvertedFile());
+        TermsWeight.termFrequencyWeighting(2, PreprocessWords.getInvertedFile());
         TermsWeight.inverseDocumentWeighting(1, PreprocessWords.getInvertedFile());
         for(Map.Entry m : PreprocessWords.getInvertedFile().getListTermWeights().entrySet()) {
             System.out.println("Key : " + m.getKey().toString());
@@ -279,7 +279,7 @@ public class TermsWeight {
 
         PreprocessWords processingWord = new PreprocessWords();
         processingWord.loadIndexTabelForQueries(true);
-        TermsWeight.termFrecuencyWeightingQuery(2, processingWord.getInvertedFileQuery());
+        TermsWeight.termFrequencyWeightingQuery(2, processingWord.getInvertedFileQuery());
         for (int i=0; i<processingWord.getInvertedFileQuery().getListQueryWeighting().size(); i++) {
             termWeightingQuery relation = processingWord.getInvertedFileQuery().getListQueryWeighting().get(i);
             System.out.println("QUERY DIPROSES : " + relation.getCurrentQuery().getQueryContent());
