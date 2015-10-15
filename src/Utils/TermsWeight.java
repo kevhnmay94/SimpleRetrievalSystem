@@ -292,7 +292,6 @@ public class TermsWeight {
                 System.out.println("Term : " + (String) m.getKey());
                 System.out.println("Weight : " + (Double) m.getValue());
             }
-            System.out.println("BANYAK STOPWORDS : " + processingWord.getListStopWordsFinal().size());
             System.out.println("====================================================================================");
         }
     }
