@@ -111,7 +111,8 @@ public class PreprocessWords {
                     weightingQuery.getTermWeightInOneQuery().put(filteredWord, 1.0);
                 }
             }
-            weightingQuery.setCurrentQuery(Query);
+            query newQuery = new query(Query.getIndex(),contentQuery);
+            weightingQuery.setCurrentQuery(newQuery);
             invertedFileQuery.getListQueryWeighting().add(weightingQuery);
         }
     }
