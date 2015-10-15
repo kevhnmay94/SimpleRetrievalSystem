@@ -1,9 +1,9 @@
-package model;
+package Utils;
 
-import Utils.QueryRelevancesLoader;
+import model.document;
+import model.query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Created by khaidzir on 14/10/2015.
@@ -14,7 +14,7 @@ public class SingleQueryEvaluation {
 
     public enum evalType {cisi, adi};
     public double precision, recall, nonInterpolatedAvgPrecision;
-    query query;
+    model.query query;
     ArrayList<document> retrievedDocuments;
     int queryNum;
     ArrayList<Integer> retDocNums;
@@ -128,7 +128,7 @@ public class SingleQueryEvaluation {
     }
 
     public static void main(String [] args) {
-        ArrayList<Integer> docNums = new ArrayList<Integer> ();
+        /*ArrayList<Integer> docNums = new ArrayList<Integer> ();
         docNums.add(1);
         docNums.add(14);
         docNums.add(21);
@@ -140,7 +140,7 @@ public class SingleQueryEvaluation {
         docNums.add(45);
         SingleQueryEvaluation sqe = new SingleQueryEvaluation(14,docNums, evalType.adi);
         sqe.evaluate();
-        sqe.printEvalSummary();
+        sqe.printEvalSummary();*/
     }
 
 }
