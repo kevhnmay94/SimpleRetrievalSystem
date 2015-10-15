@@ -33,7 +33,7 @@ public class DocumentRanking {
             }
         }
         double similarityDocument;
-        double lengthOfQuery = lengthOfQuery(Query.getQueryContent(),invertedFileQuery);
+        double lengthOfQuery = lengthOfQuery(Query,invertedFileQuery);
         double lengthOfDocument = lengthOfDocument(Document,invertedFile);
         if (isNormalized) {
             similarityDocument = dotProduct / (lengthOfQuery * lengthOfDocument);
@@ -67,15 +67,15 @@ public class DocumentRanking {
 
     /**
      * Compute length of query in Normalization Formula
-     * @param query
+     * @param Query
      * @param invertedFileQuery
      * @return
      */
-    private static double lengthOfQuery(String query, indexTabelQuery invertedFileQuery) {
+    private static double lengthOfQuery(query Query, indexTabelQuery invertedFileQuery) {
         double sumSquareElement = 0.0;
         for (int i=0; i<invertedFileQuery.getListQueryWeighting().size(); i++) {
-            String currentQuery = invertedFileQuery.getListQueryWeighting().get(i).getCurrentQuery().getQueryContent();
-            if (currentQuery.equalsIgnoreCase(query)) {
+            int currentQueryIndex = invertedFileQuery.getListQueryWeighting().get(i).getCurrentQuery().getIndex();
+            if (currentQueryIndex == Query.getIndex()) {
                 for (Map.Entry m : invertedFileQuery.getListQueryWeighting().get(i).getTermCounterInOneQuery().entrySet()) {
                     sumSquareElement += Math.pow((Integer) m.getValue(),2);
                 }
@@ -110,8 +110,8 @@ public class DocumentRanking {
         // PENTING DIBUAT DULU KELASNYA
         PreprocessWords wordProcessor = new PreprocessWords();
         EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
-        EksternalFile.setPathQueriesFile("test\\ADI\\query.txt");
-        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.txt");
+        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
@@ -122,14 +122,14 @@ public class DocumentRanking {
         // PROSES BUAT INVERTED FILE BUAT QUERY
         wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(2, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
-        TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery()); // IDS khusus query
+        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile()); // IDS khusus query
 
         // SIMILARITY DOCUMENT QUERY KE-1 (INDEX 0) DENGAN DOKUMEN 1-82 ADI.ALL
         for (int j=0; j<wordProcessor.getListDocumentsFinal().size(); j++) {
             System.out.println("SIMILARITY QUERY KE-" + wordProcessor.getListQueriesFinal().get(0).getIndex()
             + " DENGAN DOKUMEN KE-" + wordProcessor.getListDocumentsFinal().get(j).getIndex() + " : ");
             System.out.println(countSimilarityDocument(wordProcessor.getListQueriesFinal().get(0),wordProcessor.getInvertedFileQuery(),
-                    wordProcessor.getListDocumentsFinal().get(j),wordProcessor.getInvertedFile(),true));
+                    wordProcessor.getListDocumentsFinal().get(j),wordProcessor.getInvertedFile(),false));
             System.out.println("========================================================================================");
         }
     }
