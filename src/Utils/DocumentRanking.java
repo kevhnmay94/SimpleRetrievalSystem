@@ -114,11 +114,12 @@ public class DocumentRanking {
         HashMap<document, Double> temp = (HashMap<document, Double>) sortByComparator(weightedDocs);
         HashMap<document, Double> retMap = new HashMap<>();
         for (document doc : temp.keySet()) {
-            if (temp.get(doc) > 0.00000f)
+            if (temp.get(doc) > 0.0000000f)
                 retMap.put(doc, temp.get(doc));
             else
                 break;
         }
+        System.out.println();
         return retMap;
     }
 
@@ -132,7 +133,7 @@ public class DocumentRanking {
         Collections.sort(list, new Comparator<Map.Entry<document, Double>>() {
             public int compare(Map.Entry<document, Double> o1,
                                Map.Entry<document, Double> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
+                return (o2.getValue()).compareTo(o1.getValue());
             }
         });
 

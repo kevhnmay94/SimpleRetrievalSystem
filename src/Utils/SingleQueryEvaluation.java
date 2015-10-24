@@ -72,11 +72,12 @@ public class SingleQueryEvaluation {
     }
 
     private void calculatePrecision() {
-        precision = (double)relDocMap.size()/(double) retDocNums.size();
+        if (retDocNums.size() == 0) precision = 0.0f;
+        else precision = (double)relDocMap.size()/(double) retDocNums.size();
     }
 
     private void calculateRecall() {
-        double numRel = qRelevances.getListQueryRelevances().size();
+        double numRel = qRelevances.getListQueryRelevances().get(queryNum).size();
         recall = (double)relDocMap.size()/numRel;
     }
 
@@ -122,6 +123,7 @@ public class SingleQueryEvaluation {
     public String getEvalSummary() {
         StringBuilder sb = new StringBuilder();
         sb.append("Query number : "); sb.append(queryNum); sb.append("\n");
+        sb.append("Retrieved document numbers : ");
         for(int dnum : retDocNums) {
             sb.append (dnum); sb.append(" ");
         }
@@ -137,8 +139,9 @@ public class SingleQueryEvaluation {
             sb.append(dnum); sb.append(" ");
         }
         sb.append("\nRecall : "); sb.append(recall);
-        sb.append("Precision : "); sb.append(precision);
-        sb.append("Non Interpolated Average Precision : "); sb.append(nonInterpolatedAvgPrecision);
+        sb.append("\nPrecision : "); sb.append(precision);
+        sb.append("\nNon Interpolated Average Precision : "); sb.append(nonInterpolatedAvgPrecision);
+        sb.append("\n");
 
         return sb.toString();
     }

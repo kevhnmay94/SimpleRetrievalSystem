@@ -1,5 +1,6 @@
 package Utils;
 
+import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
 import model.document;
 import model.query;
 
@@ -24,9 +25,11 @@ public class Experiment {
     public void processDocuments(int tfcode, int idfcode, boolean stem) {
         System.out.println("Indexing documents...");
         double start = System.currentTimeMillis();
+
         wordProcessor.loadIndexTabel(stem);
         TermsWeight.termFrequencyWeighting(tfcode, wordProcessor.getInvertedFile());
         TermsWeight.inverseDocumentWeighting(idfcode, wordProcessor.getInvertedFile());
+
         double finish = System.currentTimeMillis();
         System.out.println("Indexing documents done in " + (finish-start) + " ms.\n");
     }
@@ -34,9 +37,11 @@ public class Experiment {
     public void processQueries(int tfcode, int idfcode, boolean stem) {
         System.out.println("Indexing queries...");
         double start = System.currentTimeMillis();
+
         wordProcessor.loadIndexTabelForQueries(stem);
         TermsWeight.termFrequencyWeightingQuery(tfcode, wordProcessor.getInvertedFileQuery());
-        //TermsWeight.termFrequencyWeightingQuery(idfcode, wordProcessor.getInvertedFileQuery());
+        TermsWeight.inverseDocumentWeightingQuery(idfcode, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile());
+
         double finish = System.currentTimeMillis();
         System.out.println("Indexing queries done in " + (finish-start) + " ms.\n");
     }
@@ -47,6 +52,7 @@ public class Experiment {
         // Hitung similarity setiap query setiap dokumen, simpan dalam resultMap
         System.out.println("Calculating similarity...");
         start = System.currentTimeMillis();
+
         for (query q : wordProcessor.getListQueriesFinal()) {
             HashMap<document, Double> docweightMap = new HashMap<>();
             for (document doc : wordProcessor.getListDocumentsFinal()) {
@@ -57,11 +63,14 @@ public class Experiment {
             docweightMap = DocumentRanking.rankDocuments(docweightMap);
             resultMap.put(q, docweightMap);
         }
+
         finish = System.currentTimeMillis();
         System.out.println("Calculating similarity done in " + (finish-start) + " ms.\n");
 
 
         System.out.println("Evaluating result...");
+        start = System.currentTimeMillis();
+
         // Load Query relevance
         wordProcessor.loadQueryRelevancesFinal();
 
@@ -75,10 +84,12 @@ public class Experiment {
         }
 
         // Evaluate all results
-        /*for (SingleQueryEvaluation sqe : evals) {
+        for (SingleQueryEvaluation sqe : evals) {
             sqe.evaluate();
-        }*/
-        System.out.println("Evaluating result done.");
+        }
+
+        finish = System.currentTimeMillis();
+        System.out.println("Evaluating result done in " + (finish-start) + " ms.\n");
     }
 
     public String getSummary() {
@@ -101,7 +112,7 @@ public class Experiment {
         exp.processDocuments(1, 0, true);
         exp.processQueries(1, 0, true);
         exp.evaluate(false);
-        //System.out.println(exp.getSummary());
+        System.out.println(exp.getSummary());
     }
 
 }
