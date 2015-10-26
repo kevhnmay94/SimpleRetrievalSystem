@@ -7,9 +7,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane prefHeight="700.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="700.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Interface1Controller">
     <children>
-      <Group />
         <TextField id="documentTextField" fx:id="documentTextField" layoutX="185.0" layoutY="43.0" prefHeight="25.0" prefWidth="385.0" />
         <Label layoutX="38.0" layoutY="47.0" text="Document location" />
         <Label layoutX="38.0" layoutY="82.0" text="Query location" />
@@ -24,7 +23,7 @@
         <RadioButton fx:id="documentAugTF" layoutX="60.0" layoutY="352.0" mnemonicParsing="false" text="Augmented TF" />
         <RadioButton fx:id="documentLogTF" layoutX="60.0" layoutY="377.0" mnemonicParsing="false" text="Logarithmic TF" />
         <Label layoutX="358.0" layoutY="231.0" text="Query" underline="true" />
-        <Button fx:id="chooseDocument" layoutX="487.0" layoutY="43.0" mnemonicParsing="false" text="Choose file..." />
+        <Button onAction="#handleChooseDocument" fx:id="chooseDocument" layoutX="487.0" layoutY="43.0" mnemonicParsing="false" text="Choose file..." />
         <Label layoutX="40.0" layoutY="231.0" text="Document" underline="true" />
         <RadioButton fx:id="queryAugTF" layoutX="375.0" layoutY="351.0" mnemonicParsing="false" text="Augmented TF" />
         <RadioButton fx:id="queryLogTF" layoutX="375.0" layoutY="376.0" mnemonicParsing="false" text="Logarithmic TF" />
@@ -38,26 +37,23 @@
         <RadioButton fx:id="queryIDF" layoutX="376.0" layoutY="452.0" mnemonicParsing="false" text="Using IDF" />
         <RadioButton fx:id="queryNoIDF" layoutX="376.0" layoutY="428.0" mnemonicParsing="false" text="No IDF" />
         <Label layoutX="375.0" layoutY="405.0" text="IDF" underline="true" />
-        <RadioButton fx:id="documentNorm" layoutX="63.0" layoutY="531.0" mnemonicParsing="false" text="Using Normalization" />
-        <RadioButton fx:id="documentNoNorm" layoutX="63.0" layoutY="507.0" mnemonicParsing="false" text="No Normalization" />
-        <Label layoutX="62.0" layoutY="484.0" text="Normalization" underline="true" />
-        <RadioButton fx:id="queryNorm" layoutX="376.0" layoutY="531.0" mnemonicParsing="false" text="Using Normalization" />
-        <RadioButton fx:id="queryNoNorm" layoutX="376.0" layoutY="507.0" mnemonicParsing="false" text="No Normalization" />
-        <Label layoutX="375.0" layoutY="484.0" text="Normalization" underline="true" />
+        <RadioButton fx:id="Norm" layoutX="207.0" layoutY="532.0" mnemonicParsing="false" text="Using Normalization" textAlignment="CENTER" />
+        <RadioButton fx:id="NoNorm" layoutX="214.0" layoutY="507.0" mnemonicParsing="false" text="No Normalization" textAlignment="CENTER" />
+        <Label layoutX="234.0" layoutY="482.0" text="Normalization" textAlignment="CENTER" underline="true" />
         <RadioButton fx:id="documentStem" layoutX="64.0" layoutY="609.0" mnemonicParsing="false" text="Using Stemming" />
         <RadioButton fx:id="documentNoStem" layoutX="64.0" layoutY="585.0" mnemonicParsing="false" text="No Stemming" />
         <Label layoutX="63.0" layoutY="562.0" text="Stemming" underline="true" />
         <RadioButton fx:id="queryNoStem" layoutX="378.0" layoutY="583.0" mnemonicParsing="false" text="No Stemming" />
         <Label layoutX="377.0" layoutY="560.0" text="Stemming" underline="true" />
         <RadioButton fx:id="queryStem" layoutX="378.0" layoutY="607.0" mnemonicParsing="false" text="Using Stemming" />
-        <Button fx:id="startIndex" layoutX="254.0" layoutY="646.0" mnemonicParsing="false" text="Start Indexing" />
-        <Button fx:id="chooseQuery" layoutX="487.0" layoutY="78.0" mnemonicParsing="false" text="Choose file..." />
+        <Button onAction="#handleStartIndex" fx:id="startIndex" layoutX="254.0" layoutY="646.0" mnemonicParsing="false" text="Start Indexing" />
+        <Button onAction="#handleChooseQuery" fx:id="chooseQuery" layoutX="487.0" layoutY="78.0" mnemonicParsing="false" text="Choose file..." />
         <TextField id="stopwordsTextField" fx:id="stopwordsTextField" layoutX="185.0" layoutY="148.0" prefHeight="25.0" prefWidth="385.0" />
         <Label layoutX="38.0" layoutY="152.0" text="Stop words location" />
-        <Button fx:id="chooseStopwords" layoutX="487.0" layoutY="148.0" mnemonicParsing="false" text="Choose file..." />
+        <Button onAction="#handleChooseStopwords" fx:id="chooseStopwords" layoutX="487.0" layoutY="148.0" mnemonicParsing="false" text="Choose file..." />
         <Label layoutX="25.0" layoutY="202.0" text="Indexing Settings" />
         <Separator layoutX="64.0" layoutY="22.0" prefHeight="3.0" prefWidth="505.0" />
         <Label layoutX="25.0" layoutY="14.0" text="Input" />
-    <Button fx:id="chooseRelevance" layoutX="487.0" layoutY="113.0" mnemonicParsing="false" text="Choose file..." />
+        <Button onAction="#handleChooseRelevance" fx:id="chooseRelevance" layoutX="487.0" layoutY="113.0" mnemonicParsing="false" text="Choose file..." />
     </children>
-</Pane>
+</AnchorPane>

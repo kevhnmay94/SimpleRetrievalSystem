@@ -16,6 +16,8 @@ public class Main extends Application {
         stage.setTitle("Interface 1");
         stage.setScene(new Scene(root));
         stage.show();
+
+        Vars.savedstage = stage;
     }
 
 
