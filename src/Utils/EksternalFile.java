@@ -1,9 +1,17 @@
 package Utils;
 
+import model.document;
+import model.indexTabel;
+import model.termWeightingDocument;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
@@ -150,6 +158,88 @@ public class EksternalFile {
             }
             sequenceCounter++;
         }
+    }
+
+    /**
+     * Write inverted file that has been created into external text file
+     * Assumption : inverted file completed with weight each term
+     * @param path
+     * @param invertedFile
+     */
+    public static void writeInvertedFile(String path, indexTabel invertedFile) {
+        FileOutputStream fout = null;
+        try {
+            fout = new FileOutputStream(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
+            String keyTerm = (String) m.getKey();
+            int indexDocument = 0;
+            String judulDocument = null;
+            String kontenDocument = null;
+            String authorDocument = null;
+            double weightTermInDocument = 0.0;
+            for (int i=0; i<((termWeightingDocument) m.getValue()).getDocumentPerTerm().size(); i++) {
+                indexDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getIndex();
+                judulDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getJudul();
+                authorDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getAuthor();
+                kontenDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getKonten();
+                weightTermInDocument = ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().get(i);
+                new PrintStream(fout).print("~" + keyTerm + "~" + indexDocument + "~" + judulDocument + "~" + authorDocument + "~" + kontenDocument + "~" + weightTermInDocument);
+            }
+        }
+    }
+
+    /**
+     * Read inverted file from external source
+     * @param path
+     * @return
+     */
+    public static indexTabel loadInvertedFile(String path) {
+        String rawContent = "";
+        indexTabel invertedFile = new indexTabel();
+        Path pathInvertedFile = Paths.get(path);
+        try {
+            Scanner scanner = new Scanner(pathInvertedFile);
+            while (scanner.hasNextLine()) {
+                rawContent += scanner.nextLine() + "\n";
+            }
+            StringTokenizer token = new StringTokenizer(rawContent,"~");
+            int counter = 1;
+            String keyTerm = null;
+            int indexDocument = 0;
+            String judulDocument = null;
+            String authorDocument = null;
+            String kontenDocument = null;
+            double weightTermInDocument;
+            while (token.hasMoreTokens()) {
+                String tokenString = token.nextToken();
+                if ((counter % 6) == 1) {
+                    keyTerm = tokenString;
+                } else if ((counter % 6) == 2) {
+                    indexDocument = Integer.parseInt(tokenString);
+                } else if ((counter % 6) == 3) {
+                    judulDocument = tokenString;
+                } else if ((counter % 6) == 4) {
+                    authorDocument = tokenString;
+                } else if ((counter % 6) == 5) {
+                    kontenDocument = tokenString;
+                } else if ((counter % 6) == 0) {
+                    weightTermInDocument = Double.parseDouble(tokenString);
+                    document Document = new document(indexDocument,judulDocument,authorDocument,kontenDocument);
+                    invertedFile.insertRowTable(keyTerm,Document,weightTermInDocument);
+                }
+                if (counter == 6) {
+                    counter = 1;
+                } else {
+                    counter++;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return invertedFile;
     }
 
     public static void main(String[] arg) {

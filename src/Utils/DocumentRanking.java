@@ -157,12 +157,12 @@ public class DocumentRanking {
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
-        TermsWeight.termFrequencyWeighting(2, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
+        TermsWeight.termFrequencyWeighting(4, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
         TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY
         wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
-        TermsWeight.termFrequencyWeightingQuery(2, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
+        TermsWeight.termFrequencyWeightingQuery(4, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile()); // IDS khusus query
 
         // SIMILARITY DOCUMENT QUERY KE-1 (INDEX 0) DENGAN DOKUMEN 1-82 ADI.ALL
@@ -172,6 +172,31 @@ public class DocumentRanking {
             System.out.println(countSimilarityDocument(wordProcessor.getListQueriesFinal().get(0),wordProcessor.getInvertedFileQuery(),
                     wordProcessor.getListDocumentsFinal().get(j),wordProcessor.getInvertedFile(),false));
             System.out.println("========================================================================================");
+        }
+
+        // TEST WRITE INVERTED FILE EKSTERNAL
+        String path = "D:\\invertedFile.txt";
+        //EksternalFile.writeInvertedFile(path,wordProcessor.getInvertedFile());
+
+        // TEST LOAD INVERTED FILE EKSTERNAL
+        indexTabel anotherInvertedFile = EksternalFile.loadInvertedFile(path);
+        for(Map.Entry m : anotherInvertedFile.getListTermWeights().entrySet()) {
+             System.out.println("Key : " + m.getKey().toString());
+             for (document Document:((termWeightingDocument) m.getValue()).getDocumentPerTerm()) {
+                 System.out.println("Id : " + Document.getIndex());
+                 System.out.println("Judul : " + Document.getJudul());
+                 // System.out.println("Author : " + Document.getAuthor());
+                 // System.out.println("Konten : " + Document.getKonten());
+             }
+             System.out.println("BOBOT TERM INI PER DOKUMEN DI ATAS : ");
+             for (double weights :((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm()) {
+                 System.out.println("Bobot : " + weights);
+             }
+             System.out.println("COUNTER TERM INI PER DOKUMEN DI ATAS : ");
+             for (int counter:((termWeightingDocument) m.getValue()).getDocumentCountersPerTerm()) {
+                 System.out.println("Counter : " + counter);
+             }
+             System.out.println("====================================================================================");
         }
     }
 }
