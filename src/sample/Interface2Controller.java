@@ -10,6 +10,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.query;
+import model.termWeightingQuery;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,13 +36,16 @@ public class Interface2Controller implements Initializable {
         experimentQuery.setSelected(true);
         experimentQuery.requestFocus();
         Vars.documentinvertedfile = EksternalFile.loadInvertedFile("test\\invertedFile.txt");
-        //pr load query inverted file
+        Vars.queryinvertedfile = EksternalFile.loadInvertedFileQuery("test\\invertedFileQuery.txt");
     }
 
     public void handleSearchButton(ActionEvent actionEvent) {
-        String result = "tessssssssssssssssss";
+        String result = "";
         if((Boolean)searchMethod.getSelectedToggle().getUserData()){
             // do something with the freaking query from text
+            for (termWeightingQuery q : Vars.queryinvertedfile.getListQueryWeighting()) {
+
+            }
         }
         else{
             String query = searchTextField.getText();
