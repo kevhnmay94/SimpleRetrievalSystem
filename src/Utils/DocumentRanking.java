@@ -174,9 +174,15 @@ public class DocumentRanking {
             System.out.println("========================================================================================");
         }
 
+        // TEST WRITE INVERTED FILE QUERY EKSTERNAL
+        String path = "test\\invertedFile.txt";
+        String path2 = "test\\invertedFileQuery.txt";
+        EksternalFile.writeInvertedFile(path, wordProcessor.getInvertedFile());
+        EksternalFile.writeInvertedFileQuery(path2,wordProcessor.getInvertedFileQuery());
+
         // TEST WRITE INVERTED FILE EKSTERNAL
-        String path = "D:\\invertedFile.txt";
-        //EksternalFile.writeInvertedFile(path,wordProcessor.getInvertedFile());
+       /* String path = "test\\invertedFile.txt";
+        EksternalFile.writeInvertedFile(path,wordProcessor.getInvertedFile());
 
         // TEST LOAD INVERTED FILE EKSTERNAL
         indexTabel anotherInvertedFile = EksternalFile.loadInvertedFile(path);
@@ -197,6 +203,23 @@ public class DocumentRanking {
                  System.out.println("Counter : " + counter);
              }
              System.out.println("====================================================================================");
-        }
+        } */
+
+        // TEST LOAD INVERTED FILE QUERY
+        indexTabelQuery indexTabel = EksternalFile.loadInvertedFileQuery(path2);
+       /* for (int i=0; i<indexTabel.getListQueryWeighting().size(); i++) {
+            termWeightingQuery relation = indexTabel.getListQueryWeighting().get(i);
+            System.out.println("QUERY DIPROSES : " + relation.getCurrentQuery().getQueryContent());
+            System.out.println("COUNTER PER TERM DARI QUERY DI ATAS : ");
+            for (Map.Entry m : relation.getTermCounterInOneQuery().entrySet()) {
+                System.out.println("Term : " + (String) m.getKey());
+                System.out.println("Counter : " + (Integer) m.getValue());
+            }
+            for (Map.Entry m : relation.getTermWeightInOneQuery().entrySet()) {
+                System.out.println("Term : " + (String) m.getKey());
+                System.out.println("Weight : " + (Double) m.getValue());
+            }
+            System.out.println("====================================================================================");
+        } */
     }
 }
