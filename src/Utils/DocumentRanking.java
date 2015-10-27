@@ -119,7 +119,6 @@ public class DocumentRanking {
             else
                 break;
         }
-        System.out.println();
         return retMap;
     }
 

@@ -42,6 +42,14 @@ public class PreprocessWords {
         return listStopWordsFinal;
     }
 
+    // Singel query
+    public indexTabelQuery getInvertedFileManualQuery() {
+        return invertedFileManualQuery;
+    }
+
+    // Single query
+    private indexTabelQuery invertedFileManualQuery = new indexTabelQuery();
+
     /**
      * Check if a word is stop word or not
      * @return boolean
@@ -86,6 +94,36 @@ public class PreprocessWords {
      * Assumption : list of queries must have been loaded first
      * @param isStemmingApplied
      */
+    public void loadIndexTabelForManualQuery(String query, boolean isStemmingApplied) {
+        loadStopWordsFinal();
+        query Query = new query(0, query);
+
+        termWeightingQuery weightingQuery = new termWeightingQuery();
+        String contentQuery = Query.getQueryContent().replace(EksternalFile.KONTEN_TOKEN,"");
+        StringTokenizer token = new StringTokenizer(contentQuery, " +=-1234567890'(){}[]/.:;?!,\n");
+        while (token.hasMoreTokens()) {
+            String word = token.nextToken();
+            if (!isStopWords(word)) {
+                String filteredWord = "";
+                if (isStemmingApplied) {
+                    filteredWord = StemmingPorter.stripAffixes(word);
+                } else {
+                    filteredWord = word;
+                }
+                if (weightingQuery.getTermCounterInOneQuery().containsKey(filteredWord)) {
+                    int currentCounter = weightingQuery.getTermCounterInOneQuery().get(filteredWord);
+                    weightingQuery.getTermCounterInOneQuery().replace(filteredWord,currentCounter,currentCounter++);
+                } else {
+                    weightingQuery.getTermCounterInOneQuery().put(filteredWord, 1);
+                }
+                weightingQuery.getTermWeightInOneQuery().put(filteredWord, 1.0);
+            }
+        }
+        query newQuery = new query(Query.getIndex(),contentQuery);
+        weightingQuery.setCurrentQuery(newQuery);
+        invertedFileManualQuery.getListQueryWeighting().add(weightingQuery);
+    }
+
     public void loadIndexTabelForQueries(boolean isStemmingApplied) {
         loadQueriesFinal();
         loadStopWordsFinal();
