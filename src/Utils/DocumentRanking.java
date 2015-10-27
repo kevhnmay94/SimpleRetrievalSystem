@@ -175,8 +175,8 @@ public class DocumentRanking {
         }
 
         // TEST WRITE INVERTED FILE EKSTERNAL
-        String path = "D:\\invertedFile.txt";
-        //EksternalFile.writeInvertedFile(path,wordProcessor.getInvertedFile());
+        String path = "test\\invertedFile.txt";
+        EksternalFile.writeInvertedFile(path,wordProcessor.getInvertedFile());
 
         // TEST LOAD INVERTED FILE EKSTERNAL
         indexTabel anotherInvertedFile = EksternalFile.loadInvertedFile(path);

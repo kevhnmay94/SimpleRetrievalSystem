@@ -1,15 +1,25 @@
 package sample;
 
+import Utils.EksternalFile;
+import Utils.PreprocessWords;
+import Utils.TermsWeight;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -124,6 +134,7 @@ public class Interface1Controller implements Initializable {
     public void handleChooseDocument(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose document");
+        fileChooser.setInitialDirectory(new File("test"));
         File file = fileChooser.showOpenDialog(Vars.savedstage);
         if(file != null){
             Vars.documentlocation = file.toString();
@@ -134,34 +145,72 @@ public class Interface1Controller implements Initializable {
     public void handleChooseStopwords(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose stopwords");
+        fileChooser.setInitialDirectory(new File("test"));
         File file = fileChooser.showOpenDialog(Vars.savedstage);
         if(file != null){
             Vars.stoplocation = file.toString();
-            documentTextField.setText(Vars.stoplocation);
+            stopwordsTextField.setText(Vars.stoplocation);
         }
     }
 
-    public void handleStartIndex(ActionEvent actionEvent) {
+    public void handleStartIndex(ActionEvent actionEvent) throws IOException {
+        Vars.documentidf = (Integer) documentidf.getSelectedToggle().getUserData();
+        Vars.documenttf = (Integer) documenttf.getSelectedToggle().getUserData();
+        Vars.documentstem = (Boolean) documentstem.getSelectedToggle().getUserData();
+        Vars.queryidf = (Integer) queryidf.getSelectedToggle().getUserData();
+        Vars.querytf = (Integer) querytf.getSelectedToggle().getUserData();
+        Vars.querystem = (Boolean) querystem.getSelectedToggle().getUserData();
+        Vars.norm = (Boolean) norm.getSelectedToggle().getUserData();
+        Vars.documentlocation = documentTextField.getText();
+        Vars.stoplocation = stopwordsTextField.getText();
+        Vars.querylocation = queryTextField.getText();
+        Vars.rellocation = relevanceTextField.getText();
+
+        PreprocessWords wordProcessor = new PreprocessWords();
+        EksternalFile.setPathDocumentsFile(Vars.documentlocation);
+        EksternalFile.setPathQueriesFile(Vars.querylocation);
+        EksternalFile.setPathQrelsFile(Vars.rellocation);
+        EksternalFile.setPathStopWordsFile(Vars.stoplocation);
+
+        // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
+        wordProcessor.loadIndexTabel(Vars.documentstem); // True : stemming diberlakukan
+        TermsWeight.termFrequencyWeighting(Vars.documenttf, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
+        TermsWeight.inverseDocumentWeighting(Vars.documentidf, wordProcessor.getInvertedFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
+
+        // PROSES BUAT INVERTED FILE BUAT QUERY
+        wordProcessor.loadIndexTabelForQueries(Vars.querystem); // True : stemming diberlakukan
+        TermsWeight.termFrequencyWeightingQuery(Vars.querytf, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
+        TermsWeight.inverseDocumentWeightingQuery(Vars.queryidf, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile()); // IDS khusus query
+
+        String path = "test\\invertedFile.txt";
+        EksternalFile.writeInvertedFile(path, wordProcessor.getInvertedFile());
+
+        Parent root = FXMLLoader.load(getClass().getResource("interface2.fxml"));
+        Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();;
+        stage.setTitle("Interface 2");
+        stage.setScene(new Scene(root));
 
     }
 
     public void handleChooseQuery(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose query");
+        fileChooser.setInitialDirectory(new File("test"));
         File file = fileChooser.showOpenDialog(Vars.savedstage);
         if(file != null){
             Vars.querylocation = file.toString();
-            documentTextField.setText(Vars.querylocation);
+            queryTextField.setText(Vars.querylocation);
         }
     }
 
     public void handleChooseRelevance(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose relevance judgement");
+        fileChooser.setInitialDirectory(new File("test"));
         File file = fileChooser.showOpenDialog(Vars.savedstage);
         if(file != null){
             Vars.rellocation = file.toString();
-            documentTextField.setText(Vars.rellocation);
+            relevanceTextField.setText(Vars.rellocation);
         }
 
     }
