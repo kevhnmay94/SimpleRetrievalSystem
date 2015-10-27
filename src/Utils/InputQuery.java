@@ -42,6 +42,7 @@ public class InputQuery {
 
     public void setInvertedFile(indexTabel idxtab) {
         wordProcessor.setInvertedFile(idxtab);
+        wordProcessor.loadDocumentsFinal();
     }
 
     public void SearchDocumentsUsingQuery(String query, boolean isNormalize) {

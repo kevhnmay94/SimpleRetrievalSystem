@@ -42,9 +42,7 @@ public class PreprocessWords {
         return listStopWordsFinal;
     }
 
-    public void setInvertedFileQuery(indexTabelQuery invertedFileQuery) {
-        this.invertedFileQuery = invertedFileQuery;
-    }
+    public void setInvertedFileQuery(indexTabelQuery invertedFileQuery) { this.invertedFileQuery = invertedFileQuery; }
 
     public void setInvertedFile(indexTabel invertedFile) {
         this.invertedFile = invertedFile;

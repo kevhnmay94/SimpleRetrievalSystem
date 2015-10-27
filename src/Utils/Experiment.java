@@ -1,13 +1,13 @@
 package Utils;
 
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import model.document;
 import model.indexTabel;
 import model.indexTabelQuery;
 import model.query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Created by khaidzir on 15/10/2015.
@@ -28,8 +28,14 @@ public class Experiment {
         return wordProcessor.getInvertedFile();
     }
     public indexTabelQuery getInvertedFileQuery() { return wordProcessor.getInvertedFileQuery(); }
-    public void setInvertedFile (indexTabel idxTable) { wordProcessor.setInvertedFile(idxTable); }
-    public void setInvertedFileQuery (indexTabelQuery idxTable) { wordProcessor.setInvertedFileQuery(idxTable); }
+    public void setInvertedFile (indexTabel idxTable) {
+        wordProcessor.setInvertedFile(idxTable);
+        wordProcessor.loadDocumentsFinal();
+    }
+    public void setInvertedFileQuery (indexTabelQuery idxTable) {
+        wordProcessor.setInvertedFileQuery(idxTable);
+        wordProcessor.loadQueriesFinal();
+    }
 
     public void processDocuments(int tfcode, int idfcode, boolean stem) {
         System.out.println("Indexing documents...");
@@ -96,6 +102,9 @@ public class Experiment {
         for (SingleQueryEvaluation sqe : evals) {
             sqe.evaluate();
         }
+
+        // Sort result by query number
+        Collections.sort(evals);
 
         finish = System.currentTimeMillis();
         System.out.println("Evaluating result done in " + (finish-start) + " ms.\n");
