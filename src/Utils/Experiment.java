@@ -28,8 +28,14 @@ public class Experiment {
         return wordProcessor.getInvertedFile();
     }
     public indexTabelQuery getInvertedFileQuery() { return wordProcessor.getInvertedFileQuery(); }
-    public void setInvertedFile (indexTabel idxTable) { wordProcessor.setInvertedFile(idxTable); }
-    public void setInvertedFileQuery (indexTabelQuery idxTable) { wordProcessor.setInvertedFileQuery(idxTable); }
+    public void setInvertedFile (indexTabel idxTable) {
+        wordProcessor.setInvertedFile(idxTable);
+        wordProcessor.loadDocumentsFinal();
+    }
+    public void setInvertedFileQuery (indexTabelQuery idxTable) {
+        wordProcessor.setInvertedFileQuery(idxTable);
+        wordProcessor.loadQueriesFinal();
+    }
 
     public void processDocuments(int tfcode, int idfcode, boolean stem) {
         System.out.println("Indexing documents...");
