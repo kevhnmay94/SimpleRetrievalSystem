@@ -3,6 +3,7 @@ package Utils;
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
 import model.document;
 import model.indexTabel;
+import model.indexTabelQuery;
 import model.query;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class Experiment {
     public indexTabel getInvertedFile() {
         return wordProcessor.getInvertedFile();
     }
+    public indexTabelQuery getInvertedFileQuery() { return wordProcessor.getInvertedFileQuery(); }
+    public void setInvertedFile (indexTabel idxTable) { wordProcessor.setInvertedFile(idxTable); }
+    public void setInvertedFileQuery (indexTabelQuery idxTable) { wordProcessor.setInvertedFileQuery(idxTable); }
 
     public void processDocuments(int tfcode, int idfcode, boolean stem) {
         System.out.println("Indexing documents...");
