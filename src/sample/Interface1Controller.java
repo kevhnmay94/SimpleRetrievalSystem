@@ -114,20 +114,90 @@ public class Interface1Controller implements Initializable {
         queryIDF.setToggleGroup(queryidf);
         queryNoStem.setToggleGroup(querystem);
         queryStem.setToggleGroup(querystem);
-        documentRawTF.setSelected(true);
-        documentRawTF.requestFocus();
-        documentNoIDF.setSelected(true);
-        documentNoIDF.requestFocus();
-        documentNoStem.setSelected(true);
-        documentNoStem.requestFocus();
-        queryRawTF.setSelected(true);
-        queryRawTF.requestFocus();
-        queryNoIDF.setSelected(true);
-        queryNoIDF.requestFocus();
-        queryNoStem.setSelected(true);
-        queryNoStem.requestFocus();
-        NoNorm.setSelected(true);
-        NoNorm.requestFocus();
+        if(Vars.documenttf == 0) {
+            documentNoTF.setSelected(true);
+            documentNoTF.requestFocus();
+        }
+        else if(Vars.documenttf == 1){
+            documentRawTF.setSelected(true);
+            documentRawTF.requestFocus();
+        }
+        else if(Vars.documenttf == 2){
+            documentLogTF.setSelected(true);
+            documentLogTF.requestFocus();
+        }
+        else if(Vars.documenttf == 3){
+            documentBinaryTF.setSelected(true);
+            documentBinaryTF.requestFocus();
+        }
+        else if(Vars.documenttf == 4){
+            documentAugTF.setSelected(true);
+            documentAugTF.requestFocus();
+        }
+        if(Vars.documentidf == 0){
+            documentNoIDF.setSelected(true);
+            documentNoIDF.requestFocus();
+        }
+        else if(Vars.documentidf == 1){
+            documentIDF.setSelected(true);
+            documentIDF.requestFocus();
+        }
+        if(!Vars.documentstem){
+            documentNoStem.setSelected(true);
+            documentNoStem.requestFocus();
+        }
+        else{
+            documentStem.setSelected(true);
+            documentStem.requestFocus();
+        }
+        if(Vars.querytf == 0) {
+            queryNoTF.setSelected(true);
+            queryNoTF.requestFocus();
+        }
+        else if(Vars.querytf == 1){
+            queryRawTF.setSelected(true);
+            queryRawTF.requestFocus();
+        }
+        else if(Vars.querytf == 2){
+            queryLogTF.setSelected(true);
+            queryLogTF.requestFocus();
+        }
+        else if(Vars.querytf == 3){
+            queryBinaryTF.setSelected(true);
+            queryBinaryTF.requestFocus();
+        }
+        else if(Vars.querytf == 4){
+            queryAugTF.setSelected(true);
+            queryAugTF.requestFocus();
+        }
+        if(Vars.queryidf == 0){
+            queryNoIDF.setSelected(true);
+            queryNoIDF.requestFocus();
+        }
+        else if(Vars.queryidf == 1){
+            queryIDF.setSelected(true);
+            queryIDF.requestFocus();
+        }
+        if(!Vars.querystem){
+            queryNoStem.setSelected(true);
+            queryNoStem.requestFocus();
+        }
+        else{
+            queryStem.setSelected(true);
+            queryStem.requestFocus();
+        }
+        if(!Vars.norm) {
+            NoNorm.setSelected(true);
+            NoNorm.requestFocus();
+        }
+        else {
+            Norm.setSelected(true);
+            Norm.requestFocus();
+        }
+        documentTextField.setText(Vars.documentlocation);
+        queryTextField.setText(Vars.querylocation);
+        relevanceTextField.setText(Vars.rellocation);
+        stopwordsTextField.setText(Vars.stoplocation);
 
     }
 
@@ -182,8 +252,9 @@ public class Interface1Controller implements Initializable {
         TermsWeight.termFrequencyWeightingQuery(Vars.querytf, wordProcessor.getInvertedFileQuery());
         TermsWeight.inverseDocumentWeightingQuery(Vars.queryidf, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile());
 
-        String path = "test\\invertedFile.txt";
+        String path = "test\\invertedFile.txt", path2 = "test\\invertedFileQuery.txt";
         EksternalFile.writeInvertedFile(path, wordProcessor.getInvertedFile());
+        EksternalFile.writeInvertedFile();
 
         Parent root = FXMLLoader.load(getClass().getResource("interface2.fxml"));
         Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
