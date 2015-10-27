@@ -7,6 +7,10 @@ import model.indexTabel;
 import model.indexTabelQuery;
 import model.query;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -126,11 +130,51 @@ public class Experiment {
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
-        Experiment exp = new Experiment();
-        exp.processDocuments(1, 0, true);
-        exp.processQueries(1, 0, true);
-        exp.evaluate(false);
-        System.out.println(exp.getSummary());
+        int[] tfcode = {0, 1, 2, 3, 4};
+        String[] stringTfcode = {"no", "raw", "log", "bin", "aug"};
+
+        int[] idfcode = {0, 1};
+        String[] stringIdfcode = {"noidf", "idf"};
+
+        boolean[] stemcode = {true, false};
+        String[] stringStemcode = {"stem", "nostem"};
+
+        boolean[] normcode = {true, false};
+        String[] stringNormCode = {"norm", "no-norm"};
+
+        for(int i=0; i<tfcode.length; i++) {
+            for(int j=0; j<idfcode.length; j++) {
+                for(int k=0; k<stemcode.length; k++) {
+                    for(int l=0; l<normcode.length; l++) {
+                        Experiment exp = new Experiment();
+                        exp.processDocuments(tfcode[i], idfcode[j], stemcode[k]);
+                        exp.processQueries(tfcode[i], idfcode[j], stemcode[k]);
+                        exp.evaluate(normcode[l]);
+
+                        try {
+                            String filename = stringTfcode[i]+"_"+stringIdfcode[j]+"_"+stringStemcode[k]+"_"+stringNormCode[l]+".txt";
+                            File file = new File("C:\\Users\\user\\Desktop\\eksperimen\\" + filename);
+
+                            // if file doesnt exists, then create it
+                            if (!file.exists()) {
+                                file.createNewFile();
+                            }
+
+                            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+                            BufferedWriter bw = new BufferedWriter(fw);
+                            bw.write(exp.getSummary());
+                            bw.close();
+
+                            System.out.println("Done");
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
 }

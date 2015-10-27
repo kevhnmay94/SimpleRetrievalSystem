@@ -141,8 +141,6 @@ public class DocumentRanking {
                 break;
         }
 
-        System.out.println("Counter = " + counter + ", map length " + sortedMap.size());
-
         return sortedMap;
     }
 

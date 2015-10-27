@@ -85,7 +85,7 @@ public class InputQuery {
     public String getSummaryResult() {
         StringBuilder sb = new StringBuilder();
         sb.append(result.size());
-        sb.append(result.size() > 1 ? " results" : "result");
+        sb.append(result.size() > 1 ? " results" : " result");
         sb.append("(" + (exectime/1000) + " seconds)\n\n");
         for(document doc : result.keySet()) {
             sb.append("Title : " + doc.getJudul());       //sb.append("\n");
