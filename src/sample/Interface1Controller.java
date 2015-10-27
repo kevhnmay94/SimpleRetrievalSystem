@@ -252,8 +252,9 @@ public class Interface1Controller implements Initializable {
         TermsWeight.termFrequencyWeightingQuery(Vars.querytf, wordProcessor.getInvertedFileQuery());
         TermsWeight.inverseDocumentWeightingQuery(Vars.queryidf, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile());
 
-        String path = "test\\invertedFile.txt";
+        String path = "test\\invertedFile.txt", path2 = "test\\invertedFileQuery.txt";
         EksternalFile.writeInvertedFile(path, wordProcessor.getInvertedFile());
+        EksternalFile.writeInvertedFile();
 
         Parent root = FXMLLoader.load(getClass().getResource("interface2.fxml"));
         Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();

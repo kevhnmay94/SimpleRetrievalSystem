@@ -1,5 +1,6 @@
 package sample;
 
+import Utils.EksternalFile;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,10 +33,20 @@ public class Interface2Controller implements Initializable {
         interactiveQuery.setToggleGroup(searchMethod);
         experimentQuery.setSelected(true);
         experimentQuery.requestFocus();
+        Vars.documentinvertedfile = EksternalFile.loadInvertedFile("test\\invertedFile.txt");
+        //pr load query inverted file
     }
 
     public void handleSearchButton(ActionEvent actionEvent) {
-
+        String result = "tessssssssssssssssss";
+        if((Boolean)searchMethod.getSelectedToggle().getUserData()){
+            // do something with the freaking query from text
+        }
+        else{
+            String query = searchTextField.getText();
+            // do something with the query
+        }
+        resultText.setText(result);
     }
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
