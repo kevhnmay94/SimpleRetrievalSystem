@@ -2,6 +2,7 @@ package Utils;
 
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
 import model.document;
+import model.indexTabel;
 import model.query;
 
 import java.util.ArrayList;
@@ -20,6 +21,10 @@ public class Experiment {
         evals = new ArrayList<>();
         wordProcessor = new PreprocessWords();
         resultMap = new HashMap<>();
+    }
+
+    public indexTabel getInvertedFile() {
+        return wordProcessor.getInvertedFile();
     }
 
     public void processDocuments(int tfcode, int idfcode, boolean stem) {

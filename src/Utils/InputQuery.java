@@ -15,8 +15,6 @@ public class InputQuery {
     static PreprocessWords wordProcessor = new PreprocessWords();
 
     public static void setDocumentMode(int tfmode, int idfmode, boolean stem){
-//        qTfMode = tfmode;
-//        qIdfMode = idfmode;
         System.out.println("Indexing documents...");
         double start = System.currentTimeMillis();
 
@@ -75,13 +73,23 @@ public class InputQuery {
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
+        // Setting mode
         InputQuery.setDocumentMode(1, 0 , true);
         InputQuery.setQueryMode(1, 0, true);
-        HashMap<document, Double> result = InputQuery.SearchDocumentsUsingQuery("What methods are there for encoding, automatically matching,            \n" +
-                "and automatically drawing structures extended in two dimensions,        \n" +
-                "like the structural formulas for chemical compounds?", false);
+
+        // Query dan hasil
+        String query = "computer";
+        HashMap<document, Double> result = InputQuery.SearchDocumentsUsingQuery(query, false);
+
+        // Print
+        System.out.println("Query : " + query);
+        System.out.println(result.size() + " result : ");
+        int counter=1;
         for(document doc : result.keySet()) {
-            System.out.println(doc.getIndex() + " : " + doc.getKonten());
+            System.out.println(counter + ". \t" + "Index : " + doc.getIndex());
+            System.out.println("\t" + "Judul : " + doc.getJudul());
+            System.out.println("\t" + "Konten : " + doc.getKonten() + "\n");
+            counter++;
         }
     }
 
