@@ -56,7 +56,7 @@ public class InputQuery {
 
         HashMap<document, Double> docweightMap = new HashMap<>();
         for (document doc : wordProcessor.getListDocumentsFinal()) {
-            double weight = DocumentRanking.countSimilarityDocument(q, wordProcessor.getInvertedFileQuery(),
+            double weight = DocumentRanking.countSimilarityDocument(q, wordProcessor.getInvertedFileManualQuery(),
                     doc, wordProcessor.getInvertedFile(), isNormalize);
             docweightMap.put(doc, weight);
         }
@@ -67,6 +67,22 @@ public class InputQuery {
         System.out.println("Calculating similarity done in " + (finish-start) + " ms.\n");
 
         return docweightMap;
+    }
+
+    public static void main(String[] args) {
+        // Setting awal awal
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+
+        InputQuery.setDocumentMode(1, 0 , true);
+        InputQuery.setQueryMode(1, 0, true);
+        HashMap<document, Double> result = InputQuery.SearchDocumentsUsingQuery("What methods are there for encoding, automatically matching,            \n" +
+                "and automatically drawing structures extended in two dimensions,        \n" +
+                "like the structural formulas for chemical compounds?", false);
+        for(document doc : result.keySet()) {
+            System.out.println(doc.getIndex() + " : " + doc.getKonten());
+        }
     }
 
 }
