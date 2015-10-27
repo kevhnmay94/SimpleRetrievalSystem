@@ -1,5 +1,6 @@
 package Utils;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import model.document;
 import model.query;
 import model.queryRelevances;
@@ -11,7 +12,7 @@ import java.util.*;
  */
 
 /* Kelas untuk mengevaluasi SEBUAH query */
-public class SingleQueryEvaluation {
+public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> {
 
     public double precision, recall, nonInterpolatedAvgPrecision;
     model.query query;
@@ -25,6 +26,15 @@ public class SingleQueryEvaluation {
 
     // Konstruktor - konstruktor
     public SingleQueryEvaluation() {}
+
+    @Override
+    public int compareTo(SingleQueryEvaluation another) {
+        if (this.queryNum < another.queryNum){
+            return -1;
+        }else{
+            return 1;
+        }
+    }
 
     public SingleQueryEvaluation(query query, ArrayList<document> docs, queryRelevances qRel) {
         this.query = query;
@@ -54,6 +64,7 @@ public class SingleQueryEvaluation {
             retDocNums.add(doc.getIndex());
         }
     }
+
     public void setQueryNum(int qnum) {
         this.queryNum = qnum;
     }

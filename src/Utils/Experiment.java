@@ -1,13 +1,13 @@
 package Utils;
 
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import model.document;
 import model.indexTabel;
 import model.indexTabelQuery;
 import model.query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Created by khaidzir on 15/10/2015.
@@ -96,6 +96,9 @@ public class Experiment {
         for (SingleQueryEvaluation sqe : evals) {
             sqe.evaluate();
         }
+
+        // Sort result by query number
+        Collections.sort(evals);
 
         finish = System.currentTimeMillis();
         System.out.println("Evaluating result done in " + (finish-start) + " ms.\n");
