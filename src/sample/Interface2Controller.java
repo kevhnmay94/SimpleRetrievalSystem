@@ -19,6 +19,7 @@ import model.termWeightingQuery;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class Interface2Controller implements Initializable {
@@ -45,7 +46,7 @@ public class Interface2Controller implements Initializable {
 
     public void handleSearchButton(ActionEvent actionEvent) {
         String result = "";
-        if((Boolean)searchMethod.getSelectedToggle().getUserData()){
+        /* if((Boolean)searchMethod.getSelectedToggle().getUserData()){
             // do something with the freaking query from text
             Experiment exp = new Experiment();
             exp.setInvertedFile(Vars.documentinvertedfile);
@@ -60,6 +61,21 @@ public class Interface2Controller implements Initializable {
             iq.setInvertedFile(Vars.documentinvertedfile);
             iq.SearchDocumentsUsingQuery(query, Vars.norm);
             result = iq.getSummaryResult();
+        }
+        */
+        for (int i=0; i<Vars.queryinvertedfile.getListQueryWeighting().size(); i++) {
+            termWeightingQuery relation = Vars.queryinvertedfile.getListQueryWeighting().get(i);
+            result += "QUERY DIPROSES : " + relation.getCurrentQuery().getQueryContent() + "\n";
+            result += "COUNTER PER TERM DARI QUERY DI ATAS : \n";
+            for (Map.Entry m : relation.getTermCounterInOneQuery().entrySet()) {
+                result += "Term : " + (String) m.getKey() + "\n";
+                result += "Counter : " + (Integer) m.getValue() + "\n";
+            }
+            for (Map.Entry m : relation.getTermWeightInOneQuery().entrySet()) {
+                result += "Term : " + (String) m.getKey() + "\n";
+                result += "Weight : " + (Double) m.getValue() + "\n";
+            }
+            result += "\n";
         }
         resultText.setText(result);
     }
