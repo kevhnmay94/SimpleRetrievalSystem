@@ -108,9 +108,9 @@ public class Experiment {
 
     public static void main(String[] args) {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
-        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
-        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         Experiment exp = new Experiment();
