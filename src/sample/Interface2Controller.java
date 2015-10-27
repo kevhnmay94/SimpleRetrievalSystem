@@ -1,6 +1,8 @@
 package sample;
 
 import Utils.EksternalFile;
+import Utils.Experiment;
+import Utils.InputQuery;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,11 +12,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.document;
 import model.query;
 import model.termWeightingQuery;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class Interface2Controller implements Initializable {
@@ -43,13 +47,16 @@ public class Interface2Controller implements Initializable {
         String result = "";
         if((Boolean)searchMethod.getSelectedToggle().getUserData()){
             // do something with the freaking query from text
-            for (termWeightingQuery q : Vars.queryinvertedfile.getListQueryWeighting()) {
-
-            }
+            Experiment exp = new Experiment();
+            exp.setInvertedFile(Vars.documentinvertedfile);
+            exp.setInvertedFileQuery(Vars.queryinvertedfile);
+            exp.evaluate(Vars.norm);
+            result = exp.getSummary();
         }
         else{
             String query = searchTextField.getText();
             // do something with the query
+            HashMap<document, Double> mapResult = InputQuery.SearchDocumentsUsingQuery(query, Vars.norm);
         }
         resultText.setText(result);
     }

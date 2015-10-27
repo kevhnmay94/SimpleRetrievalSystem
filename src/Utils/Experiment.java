@@ -3,6 +3,7 @@ package Utils;
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
 import model.document;
 import model.indexTabel;
+import model.indexTabelQuery;
 import model.query;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class Experiment {
     public indexTabel getInvertedFile() {
         return wordProcessor.getInvertedFile();
     }
+    public indexTabelQuery getInvertedFileQuery() { return wordProcessor.getInvertedFileQuery(); }
+    public void setInvertedFile (indexTabel idxTable) { wordProcessor.setInvertedFile(idxTable); }
+    public void setInvertedFileQuery (indexTabelQuery idxTable) { wordProcessor.setInvertedFileQuery(idxTable); }
 
     public void processDocuments(int tfcode, int idfcode, boolean stem) {
         System.out.println("Indexing documents...");
@@ -108,9 +112,9 @@ public class Experiment {
 
     public static void main(String[] args) {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
-        EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
-        EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         Experiment exp = new Experiment();
