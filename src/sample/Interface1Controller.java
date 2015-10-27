@@ -173,21 +173,20 @@ public class Interface1Controller implements Initializable {
         EksternalFile.setPathStopWordsFile(Vars.stoplocation);
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
-        wordProcessor.loadIndexTabel(Vars.documentstem); // True : stemming diberlakukan
-        TermsWeight.termFrequencyWeighting(Vars.documenttf, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
-        TermsWeight.inverseDocumentWeighting(Vars.documentidf, wordProcessor.getInvertedFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
+        wordProcessor.loadIndexTabel(Vars.documentstem);
+        TermsWeight.termFrequencyWeighting(Vars.documenttf, wordProcessor.getInvertedFile());
+        TermsWeight.inverseDocumentWeighting(Vars.documentidf, wordProcessor.getInvertedFile());
 
         // PROSES BUAT INVERTED FILE BUAT QUERY
         wordProcessor.loadIndexTabelForQueries(Vars.querystem); // True : stemming diberlakukan
-        TermsWeight.termFrequencyWeightingQuery(Vars.querytf, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
-        TermsWeight.inverseDocumentWeightingQuery(Vars.queryidf, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile()); // IDS khusus query
+        TermsWeight.termFrequencyWeightingQuery(Vars.querytf, wordProcessor.getInvertedFileQuery());
+        TermsWeight.inverseDocumentWeightingQuery(Vars.queryidf, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile());
 
         String path = "test\\invertedFile.txt";
         EksternalFile.writeInvertedFile(path, wordProcessor.getInvertedFile());
 
         Parent root = FXMLLoader.load(getClass().getResource("interface2.fxml"));
-        Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();;
-        stage.setTitle("Interface 2");
+        Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
 
     }
