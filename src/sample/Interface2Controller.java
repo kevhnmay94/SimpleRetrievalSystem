@@ -56,7 +56,10 @@ public class Interface2Controller implements Initializable {
         else{
             String query = searchTextField.getText();
             // do something with the query
-            HashMap<document, Double> mapResult = InputQuery.SearchDocumentsUsingQuery(query, Vars.norm);
+            InputQuery iq = new InputQuery();
+            iq.setInvertedFile(Vars.documentinvertedfile);
+            iq.SearchDocumentsUsingQuery(query, Vars.norm);
+            result = iq.getSummaryResult();
         }
         resultText.setText(result);
     }

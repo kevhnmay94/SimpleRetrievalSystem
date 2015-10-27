@@ -1,6 +1,7 @@
 package Utils;
 
 import model.document;
+import model.indexTabel;
 import model.query;
 
 import java.util.HashMap;
@@ -10,11 +11,18 @@ import java.util.HashMap;
  */
 public class InputQuery {
 
-    static int qTfMode, qIdfMode;
-    static boolean isStem;
-    static PreprocessWords wordProcessor = new PreprocessWords();
+    int qTfMode, qIdfMode;
+    boolean isStem;
+    PreprocessWords wordProcessor;
+    static HashMap<document, Double> result;
+    String query;
+    double exectime;
 
-    public static void setDocumentMode(int tfmode, int idfmode, boolean stem){
+    public InputQuery() {
+        wordProcessor = new PreprocessWords();
+    }
+
+    public void setDocumentMode(int tfmode, int idfmode, boolean stem){
         System.out.println("Indexing documents...");
         double start = System.currentTimeMillis();
 
@@ -26,22 +34,29 @@ public class InputQuery {
         System.out.println("Indexing documents done in " + (finish-start) + " ms.\n");
     }
 
-    public static void setQueryMode(int tfmode, int idfmode, boolean stem) {
+    public void setQueryMode(int tfmode, int idfmode, boolean stem) {
         qTfMode = tfmode;
         qIdfMode = idfmode;
         isStem = stem;
     }
 
-    public static HashMap<document, Double> SearchDocumentsUsingQuery(String query, boolean isNormalize) {
+    public void setInvertedFile(indexTabel idxtab) {
+        wordProcessor.setInvertedFile(idxtab);
+    }
+
+    public void SearchDocumentsUsingQuery(String query, boolean isNormalize) {
         double start, finish;
+        this.query = query;
+        result = new HashMap<>();
 
         // Proses query
         System.out.println("Indexing queries...");
         start = System.currentTimeMillis();
 
         wordProcessor.loadIndexTabelForManualQuery(query, isStem);
-        TermsWeight.termFrequencyWeightingQuery(qTfMode, wordProcessor.getInvertedFileQuery());
-        TermsWeight.inverseDocumentWeightingQuery(qIdfMode, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile());
+        TermsWeight.termFrequencyWeightingQuery(qTfMode, wordProcessor.getInvertedFileManualQuery());
+        TermsWeight.inverseDocumentWeightingQuery(qIdfMode, wordProcessor.getInvertedFileManualQuery(),
+                wordProcessor.getInvertedFile());
 
         finish = System.currentTimeMillis();
         System.out.println("Indexing queries done in " + (finish-start) + " ms.\n");
@@ -52,19 +67,32 @@ public class InputQuery {
 
         query q = new query(0, query);
 
-        HashMap<document, Double> docweightMap = new HashMap<>();
+
         for (document doc : wordProcessor.getListDocumentsFinal()) {
             double weight = DocumentRanking.countSimilarityDocument(q, wordProcessor.getInvertedFileManualQuery(),
                     doc, wordProcessor.getInvertedFile(), isNormalize);
-            docweightMap.put(doc, weight);
+            result.put(doc, weight);
         }
-        docweightMap = DocumentRanking.rankDocuments(docweightMap);
+        result = DocumentRanking.rankDocuments(result);
 
 
         finish = System.currentTimeMillis();
-        System.out.println("Calculating similarity done in " + (finish-start) + " ms.\n");
+        exectime = finish-start;
+        System.out.println("Calculating similarity done in " + exectime + " ms.\n");
+    }
 
-        return docweightMap;
+    public String getSummaryResult() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(result.size());
+        sb.append(result.size() > 1 ? " results" : "result");
+        sb.append("(" + (exectime/1000) + " seconds)\n\n");
+        for(document doc : result.keySet()) {
+            sb.append("Title : " + doc.getJudul());       //sb.append("\n");
+            sb.append("Author : " + doc.getAuthor());     //sb.append("\n");
+            sb.append("Content : \n" + doc.getKonten());  sb.append("\n");
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     public static void main(String[] args) {
@@ -73,24 +101,18 @@ public class InputQuery {
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
+        InputQuery iq = new InputQuery();
+
         // Setting mode
-        InputQuery.setDocumentMode(1, 0 , true);
-        InputQuery.setQueryMode(1, 0, true);
+        iq.setDocumentMode(1, 0, true);
+        iq.setQueryMode(1, 0, true);
 
         // Query dan hasil
         String query = "computer";
-        HashMap<document, Double> result = InputQuery.SearchDocumentsUsingQuery(query, false);
+        iq.SearchDocumentsUsingQuery(query, false);
 
         // Print
-        System.out.println("Query : " + query);
-        System.out.println(result.size() + " result : ");
-        int counter=1;
-        for(document doc : result.keySet()) {
-            System.out.println(counter + ". \t" + "Index : " + doc.getIndex());
-            System.out.println("\t" + "Judul : " + doc.getJudul());
-            System.out.println("\t" + "Konten : " + doc.getKonten() + "\n");
-            counter++;
-        }
+        System.out.println(iq.getSummaryResult());
     }
 
 }
