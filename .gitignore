@@ -1,6 +1,7 @@
 *.class
 
 # Mobile Tools for Java (J2ME)
+/test/invertedFile.txt
 .mtj.tmp/
 
 # Package Files #
