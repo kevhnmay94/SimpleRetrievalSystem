@@ -272,6 +272,11 @@ public class EksternalFile {
         return invertedFile;
     }
 
+    /**
+     * Read inverted file query (experimental) from external source
+     * @param path
+     * @return
+     */
     public static indexTabelQuery loadInvertedFileQuery(String path) {
         String rawContent = "";
         indexTabelQuery invertedFile = new indexTabelQuery();
