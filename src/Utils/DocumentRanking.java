@@ -206,7 +206,7 @@ public class DocumentRanking {
 
         // TEST LOAD INVERTED FILE QUERY
         indexTabelQuery indexTabel = EksternalFile.loadInvertedFileQuery(path2);
-       /* for (int i=0; i<indexTabel.getListQueryWeighting().size(); i++) {
+        for (int i=0; i<indexTabel.getListQueryWeighting().size(); i++) {
             termWeightingQuery relation = indexTabel.getListQueryWeighting().get(i);
             System.out.println("QUERY DIPROSES : " + relation.getCurrentQuery().getQueryContent());
             System.out.println("COUNTER PER TERM DARI QUERY DI ATAS : ");
@@ -219,6 +219,6 @@ public class DocumentRanking {
                 System.out.println("Weight : " + (Double) m.getValue());
             }
             System.out.println("====================================================================================");
-        } */
+        }
     }
 }
