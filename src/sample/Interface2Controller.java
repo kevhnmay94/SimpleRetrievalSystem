@@ -1,17 +1,33 @@
 package sample;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Interface2Controller implements Initializable {
 
-    @FXML // enter property heres
+    @FXML private RadioButton experimentQuery;
+    @FXML private RadioButton interactiveQuery;
+    @FXML private Button searchButton;
+    @FXML private TextArea resultText;
+    @FXML private TextField searchTextField;
+    private final ToggleGroup searchMethod = new ToggleGroup();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        experimentQuery.setUserData(true);
+        interactiveQuery.setUserData(false);
+        experimentQuery.setToggleGroup(searchMethod);
+        interactiveQuery.setToggleGroup(searchMethod);
+        experimentQuery.setSelected(true);
+        experimentQuery.requestFocus();
+    }
 
+    public void handleSearchButton(ActionEvent actionEvent) {
+        
     }
 }
