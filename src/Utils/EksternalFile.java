@@ -174,17 +174,11 @@ public class EksternalFile {
         for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
             String keyTerm = (String) m.getKey();
             int indexDocument = 0;
-            String judulDocument = null;
-            String kontenDocument = null;
-            String authorDocument = null;
             double weightTermInDocument = 0.0;
             for (int i=0; i<((termWeightingDocument) m.getValue()).getDocumentPerTerm().size(); i++) {
                 indexDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getIndex();
-                judulDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getJudul();
-                authorDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getAuthor();
-                kontenDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getKonten();
                 weightTermInDocument = ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().get(i);
-                new PrintStream(fout).print("~" + keyTerm + "~" + indexDocument + "~" + judulDocument + "~" + authorDocument + "~" + kontenDocument + "~" + weightTermInDocument);
+                new PrintStream(fout).print("~" + keyTerm + "~" + indexDocument + "~" + weightTermInDocument + "\n");
             }
         }
     }
@@ -204,20 +198,13 @@ public class EksternalFile {
         }
         for (termWeightingQuery q : invertedFileQuery.getListQueryWeighting()) {
             String indexQuery = String.valueOf(q.getCurrentQuery().getIndex()) + "^";
-            String currentQuery = q.getCurrentQuery().getQueryContent() + "^";
             String weight = "";
-            String counter = "";
             for (Map.Entry m : q.getTermWeightInOneQuery().entrySet()) {
                 String currentTerm = (String) m.getKey();
                 double weightTerm = (Double) m.getValue();
-                weight += "?" + currentTerm + ";" + weightTerm + "^";
+                weight += "@" + currentTerm + ";*" + weightTerm + "^";
             }
-            for (Map.Entry m : q.getTermCounterInOneQuery().entrySet()) {
-                String currentTerm = (String) m.getKey();
-                double counterTerm = (Integer) m.getValue();
-                counter += "$" + currentTerm + ";" + counterTerm + "^";
-            }
-            new PrintStream(fout).print("~*" + indexQuery + "@" + currentQuery + weight + counter);
+            new PrintStream(fout).print("~" + indexQuery + weight + "\n");
         }
     }
 
@@ -229,38 +216,39 @@ public class EksternalFile {
     public static indexTabel loadInvertedFile(String path) {
         String rawContent = "";
         indexTabel invertedFile = new indexTabel();
+        PreprocessWords word = new PreprocessWords();
+        word.loadDocumentsFinal();
         Path pathInvertedFile = Paths.get(path);
         try {
             Scanner scanner = new Scanner(pathInvertedFile);
             while (scanner.hasNextLine()) {
                 rawContent += scanner.nextLine() + "\n";
             }
-            StringTokenizer token = new StringTokenizer(rawContent,"~");
+            StringTokenizer token = new StringTokenizer(rawContent,"~\n");
             int counter = 1;
             String keyTerm = null;
             int indexDocument = 0;
-            String judulDocument = null;
-            String authorDocument = null;
-            String kontenDocument = null;
             double weightTermInDocument;
             while (token.hasMoreTokens()) {
                 String tokenString = token.nextToken();
-                if ((counter % 6) == 1) {
+                if ((counter % 3) == 1) {
                     keyTerm = tokenString;
-                } else if ((counter % 6) == 2) {
+                } else if ((counter % 3) == 2) {
                     indexDocument = Integer.parseInt(tokenString);
-                } else if ((counter % 6) == 3) {
-                    judulDocument = tokenString;
-                } else if ((counter % 6) == 4) {
-                    authorDocument = tokenString;
-                } else if ((counter % 6) == 5) {
-                    kontenDocument = tokenString;
-                } else if ((counter % 6) == 0) {
-                    weightTermInDocument = Double.parseDouble(tokenString);
-                    document Document = new document(indexDocument,judulDocument,authorDocument,kontenDocument);
-                    invertedFile.insertRowTable(keyTerm,Document,weightTermInDocument);
+                } else if ((counter % 3) == 0) {
+                    ArrayList<document> documents = word.getListDocumentsFinal();
+                    for (int i=0; i<documents.size(); i++) {
+                        if (documents.get(i).getIndex() == indexDocument) {
+                            weightTermInDocument = Double.parseDouble(tokenString);
+                            String judul = documents.get(i).getJudul();
+                            String author = documents.get(i).getAuthor();
+                            String konten = documents.get(i).getKonten();
+                            document Document = new document(indexDocument,judul,author,konten);
+                            invertedFile.insertRowTable(keyTerm,Document,weightTermInDocument);
+                        }
+                    }
                 }
-                if (counter == 6) {
+                if (counter == 3) {
                     counter = 1;
                 } else {
                     counter++;
@@ -278,6 +266,8 @@ public class EksternalFile {
      * @return
      */
     public static indexTabelQuery loadInvertedFileQuery(String path) {
+        PreprocessWords word = new PreprocessWords();
+        word.loadQueriesFinal();
         String rawContent = "";
         indexTabelQuery invertedFile = new indexTabelQuery();
         Path pathInvertedFile = Paths.get(path);
@@ -288,61 +278,34 @@ public class EksternalFile {
             }
             StringTokenizer token1 = new StringTokenizer(rawContent,"~");
             while (token1.hasMoreTokens()) {
-                termWeightingQuery relation = new termWeightingQuery();
                 int indexQuery = 0;
-                String contentQuery = "";
+                termWeightingQuery relation = new termWeightingQuery();
                 String currentWordToken1 = token1.nextToken();
                 StringTokenizer token2 = new StringTokenizer(currentWordToken1,"^");
                 while (token2.hasMoreTokens()) {
                     String currentWordToken2 = token2.nextToken();
-                    if (currentWordToken2.contains("*")) {
-                        indexQuery = Integer.parseInt(currentWordToken2.replace("*",""));
-                    } else if (currentWordToken2.contains("@")) {
-                        contentQuery = currentWordToken2.replace("@","");
-                    } else if (currentWordToken2.contains("?")) {
-                        String currentTermInQuery = "";
-                        String weightTerm = currentWordToken2.replace("?","");
-                        StringTokenizer tokenWeight = new StringTokenizer(weightTerm,";");
-                        int innerCounter = 1;
-                        double currentWeight = 0.0;
-                        while (tokenWeight.hasMoreTokens()) {
-                            String token = tokenWeight.nextToken();
-                            if (innerCounter == 1) {
-                                currentTermInQuery = token;
-                            } else if (innerCounter == 2) {
-                                currentWeight = Double.parseDouble(token);
-                            }
-                            if (innerCounter == 2) {
-                                relation.getTermWeightInOneQuery().put(currentTermInQuery,currentWeight);
-                                innerCounter = 1;
-                            } else {
-                                innerCounter++;
-                            }
-                        }
-                    } else if (currentWordToken2.contains("$")) {
-                        String currentTermInQuery = "";
-                        String counterTerm = currentWordToken2.replace("$","");
-                        StringTokenizer tokenCounter = new StringTokenizer(counterTerm,";");
-                        int innerCounter = 1;
-                        int currentCounter = 0;
-                        while (tokenCounter.hasMoreTokens()) {
-                            String token = tokenCounter.nextToken();
-                            if (innerCounter == 1) {
-                                currentTermInQuery = token;
-                            } else if (innerCounter == 2) {
-                                currentCounter = (int) Float.parseFloat(token);
-                            }
-                            if (innerCounter == 2) {
-                                relation.getTermCounterInOneQuery().put(currentTermInQuery,currentCounter);
-                                innerCounter = 1;
-                            } else {
-                                innerCounter++;
+                    if (!currentWordToken2.contains(";")) {
+                        indexQuery = Integer.parseInt(currentWordToken2);
+                    } else {
+                        String keyTerm = "";
+                        double weightTerm = 0.0;
+                        StringTokenizer token3 = new StringTokenizer(currentWordToken2,";");
+                        while (token3.hasMoreTokens()) {
+                            String currentWordToken3 = token3.nextToken();
+                            if (currentWordToken3.contains("@")) {
+                                keyTerm = currentWordToken3.replace("@","");
+                            } else if (currentWordToken3.contains("*")) {
+                                weightTerm = Double.parseDouble(currentWordToken3.replace("*",""));
+                                relation.getTermWeightInOneQuery().put(keyTerm,weightTerm);
                             }
                         }
                     }
-                    if ((indexQuery != 0) && !(contentQuery.equals(""))) {
-                        query Query = new query(indexQuery,contentQuery);
-                        relation.setCurrentQuery(Query);
+                    ArrayList<query> listQueries = word.getListQueriesFinal();
+                    for (query Query : listQueries) {
+                        if (Query.getIndex() == indexQuery) {
+                            query currentQuery = new query(indexQuery,Query.getQueryContent());
+                            relation.setCurrentQuery(currentQuery);
+                        }
                     }
                 }
                 invertedFile.getListQueryWeighting().add(relation);

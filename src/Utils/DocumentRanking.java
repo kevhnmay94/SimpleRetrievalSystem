@@ -28,7 +28,7 @@ public class DocumentRanking {
                 for (Map.Entry m : invertedFileQuery.getListQueryWeighting().get(i).getTermWeightInOneQuery().entrySet()) {
                     double weightThisTermQuery = (Double) m.getValue();
                     double weightThisTermDocument = getWeightTermInDocument(Document.getIndex(),(String) m.getKey(), invertedFile);
-                    dotProduct = weightThisTermDocument * weightThisTermQuery;
+                    dotProduct += weightThisTermDocument * weightThisTermQuery;
                 }
             }
         }
@@ -149,26 +149,30 @@ public class DocumentRanking {
     public static void main(String[] arg) {
         // PENTING DIBUAT DULU KELASNYA
         PreprocessWords wordProcessor = new PreprocessWords();
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        /*EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
-        TermsWeight.termFrequencyWeighting(4, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
-        TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
+        TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
+        TermsWeight.inverseDocumentWeighting(0, wordProcessor.getInvertedFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY
         wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
-        TermsWeight.termFrequencyWeightingQuery(4, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
-        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile()); // IDS khusus query
+        TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
+        TermsWeight.inverseDocumentWeightingQuery(0, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile()); // IDS khusus query
 
         // SIMILARITY DOCUMENT QUERY KE-1 (INDEX 0) DENGAN DOKUMEN 1-82 ADI.ALL
         for (int j=0; j<wordProcessor.getListDocumentsFinal().size(); j++) {
-            System.out.println("SIMILARITY QUERY KE-" + wordProcessor.getListQueriesFinal().get(0).getIndex()
+            System.out.println("SIMILARITY QUERY KE-" + wordProcessor.getListQueriesFinal().get(1).getIndex()
             + " DENGAN DOKUMEN KE-" + wordProcessor.getListDocumentsFinal().get(j).getIndex() + " : ");
-            System.out.println(countSimilarityDocument(wordProcessor.getListQueriesFinal().get(0),wordProcessor.getInvertedFileQuery(),
+            System.out.println(countSimilarityDocument(wordProcessor.getListQueriesFinal().get(1),wordProcessor.getInvertedFileQuery(),
                     wordProcessor.getListDocumentsFinal().get(j),wordProcessor.getInvertedFile(),false));
             System.out.println("========================================================================================");
         }
@@ -179,12 +183,8 @@ public class DocumentRanking {
         EksternalFile.writeInvertedFile(path, wordProcessor.getInvertedFile());
         EksternalFile.writeInvertedFileQuery(path2,wordProcessor.getInvertedFileQuery());
 
-        // TEST WRITE INVERTED FILE EKSTERNAL
-       /* String path = "test\\invertedFile.txt";
-        EksternalFile.writeInvertedFile(path,wordProcessor.getInvertedFile());
-
         // TEST LOAD INVERTED FILE EKSTERNAL
-        indexTabel anotherInvertedFile = EksternalFile.loadInvertedFile(path);
+        /* indexTabel anotherInvertedFile = EksternalFile.loadInvertedFile(path);
         for(Map.Entry m : anotherInvertedFile.getListTermWeights().entrySet()) {
              System.out.println("Key : " + m.getKey().toString());
              for (document Document:((termWeightingDocument) m.getValue()).getDocumentPerTerm()) {
@@ -197,28 +197,28 @@ public class DocumentRanking {
              for (double weights :((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm()) {
                  System.out.println("Bobot : " + weights);
              }
-             System.out.println("COUNTER TERM INI PER DOKUMEN DI ATAS : ");
-             for (int counter:((termWeightingDocument) m.getValue()).getDocumentCountersPerTerm()) {
-                 System.out.println("Counter : " + counter);
-             }
+             // System.out.println("COUNTER TERM INI PER DOKUMEN DI ATAS : ");
+             // for (int counter:((termWeightingDocument) m.getValue()).getDocumentCountersPerTerm()) {
+                // System.out.println("Counter : " + counter);
+             // }
              System.out.println("====================================================================================");
-        } */
+        }*/
 
         // TEST LOAD INVERTED FILE QUERY
-        indexTabelQuery indexTabel = EksternalFile.loadInvertedFileQuery(path2);
+       /* indexTabelQuery indexTabel = EksternalFile.loadInvertedFileQuery(path2);
         for (int i=0; i<indexTabel.getListQueryWeighting().size(); i++) {
             termWeightingQuery relation = indexTabel.getListQueryWeighting().get(i);
             System.out.println("QUERY DIPROSES : " + relation.getCurrentQuery().getQueryContent());
             System.out.println("COUNTER PER TERM DARI QUERY DI ATAS : ");
-            for (Map.Entry m : relation.getTermCounterInOneQuery().entrySet()) {
-                System.out.println("Term : " + (String) m.getKey());
-                System.out.println("Counter : " + (Integer) m.getValue());
-            }
+            //for (Map.Entry m : relation.getTermCounterInOneQuery().entrySet()) {
+              //  System.out.println("Term : " + (String) m.getKey());
+                //System.out.println("Counter : " + (Integer) m.getValue());
+            //}
             for (Map.Entry m : relation.getTermWeightInOneQuery().entrySet()) {
                 System.out.println("Term : " + (String) m.getKey());
                 System.out.println("Weight : " + (Double) m.getValue());
             }
             System.out.println("====================================================================================");
-        }
+        } */
     }
 }
