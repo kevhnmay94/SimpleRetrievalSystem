@@ -111,15 +111,7 @@ public class DocumentRanking {
      * @return
      */
     public static HashMap<document, Double> rankDocuments(HashMap<document, Double> weightedDocs) {
-        HashMap<document, Double> temp = (HashMap<document, Double>) sortByComparator(weightedDocs);
-        HashMap<document, Double> retMap = new HashMap<>();
-        for (document doc : temp.keySet()) {
-            if (temp.get(doc) > 0.0000000f)
-                retMap.put(doc, temp.get(doc));
-            else
-                break;
-        }
-        return retMap;
+        return (HashMap<document, Double>) sortByComparator(weightedDocs);
     }
 
     private static Map<document, Double> sortByComparator(Map<document, Double> unsortMap) {
@@ -138,10 +130,17 @@ public class DocumentRanking {
 
         // Convert sorted map back to a Map
         Map<document, Double> sortedMap = new LinkedHashMap<document, Double>();
+        int counter=0;
+        double val;
         for (Iterator<Map.Entry<document, Double>> it = list.iterator(); it.hasNext();) {
             Map.Entry<document, Double> entry = it.next();
-            sortedMap.put(entry.getKey(), entry.getValue());
+            if (entry.getValue() > 0.00000000000000f) {
+                counter++;
+                sortedMap.put(entry.getKey(), entry.getValue());
+            } else
+                break;
         }
+
         return sortedMap;
     }
 
