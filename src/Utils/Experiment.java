@@ -123,7 +123,7 @@ public class Experiment {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
+    public static void tesAll() {
         // Setting awal awal
         EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
@@ -175,6 +175,18 @@ public class Experiment {
                 }
             }
         }
+    }
+
+    public static void main(String[] args) {
+        EksternalFile.setPathQrelsFile("test/ADI/qrels.text");
+        EksternalFile.setPathDocumentsFile("test/ADI/adi.all");
+        EksternalFile.setPathQueriesFile("test/ADI/query.text");
+        EksternalFile.setPathStopWordsFile("test/stopwords_en.txt");
+        Experiment exp = new Experiment();
+        exp.processDocuments(1,0,true);
+        exp.processQueries(1,0,true);
+        exp.evaluate(false);
+        System.out.println(exp.getSummary());
     }
 
 }
