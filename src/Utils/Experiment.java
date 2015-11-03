@@ -116,10 +116,13 @@ public class Experiment {
 
     public String getSummary() {
         StringBuilder sb = new StringBuilder();
+        double sumNonAVG = 0.0;
         for(SingleQueryEvaluation sqe : evals) {
             sb.append(sqe.getEvalSummary());
             sb.append("\n");
+            sumNonAVG += sqe.nonInterpolatedAvgPrecision;
         }
+        sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
         return sb.toString();
     }
 
@@ -143,7 +146,7 @@ public class Experiment {
         String[] stringNormCode = {"norm", "no-norm"};
 
         // STEVE
-        
+
         for(int j=0; j<idfcode.length; j++) {
             for(int k=0; k<stemcode.length; k++) {
                 for(int l=0; l<normcode.length; l++) {
