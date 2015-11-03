@@ -146,31 +146,8 @@ public class Experiment {
             for(int j=0; j<idfcode.length; j++) {
                 for(int k=0; k<stemcode.length; k++) {
                     for(int l=0; l<normcode.length; l++) {
-                        Experiment exp = new Experiment();
-                        exp.processDocuments(tfcode[i], idfcode[j], stemcode[k]);
-                        exp.processQueries(tfcode[i], idfcode[j], stemcode[k]);
-                        exp.evaluate(normcode[l]);
-
-                        try {
-                            String filename = stringTfcode[i]+"_"+stringIdfcode[j]+"_"+stringStemcode[k]+"_"+stringNormCode[l]+".txt";
-                            File file = new File("C:\\Users\\user\\Desktop\\eksperimen\\" + filename);
-
-                            // if file doesnt exists, then create it
-                            if (!file.exists()) {
-                                file.createNewFile();
-                            }
-
-                            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-                            BufferedWriter bw = new BufferedWriter(fw);
-                            bw.write(exp.getSummary());
-                            bw.close();
-
-                            System.out.println("Done");
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
+                        ThreadExperiment thread = new ThreadExperiment(i,j,k,l);
+                        thread.start();
                     }
                 }
             }
