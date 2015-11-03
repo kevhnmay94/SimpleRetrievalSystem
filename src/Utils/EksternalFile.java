@@ -17,8 +17,8 @@ import java.util.StringTokenizer;
  * Created by steve on 07/10/2015.
  */
 public class EksternalFile {
-    private static ArrayList<String> listPartStringBetweenTokens = new ArrayList<String>();
-    private static ArrayList<Integer> listPartIndexInQrels = new ArrayList<Integer>();
+    private ArrayList<String> listPartStringBetweenTokens = new ArrayList<String>();
+    private ArrayList<Integer> listPartIndexInQrels = new ArrayList<Integer>();
     public static final String INDEX_TOKEN = "Index : ";
     public static final String JUDUL_TOKEN = "Topic : ";
     public static final String KONTEN_TOKEN = "Content : ";
@@ -28,10 +28,10 @@ public class EksternalFile {
     private static String pathQrelsFile = "D:\\Informatika\\Materi Semester 7\\IF4042 Sistem Temu Balik Informasi\\Tugas\\Tubes 2\\Test Collection\\ADI\\qrels.text";
     private static String pathStopWordsFile = "D:\\Informatika\\Materi Semester 7\\IF4042 Sistem Temu Balik Informasi\\Tugas\\Tubes 2\\Test Collection\\stopwords_en.txt";
 
-    public static ArrayList<String> getListPartStringBetweenTokens() {
+    public ArrayList<String> getListPartStringBetweenTokens() {
         return listPartStringBetweenTokens;
     }
-    public static ArrayList<Integer> getListPartIndexInQrels() {
+    public ArrayList<Integer> getListPartIndexInQrels() {
         return listPartIndexInQrels;
     }
     public static void setPathDocumentsFile(String pathDocumentsFile) {
@@ -52,7 +52,7 @@ public class EksternalFile {
      * @param line
      * @return boolean
      */
-    private static boolean isStringToken(String line) {
+    private boolean isStringToken(String line) {
         return (line.equals(".T") || line.contains(".I ") || line.equals(".A") || line.equals(".W") || line.equals(".X") || line.equals(".B"));
     }
 
@@ -61,7 +61,7 @@ public class EksternalFile {
      * @param fileType
      * @return rawFileContent
      */
-    public static String readDocuments(String fileType) {
+    public String readDocuments(String fileType) {
         String rawFileContent = "";
         Path path = null;
         if (fileType.equals("documents")) {
@@ -89,7 +89,7 @@ public class EksternalFile {
      * @param partDocument
      * @return identifier
      */
-    private static String addIdentifierDocumentsPart (String partDocument) {
+    private String addIdentifierDocumentsPart (String partDocument) {
         String identifier = "";
         if (partDocument.contains(".I ")) {
             identifier = INDEX_TOKEN;
@@ -108,7 +108,7 @@ public class EksternalFile {
      * Special case : documents or queries
      * @param rawFileContent
      */
-    public static void loadListOfDocumentsPart(String rawFileContent) {
+     void loadListOfDocumentsPart(String rawFileContent) {
         listPartStringBetweenTokens.clear();
         String partStringBetweenTokens = "";
         int counterDocument = 1;
@@ -139,7 +139,7 @@ public class EksternalFile {
      * Special case : query relevances
      * @param rawFileContent
      */
-    public static void loadQueryRelevances(String rawFileContent) {
+    public  void loadQueryRelevances(String rawFileContent) {
         listPartIndexInQrels.clear();
         ArrayList<String> rawQrelsSegmented = new ArrayList<String>();
         String[] lines = rawFileContent.split("\\r?\\n");
@@ -164,7 +164,7 @@ public class EksternalFile {
      * @param path
      * @param invertedFile
      */
-    public static void writeInvertedFile(String path, indexTabel invertedFile) {
+    public  void writeInvertedFile(String path, indexTabel invertedFile) {
         FileOutputStream fout = null;
         try {
             fout = new FileOutputStream(path);
@@ -189,7 +189,7 @@ public class EksternalFile {
      * @param path
      * @param invertedFileQuery
      */
-    public static void writeInvertedFileQuery(String path,  indexTabelQuery invertedFileQuery) {
+    public  void writeInvertedFileQuery(String path,  indexTabelQuery invertedFileQuery) {
         FileOutputStream fout = null;
         try {
             fout = new FileOutputStream(path);
@@ -213,7 +213,7 @@ public class EksternalFile {
      * @param path
      * @return
      */
-    public static indexTabel loadInvertedFile(String path) {
+    public  indexTabel loadInvertedFile(String path) {
         String rawContent = "";
         indexTabel invertedFile = new indexTabel();
         PreprocessWords word = new PreprocessWords();
@@ -265,7 +265,7 @@ public class EksternalFile {
      * @param path
      * @return
      */
-    public static indexTabelQuery loadInvertedFileQuery(String path) {
+    public  indexTabelQuery loadInvertedFileQuery(String path) {
         PreprocessWords word = new PreprocessWords();
         word.loadQueriesFinal();
         String rawContent = "";
@@ -317,9 +317,10 @@ public class EksternalFile {
     }
 
     public static void main(String[] arg) {
-        loadListOfDocumentsPart(readDocuments("queries"));
-        for (int i=0; i<EksternalFile.getListPartStringBetweenTokens().size(); i++) {
-            System.out.println(EksternalFile.getListPartStringBetweenTokens().get(i));
+        EksternalFile file = new EksternalFile();
+        file.loadListOfDocumentsPart(file.readDocuments("queries"));
+        for (int i=0; i<file.getListPartStringBetweenTokens().size(); i++) {
+            System.out.println(file.getListPartStringBetweenTokens().get(i));
             System.out.println("============================================================");
         }
 

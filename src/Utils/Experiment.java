@@ -116,18 +116,21 @@ public class Experiment {
 
     public String getSummary() {
         StringBuilder sb = new StringBuilder();
+        double sumNonAVG = 0.0;
         for(SingleQueryEvaluation sqe : evals) {
             sb.append(sqe.getEvalSummary());
             sb.append("\n");
+            sumNonAVG += sqe.nonInterpolatedAvgPrecision;
         }
+        sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
         return sb.toString();
     }
 
     public static void tesAll() {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
-        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
-        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         int[] tfcode = {0, 1, 2, 3, 4};
@@ -142,39 +145,45 @@ public class Experiment {
         boolean[] normcode = {true, false};
         String[] stringNormCode = {"norm", "no-norm"};
 
-        for(int i=0; i<tfcode.length; i++) {
-            for(int j=0; j<idfcode.length; j++) {
-                for(int k=0; k<stemcode.length; k++) {
-                    for(int l=0; l<normcode.length; l++) {
-                        Experiment exp = new Experiment();
-                        exp.processDocuments(tfcode[i], idfcode[j], stemcode[k]);
-                        exp.processQueries(tfcode[i], idfcode[j], stemcode[k]);
-                        exp.evaluate(normcode[l]);
+        // STEVE
 
-                        try {
-                            String filename = stringTfcode[i]+"_"+stringIdfcode[j]+"_"+stringStemcode[k]+"_"+stringNormCode[l]+".txt";
-                            File file = new File("C:\\Users\\user\\Desktop\\eksperimen\\" + filename);
-
-                            // if file doesnt exists, then create it
-                            if (!file.exists()) {
-                                file.createNewFile();
-                            }
-
-                            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-                            BufferedWriter bw = new BufferedWriter(fw);
-                            bw.write(exp.getSummary());
-                            bw.close();
-
-                            System.out.println("Done");
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
+        for(int j=0; j<idfcode.length; j++) {
+            for(int k=0; k<stemcode.length; k++) {
+                for(int l=0; l<normcode.length; l++) {
+                    ThreadExperiment thread = new ThreadExperiment(1,j,k,l);
+                    thread.start();
                 }
             }
         }
+
+       /* for(int j=0; j<idfcode.length; j++) {
+            for(int k=0; k<stemcode.length; k++) {
+                for(int l=0; l<normcode.length; l++) {
+                    ThreadExperiment thread = new ThreadExperiment(2,j,k,l);
+                    thread.start();
+                }
+            }
+        } */
+
+        // KEVMAU
+
+        /* for(int j=0; j<idfcode.length; j++) {
+            for(int k=0; k<stemcode.length; k++) {
+                for(int l=0; l<normcode.length; l++) {
+                    ThreadExperiment thread = new ThreadExperiment(3,j,k,l);
+                    thread.start();
+                }
+            }
+        } */
+
+       /* for(int j=0; j<idfcode.length; j++) {
+            for(int k=0; k<stemcode.length; k++) {
+                for(int l=0; l<normcode.length; l++) {
+                    ThreadExperiment thread = new ThreadExperiment(4,j,k,l);
+                    thread.start();
+                }
+            }
+        } */
     }
 
     public static void main(String[] args) {

@@ -41,8 +41,9 @@ public class Interface2Controller implements Initializable {
         interactiveQuery.setToggleGroup(searchMethod);
         experimentQuery.setSelected(true);
         experimentQuery.requestFocus();
-        Vars.documentinvertedfile = EksternalFile.loadInvertedFile("test\\invertedFile.txt");
-        Vars.queryinvertedfile = EksternalFile.loadInvertedFileQuery("test\\invertedFileQuery.txt");
+        EksternalFile file = new EksternalFile();
+        Vars.documentinvertedfile = file.loadInvertedFile("test\\invertedFile.txt");
+        Vars.queryinvertedfile = file.loadInvertedFileQuery("test\\invertedFileQuery.txt");
     }
 
     public void handleSearchButton(ActionEvent actionEvent) {

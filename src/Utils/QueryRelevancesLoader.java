@@ -15,13 +15,15 @@ public class QueryRelevancesLoader {
     public static boolean isLoaded = false;
 
     public static void ReadQrelsFile() {
+        EksternalFile file = new EksternalFile();
+
         // Load ADI/qrels.txt
         EksternalFile.setPathQrelsFile(ADI_PATH);
-        String adifile = EksternalFile.readDocuments("qrels");
+        String adifile = file.readDocuments("qrels");
 
         // Load CISI/qrels.txt
         EksternalFile.setPathQrelsFile(CISI_PATH);
-        String cisifile = EksternalFile.readDocuments("qrels");
+        String cisifile = file.readDocuments("qrels");
 
         // Buat qrels ADI
         qrelsAdi = new HashMap<Integer, ArrayList<Integer>>();

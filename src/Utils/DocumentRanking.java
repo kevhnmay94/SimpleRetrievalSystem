@@ -148,30 +148,30 @@ public class DocumentRanking {
     public static void main(String[] arg) {
         // PENTING DIBUAT DULU KELASNYA
         PreprocessWords wordProcessor = new PreprocessWords();
-        /*EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
-        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+       /* EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
         EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
-        wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
         TermsWeight.inverseDocumentWeighting(0, wordProcessor.getInvertedFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY
-        wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabelForQueries(false); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
         TermsWeight.inverseDocumentWeightingQuery(0, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile()); // IDS khusus query
 
         // SIMILARITY DOCUMENT QUERY KE-1 (INDEX 0) DENGAN DOKUMEN 1-82 ADI.ALL
         for (int j=0; j<wordProcessor.getListDocumentsFinal().size(); j++) {
-            System.out.println("SIMILARITY QUERY KE-" + wordProcessor.getListQueriesFinal().get(1).getIndex()
+            System.out.println("SIMILARITY QUERY KE-" + wordProcessor.getListQueriesFinal().get(13).getIndex()
             + " DENGAN DOKUMEN KE-" + wordProcessor.getListDocumentsFinal().get(j).getIndex() + " : ");
-            System.out.println(countSimilarityDocument(wordProcessor.getListQueriesFinal().get(1),wordProcessor.getInvertedFileQuery(),
+            System.out.println(countSimilarityDocument(wordProcessor.getListQueriesFinal().get(13),wordProcessor.getInvertedFileQuery(),
                     wordProcessor.getListDocumentsFinal().get(j),wordProcessor.getInvertedFile(),false));
             System.out.println("========================================================================================");
         }
@@ -179,8 +179,9 @@ public class DocumentRanking {
         // TEST WRITE INVERTED FILE QUERY EKSTERNAL
         String path = "test\\invertedFile.txt";
         String path2 = "test\\invertedFileQuery.txt";
-        EksternalFile.writeInvertedFile(path, wordProcessor.getInvertedFile());
-        EksternalFile.writeInvertedFileQuery(path2,wordProcessor.getInvertedFileQuery());
+        EksternalFile file = new EksternalFile();
+        file.writeInvertedFile(path, wordProcessor.getInvertedFile());
+        file.writeInvertedFileQuery(path2,wordProcessor.getInvertedFileQuery());
 
         // TEST LOAD INVERTED FILE EKSTERNAL
         /* indexTabel anotherInvertedFile = EksternalFile.loadInvertedFile(path);

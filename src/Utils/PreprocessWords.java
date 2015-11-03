@@ -165,17 +165,18 @@ public class PreprocessWords {
      * Save documents segments from eksternal database into memory
      */
     private void loadDocumentsPerSegments() {
-        EksternalFile.loadListOfDocumentsPart(EksternalFile.readDocuments("documents"));
-        ArrayList<String> rawSegmentsDocuments = EksternalFile.getListPartStringBetweenTokens();
+        EksternalFile file = new EksternalFile();
+        file.loadListOfDocumentsPart(file.readDocuments("documents"));
+        ArrayList<String> rawSegmentsDocuments = file.getListPartStringBetweenTokens();
         for (int i=0; i<rawSegmentsDocuments.size(); i++) {
-            if (rawSegmentsDocuments.get(i).contains(EksternalFile.INDEX_TOKEN)) {
-                listIndexDocuments.add(Integer.parseInt(rawSegmentsDocuments.get(i).replace(EksternalFile.INDEX_TOKEN, "")));
-            } else if (rawSegmentsDocuments.get(i).contains(EksternalFile.JUDUL_TOKEN)) {
-                listTopicDocuments.add(rawSegmentsDocuments.get(i).replace(EksternalFile.JUDUL_TOKEN, ""));
-            } else if (rawSegmentsDocuments.get(i).contains(EksternalFile.AUTHOR_TOKEN)) {
-                listAuthorDocuments.add(rawSegmentsDocuments.get(i).replace(EksternalFile.AUTHOR_TOKEN,""));
-            } else if (rawSegmentsDocuments.get(i).contains(EksternalFile.KONTEN_TOKEN)) {
-                listContentDocuments.add(rawSegmentsDocuments.get(i).replace(EksternalFile.KONTEN_TOKEN,""));
+            if (rawSegmentsDocuments.get(i).contains(file.INDEX_TOKEN)) {
+                listIndexDocuments.add(Integer.parseInt(rawSegmentsDocuments.get(i).replace(file.INDEX_TOKEN, "")));
+            } else if (rawSegmentsDocuments.get(i).contains(file.JUDUL_TOKEN)) {
+                listTopicDocuments.add(rawSegmentsDocuments.get(i).replace(file.JUDUL_TOKEN, ""));
+            } else if (rawSegmentsDocuments.get(i).contains(file.AUTHOR_TOKEN)) {
+                listAuthorDocuments.add(rawSegmentsDocuments.get(i).replace(file.AUTHOR_TOKEN,""));
+            } else if (rawSegmentsDocuments.get(i).contains(file.KONTEN_TOKEN)) {
+                listContentDocuments.add(rawSegmentsDocuments.get(i).replace(file.KONTEN_TOKEN,""));
             }
         }
     }
@@ -201,13 +202,14 @@ public class PreprocessWords {
     public void loadQueriesFinal() {
         ArrayList<Integer> listQueryIndexes = new ArrayList<Integer>();
         ArrayList<String> listQueryContents = new ArrayList<String>();
-        EksternalFile.loadListOfDocumentsPart(EksternalFile.readDocuments("queries"));
-        for (int i=0; i<EksternalFile.getListPartStringBetweenTokens().size(); i++) {
-            if (EksternalFile.getListPartStringBetweenTokens().get(i).contains(EksternalFile.INDEX_TOKEN)) {
-                String index = EksternalFile.getListPartStringBetweenTokens().get(i).replace(EksternalFile.INDEX_TOKEN,"");
+        EksternalFile file = new EksternalFile();
+        file.loadListOfDocumentsPart(file.readDocuments("queries"));
+        for (int i=0; i<file.getListPartStringBetweenTokens().size(); i++) {
+            if (file.getListPartStringBetweenTokens().get(i).contains(file.INDEX_TOKEN)) {
+                String index = file.getListPartStringBetweenTokens().get(i).replace(file.INDEX_TOKEN,"");
                 listQueryIndexes.add(Integer.parseInt(index));
-            } else if (EksternalFile.getListPartStringBetweenTokens().get(i).contains(EksternalFile.KONTEN_TOKEN)) {
-                listQueryContents.add(EksternalFile.getListPartStringBetweenTokens().get(i));
+            } else if (file.getListPartStringBetweenTokens().get(i).contains(file.KONTEN_TOKEN)) {
+                listQueryContents.add(file.getListPartStringBetweenTokens().get(i));
             }
         }
         for (int i=0; i<listQueryIndexes.size(); i++) {
@@ -221,16 +223,17 @@ public class PreprocessWords {
      * Load list of query relevances in documents from external source
      */
     public void loadQueryRelevancesFinal() {
-        EksternalFile.loadQueryRelevances(EksternalFile.readDocuments("qrels"));
+        EksternalFile file = new EksternalFile();
+        file.loadQueryRelevances(file.readDocuments("qrels"));
         ArrayList<Integer> listQueryIndexes = new ArrayList<Integer>();
         ArrayList<Integer> listDocumentIndexes = new ArrayList<Integer>();
         int sequenceCounter = 1;
-        for (int i=0; i<EksternalFile.getListPartIndexInQrels().size(); i++) {
+        for (int i=0; i<file.getListPartIndexInQrels().size(); i++) {
             if (sequenceCounter == 1) {
-                listQueryIndexes.add(EksternalFile.getListPartIndexInQrels().get(i));
+                listQueryIndexes.add(file.getListPartIndexInQrels().get(i));
                 sequenceCounter++;
             } else {
-                listDocumentIndexes.add(EksternalFile.getListPartIndexInQrels().get(i));
+                listDocumentIndexes.add(file.getListPartIndexInQrels().get(i));
                 if (sequenceCounter == 2) {sequenceCounter = 1;}
             }
         }
@@ -245,7 +248,8 @@ public class PreprocessWords {
      * Load list of stopwords from external source
      */
     private void loadStopWordsFinal() {
-        String rawFileContent = EksternalFile.readDocuments("stopwords");
+        EksternalFile file = new EksternalFile();
+        String rawFileContent = file.readDocuments("stopwords");
         String[] lines = rawFileContent.split("\\r?\\n");
         for (String line : lines) {
             listStopWordsFinal.add(line);
