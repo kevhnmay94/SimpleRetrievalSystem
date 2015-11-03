@@ -125,9 +125,9 @@ public class Experiment {
 
     public static void main(String[] args) {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
-        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
-        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         int[] tfcode = {0, 1, 2, 3, 4};
@@ -142,16 +142,45 @@ public class Experiment {
         boolean[] normcode = {true, false};
         String[] stringNormCode = {"norm", "no-norm"};
 
-        for(int i=0; i<tfcode.length; i++) {
-            for(int j=0; j<idfcode.length; j++) {
-                for(int k=0; k<stemcode.length; k++) {
-                    for(int l=0; l<normcode.length; l++) {
-                        ThreadExperiment thread = new ThreadExperiment(i,j,k,l);
-                        thread.start();
-                    }
+        // STEVE
+        
+        for(int j=0; j<idfcode.length; j++) {
+            for(int k=0; k<stemcode.length; k++) {
+                for(int l=0; l<normcode.length; l++) {
+                    ThreadExperiment thread = new ThreadExperiment(1,j,k,l);
+                    thread.start();
                 }
             }
         }
+
+       /* for(int j=0; j<idfcode.length; j++) {
+            for(int k=0; k<stemcode.length; k++) {
+                for(int l=0; l<normcode.length; l++) {
+                    ThreadExperiment thread = new ThreadExperiment(2,j,k,l);
+                    thread.start();
+                }
+            }
+        } */
+
+        // KEVMAU
+
+        /* for(int j=0; j<idfcode.length; j++) {
+            for(int k=0; k<stemcode.length; k++) {
+                for(int l=0; l<normcode.length; l++) {
+                    ThreadExperiment thread = new ThreadExperiment(3,j,k,l);
+                    thread.start();
+                }
+            }
+        } */
+
+       /* for(int j=0; j<idfcode.length; j++) {
+            for(int k=0; k<stemcode.length; k++) {
+                for(int l=0; l<normcode.length; l++) {
+                    ThreadExperiment thread = new ThreadExperiment(4,j,k,l);
+                    thread.start();
+                }
+            }
+        } */
     }
 
 }
