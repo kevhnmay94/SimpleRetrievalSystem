@@ -18,18 +18,18 @@ public class indexTabel {
             termWeightingDocument relation = listTermWeights.get(term);
             boolean isTermRepeatedInDocument = false;
             for (int i=0; i<relation.getDocumentPerTerm().size(); i++) {
-                if (relation.getDocumentPerTerm().get(i).getIndex() == Document.getIndex()) {
+                if (relation.getDocumentPerTerm().get(i) == Document.getIndex()) {
                     isTermRepeatedInDocument = true;
                     int newCounter = relation.getDocumentCountersPerTerm().get(i) + 1;
                     relation.getDocumentCountersPerTerm().set(i,newCounter);
                 }
             }
             if (!isTermRepeatedInDocument) {
-                relation.insertNewDocument(Document,weight,1);
+                relation.insertNewDocument(Document.getIndex(),weight,1);
             }
         } else {
             termWeightingDocument newRelation = new termWeightingDocument();
-            newRelation.insertNewDocument(Document,weight,1);
+            newRelation.insertNewDocument(Document.getIndex(),weight,1);
             listTermWeights.put(term,newRelation);
         }
     }
@@ -48,10 +48,10 @@ public class indexTabel {
         // Keluarkan isi hashmap
         for(Map.Entry m:tabel.getListTermWeights().entrySet()) {
             System.out.println("Key : " + m.getKey().toString());
-            for (document Document:((termWeightingDocument) m.getValue()).getDocumentPerTerm()) {
-                System.out.println("Id : " + Document.getIndex());
-                System.out.println("Judul : " + Document.getJudul());
-                System.out.println("Konten : " + Document.getKonten());
+            for (int Document:((termWeightingDocument) m.getValue()).getDocumentPerTerm()) {
+                System.out.println("Id : " + Document);
+                //System.out.println("Judul : " + Document.getJudul());
+                //System.out.println("Konten : " + Document.getKonten());
             }
             for (double weights :((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm()) {
                 System.out.println("Bobot : " + weights);

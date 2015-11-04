@@ -176,7 +176,7 @@ public class EksternalFile {
             int indexDocument = 0;
             double weightTermInDocument = 0.0;
             for (int i=0; i<((termWeightingDocument) m.getValue()).getDocumentPerTerm().size(); i++) {
-                indexDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getIndex();
+                indexDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i);
                 weightTermInDocument = ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().get(i);
                 new PrintStream(fout).print("~" + keyTerm + "~" + indexDocument + "~" + weightTermInDocument + "\n");
             }
