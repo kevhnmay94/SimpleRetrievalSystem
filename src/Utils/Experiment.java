@@ -50,7 +50,7 @@ public class Experiment {
         TermsWeight.inverseDocumentWeighting(idfcode, wordProcessor.getInvertedFile());
 
         double finish = System.currentTimeMillis();
-        System.out.println("Indexing documents done in " + (finish-start) + " ms.\n");
+        System.out.println("Indexing documents done in " + (finish - start) + " ms.\n");
     }
 
     public void processQueries(int tfcode, int idfcode, boolean stem) {
@@ -126,11 +126,11 @@ public class Experiment {
         return sb.toString();
     }
 
-    public static void tesAll() {
+    public static void main(String[] args) {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
-        EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
-        EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         int[] tfcode = {0, 1, 2, 3, 4};
@@ -147,14 +147,14 @@ public class Experiment {
 
         // STEVE
 
-        for(int j=0; j<idfcode.length; j++) {
+        /*for(int j=0; j<idfcode.length; j++) {
             for(int k=0; k<stemcode.length; k++) {
                 for(int l=0; l<normcode.length; l++) {
                     ThreadExperiment thread = new ThreadExperiment(1,j,k,l);
                     thread.start();
                 }
             }
-        }
+        }*/
 
        /* for(int j=0; j<idfcode.length; j++) {
             for(int k=0; k<stemcode.length; k++) {
@@ -169,33 +169,21 @@ public class Experiment {
 
         /* for(int j=0; j<idfcode.length; j++) {
             for(int k=0; k<stemcode.length; k++) {
-                for(int l=0; l<normcode.length; l++) {
-                    ThreadExperiment thread = new ThreadExperiment(3,j,k,l);
+                for(int l=0; l<normcode.length; l++) {*/
+                    ThreadExperiment thread = new ThreadExperiment(3,0,1,0);
                     thread.start();
-                }
+        /*        }
             }
         } */
 
        /* for(int j=0; j<idfcode.length; j++) {
             for(int k=0; k<stemcode.length; k++) {
                 for(int l=0; l<normcode.length; l++) {
-                    ThreadExperiment thread = new ThreadExperiment(4,j,k,l);
+                    ThreadExperiment thread = new ThreadExperiment(4,0,1,0);
                     thread.start();
                 }
             }
         } */
-    }
-
-    public static void main(String[] args) {
-        EksternalFile.setPathQrelsFile("test/ADI/qrels.text");
-        EksternalFile.setPathDocumentsFile("test/ADI/adi.all");
-        EksternalFile.setPathQueriesFile("test/ADI/query.text");
-        EksternalFile.setPathStopWordsFile("test/stopwords_en.txt");
-        Experiment exp = new Experiment();
-        exp.processDocuments(1,0,true);
-        exp.processQueries(1,0,true);
-        exp.evaluate(false);
-        System.out.println(exp.getSummary());
     }
 
 }

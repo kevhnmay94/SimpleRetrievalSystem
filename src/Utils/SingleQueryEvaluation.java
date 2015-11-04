@@ -101,7 +101,7 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
         nonInterpolatedAvgPrecision = 0.0f;
         int counter = 1;
         for (int dnum : retDocNums) {
-            if (docRels.contains(dnum) && !relDocMap.containsKey(dnum)) {
+            if (docRels != null && docRels.contains(dnum) && !relDocMap.containsKey(dnum)) {
                 relDocMap.put(dnum, true);
                 nonInterpolatedAvgPrecision += (double)relDocMap.size() / (double)counter;
             }
