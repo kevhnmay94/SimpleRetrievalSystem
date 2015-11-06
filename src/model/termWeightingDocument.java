@@ -1,5 +1,7 @@
 package model;
 
+import sample.Interface1Controller;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

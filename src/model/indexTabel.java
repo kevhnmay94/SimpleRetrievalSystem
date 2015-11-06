@@ -27,27 +27,10 @@ public class indexTabel {
             } else {
                 relation.insertNewDocument(indexDocument, weight, 1);
             }
-
-
-           /* termWeightingDocument relation = listTermWeights.get(term);
-            boolean isTermRepeatedInDocument = false;
-            for (int i=0; i<relation.getDocumentPerTerm().size(); i++) {
-                if (relation.getDocumentPerTerm().get(i).getIndex() == Document.getIndex()) {
-                    isTermRepeatedInDocument = true;
-                    int newCounter = relation.getDocumentCountersPerTerm().get(i) + 1;
-                    relation.getDocumentCountersPerTerm().set(i,newCounter);
-                }
-            }
-            if (!isTermRepeatedInDocument) {
-                relation.insertNewDocument(Document,weight,1);
-            } */
         } else {
             termWeightingDocument newRelation = new termWeightingDocument();
             newRelation.insertNewDocument(indexDocument, weight, 1);
             listTermWeights.put(term, newRelation);
-           /* termWeightingDocument newRelation = new termWeightingDocument();
-            newRelation.insertNewDocument(Document,weight,1);
-            listTermWeights.put(term,newRelation); */
         }
     }
 
