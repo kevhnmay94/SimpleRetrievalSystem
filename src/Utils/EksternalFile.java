@@ -173,11 +173,9 @@ public class EksternalFile {
         }
         for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
             String keyTerm = (String) m.getKey();
-            int indexDocument = 0;
-            double weightTermInDocument = 0.0;
-            for (int i=0; i<((termWeightingDocument) m.getValue()).getDocumentPerTerm().size(); i++) {
-                indexDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getIndex();
-                weightTermInDocument = ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().get(i);
+            for (Map.Entry n : ((termWeightingDocument) m.getValue()).getDocumentWeightCounterInOneTerm().entrySet()) {
+                int indexDocument = (Integer) n.getKey();
+                double weightTermInDocument = ((counterWeightPair) n.getValue()).getWeight();
                 new PrintStream(fout).print("~" + keyTerm + "~" + indexDocument + "~" + weightTermInDocument + "\n");
             }
         }
@@ -236,23 +234,10 @@ public class EksternalFile {
                 } else if ((counter % 3) == 2) {
                     indexDocument = Integer.parseInt(tokenString);
                 } else if ((counter % 3) == 0) {
-                    ArrayList<document> documents = word.getListDocumentsFinal();
-                    for (int i=0; i<documents.size(); i++) {
-                        if (documents.get(i).getIndex() == indexDocument) {
-                            weightTermInDocument = Double.parseDouble(tokenString);
-                            String judul = documents.get(i).getJudul();
-                            String author = documents.get(i).getAuthor();
-                            String konten = documents.get(i).getKonten();
-                            document Document = new document(indexDocument,judul,author,konten);
-                            invertedFile.insertRowTable(keyTerm,Document,weightTermInDocument);
-                        }
-                    }
+                    weightTermInDocument = Double.parseDouble(tokenString);
+                    invertedFile.insertRowTable(keyTerm,indexDocument,weightTermInDocument);
                 }
-                if (counter == 3) {
-                    counter = 1;
-                } else {
-                    counter++;
-                }
+                counter++;
             }
         } catch (IOException e) {
             e.printStackTrace();

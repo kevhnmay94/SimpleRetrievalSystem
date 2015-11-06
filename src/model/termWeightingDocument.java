@@ -1,42 +1,27 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by steve on 07/10/2015.
  */
 public class termWeightingDocument {
-    private ArrayList<document> documentPerTerm = new ArrayList<document>();
-    private ArrayList<Double> documentWeightingsPerTerm = new ArrayList<Double>();
-    private ArrayList<Integer> documentCountersPerTerm = new ArrayList<Integer>();
+    private HashMap<Integer,counterWeightPair> documentWeightCounterInOneTerm;
 
-    public ArrayList<document> getDocumentPerTerm() {
-        return documentPerTerm;
+    public HashMap<Integer, counterWeightPair> getDocumentWeightCounterInOneTerm() {
+        return documentWeightCounterInOneTerm;
     }
 
-    public void setDocumentPerTerm(ArrayList<document> documentPerTerm) {
-        this.documentPerTerm = documentPerTerm;
+    public void setDocumentWeightCounterInOneTerm(HashMap<Integer, counterWeightPair> documentWeightCounterInOneTerm) {
+        this.documentWeightCounterInOneTerm = documentWeightCounterInOneTerm;
     }
 
-    public ArrayList<Double> getDocumentWeightingsPerTerm() {
-        return documentWeightingsPerTerm;
+    public termWeightingDocument() {
+        documentWeightCounterInOneTerm = new HashMap<>();
     }
 
-    public void setDocumentWeightingsPerTerm(ArrayList<Double> documentWeightingsPerTerm) {
-        this.documentWeightingsPerTerm = documentWeightingsPerTerm;
-    }
-
-    public ArrayList<Integer> getDocumentCountersPerTerm() {
-        return documentCountersPerTerm;
-    }
-
-    public void setDocumentCountersPerTerm(ArrayList<Integer> documentCountersPerTerm) {
-        this.documentCountersPerTerm = documentCountersPerTerm;
-    }
-
-    public void insertNewDocument(document NewDocument, double weight, int counter) {
-        documentPerTerm.add(NewDocument);
-        documentWeightingsPerTerm.add(weight);
-        documentCountersPerTerm.add(counter);
+    public void insertNewDocument(int indexDocument, double weight, int counter) {
+        documentWeightCounterInOneTerm.put(indexDocument,new counterWeightPair(counter,weight));
     }
 }

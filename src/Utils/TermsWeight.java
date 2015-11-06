@@ -22,9 +22,9 @@ public class TermsWeight {
         int termCounter = 0;
         if (invertedFile.getListTermWeights().containsKey(term)) {
             termWeightingDocument relation = invertedFile.getListTermWeights().get(term);
-            for (int i=0; i<relation.getDocumentPerTerm().size(); i++) {
-                if (relation.getDocumentPerTerm().get(i).getIndex() == indexDocument) {
-                    termCounter = relation.getDocumentCountersPerTerm().get(i);
+            for (Map.Entry m : relation.getDocumentWeightCounterInOneTerm().entrySet()) {
+                if ((Integer) m.getKey() == indexDocument) {
+                    termCounter = ((counterWeightPair) m.getValue()).getCounter();
                 }
             }
         }
@@ -52,8 +52,8 @@ public class TermsWeight {
         int termCounter = 0;
         if (invertedFile.getListTermWeights().containsKey(term)) {
             termWeightingDocument relation = invertedFile.getListTermWeights().get(term);
-            for (int i=0; i<relation.getDocumentPerTerm().size(); i++) {
-                if (relation.getDocumentPerTerm().get(i).getIndex() == indexDocument) {
+            for (Map.Entry m : relation.getDocumentWeightCounterInOneTerm().entrySet()) {
+                if ((Integer) m.getKey() == indexDocument) {
                     termCounter = 1;
                 }
             }
@@ -86,11 +86,11 @@ public class TermsWeight {
     private static int maxTermInOneDocument(int indexDocument, indexTabel invertedFile) {
         int maxTerm = 0;
         for(Map.Entry m: invertedFile.getListTermWeights().entrySet()) {
-            int numberDocument = numDocumentsContainTerm(m.getKey().toString(),invertedFile);
-            for (int i=0; i<numberDocument; i++) {
-                if (((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getIndex() == indexDocument) {
-                    if (((termWeightingDocument) m.getValue()).getDocumentCountersPerTerm().get(i) > maxTerm) {
-                        maxTerm = ((termWeightingDocument) m.getValue()).getDocumentCountersPerTerm().get(i);
+            // int numberDocument = numDocumentsContainTerm(m.getKey().toString(),invertedFile);
+            for (Map.Entry n : ((termWeightingDocument) m.getValue()).getDocumentWeightCounterInOneTerm().entrySet()) {
+                if ((Integer) n.getKey() == indexDocument) {
+                    if (((counterWeightPair) m.getValue()).getCounter() > maxTerm) {
+                        maxTerm = ((counterWeightPair) m.getValue()).getCounter();
                     }
                 }
             }
@@ -123,7 +123,7 @@ public class TermsWeight {
         int numDocuments = 0;
         if (invertedFile.getListTermWeights().containsKey(term)) {
             termWeightingDocument relation = invertedFile.getListTermWeights().get(term);
-            numDocuments = relation.getDocumentPerTerm().size();
+            numDocuments = relation.getDocumentWeightCounterInOneTerm().size();
         }
         return numDocuments;
     }
@@ -147,14 +147,14 @@ public class TermsWeight {
     public static void termFrequencyWeighting(int termFrequencyCode, indexTabel invertedFile) {
         indexTabel copyInvertedFile = invertedFile;
         for(Map.Entry m: invertedFile.getListTermWeights().entrySet()) {
-            int numberDocument = numDocumentsContainTerm(m.getKey().toString(),invertedFile);
-            for (int i=0; i<numberDocument; i++) {
-                String keyTerm = m.getKey().toString();
-                int indexDocument = ((termWeightingDocument) m.getValue()).getDocumentPerTerm().get(i).getIndex();
-                int termCountInDocument = rawTermsInOneDocument(indexDocument, keyTerm, copyInvertedFile);
-                int binaryCountInDocument = binaryTermInOneDocument(indexDocument, keyTerm, copyInvertedFile);
-                int maxTermInDocument = maxTermInOneDocument(indexDocument, copyInvertedFile);
-                double oldWeight = ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().get(i);
+        //    int numberDocument = numDocumentsContainTerm(m.getKey().toString(),invertedFile);
+            String keyTerm = (String) m.getKey();
+            for (Map.Entry n : invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
+                int indexDocument = (Integer) n.getKey();
+                int termCountInDocument = rawTermsInOneDocument(indexDocument,keyTerm,copyInvertedFile);
+                int binaryCountInDocument = binaryTermInOneDocument(indexDocument,keyTerm,copyInvertedFile);
+                int maxTermInDocument = maxTermInOneDocument(indexDocument,copyInvertedFile);
+                double oldWeight = ((counterWeightPair) n.getValue()).getWeight();
                 switch (termFrequencyCode)  {
                     case 0 :        // No TF
                         oldWeight *= 1; break;
@@ -169,7 +169,7 @@ public class TermsWeight {
                     default :       // No valid option
                         oldWeight *= 1; break;
                 }
-                ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().set(i, oldWeight);
+                ((counterWeightPair) n.getValue()).setWeight(oldWeight);
             }
         }
     }
@@ -214,9 +214,9 @@ public class TermsWeight {
         int numDocumentTotal = numDocumentsTotal();
         for(Map.Entry m: invertedFile.getListTermWeights().entrySet()) {
             String keyTerm = m.getKey().toString();
-            int numDocumentContainTerm = numDocumentsContainTerm(keyTerm, invertedFile);
-            for (int i=0; i<numDocumentContainTerm; i++) {
-                double oldWeight = ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().get(i);
+            for(Map.Entry n : invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
+                int numDocumentContainTerm = numDocumentsContainTerm(keyTerm, invertedFile);
+                double oldWeight = ((counterWeightPair) n.getValue()).getWeight();
                 switch (inverseDocumentCode)  {
                     case 0 :        // No IDS
                         oldWeight *= 1; break;
@@ -230,7 +230,7 @@ public class TermsWeight {
                     default :       // No valid options
                         oldWeight *= 1; break;
                 }
-                ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().set(i, oldWeight);
+                ((counterWeightPair) n.getValue()).setWeight(oldWeight);
             }
         }
     }

@@ -53,11 +53,11 @@ public class DocumentRanking {
     private static double getWeightTermInDocument(int indexDocument, String term, indexTabel invertedFile) {
         double weightTermInDocument = 0.0;
         for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
-            if (((String) m.getKey()).equals(term)) {
-                ArrayList<document> listDocumentInThisTerm = ((termWeightingDocument) m.getValue()).getDocumentPerTerm();
-                for (int i=0; i<listDocumentInThisTerm.size(); i++) {
-                    if (listDocumentInThisTerm.get(i).getIndex() == indexDocument) {
-                        weightTermInDocument = ((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm().get(i); break;
+            if (m.getKey().equals(term)) {
+                for (Map.Entry n : invertedFile.getListTermWeights().get(term).getDocumentWeightCounterInOneTerm().entrySet()) {
+                    if ((Integer) n.getKey() == indexDocument) {
+                        weightTermInDocument = ((counterWeightPair) n.getValue()).getWeight();
+                        break;
                     }
                 }
             }
@@ -93,11 +93,11 @@ public class DocumentRanking {
     private static double lengthOfDocument(document Document, indexTabel invertedFile) {
         double sumSquareElement = 0.0;
         for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
-            int numDocumentInThisTerm = invertedFile.getListTermWeights().get(m.getKey()).getDocumentPerTerm().size();
-            for (int i=0; i<numDocumentInThisTerm; i++) {
-                document currentDocument = invertedFile.getListTermWeights().get(m.getKey()).getDocumentPerTerm().get(i);
-                if (currentDocument.getIndex() == Document.getIndex()) {
-                    int counterTermInCurrentDocument = invertedFile.getListTermWeights().get(m.getKey()).getDocumentCountersPerTerm().get(i);
+            String keyTerm = (String) m.getKey();
+            for (Map.Entry n : invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
+                Integer currentIndexDocument = (Integer) n.getKey();
+                if (currentIndexDocument == Document.getIndex()) {
+                    int counterTermInCurrentDocument = invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().get(currentIndexDocument).getCounter();
                     sumSquareElement += Math.pow(counterTermInCurrentDocument,2);
                 }
             }

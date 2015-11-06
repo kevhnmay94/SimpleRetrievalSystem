@@ -86,9 +86,9 @@ public class PreprocessWords {
                 String currentWord = token.nextToken();
                 if (!isStopWords(currentWord)) {
                     if (isStemmingApplied) {
-                        invertedFile.insertRowTable(StemmingPorter.stripAffixes(currentWord), Document, 1.0);
+                        invertedFile.insertRowTable(StemmingPorter.stripAffixes(currentWord), Document.getIndex(), 1.0);
                     } else {
-                        invertedFile.insertRowTable(currentWord, Document, 1.0);
+                        invertedFile.insertRowTable(currentWord, Document.getIndex(), 1.0);
                     }
                 }
             }
