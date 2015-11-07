@@ -21,5 +21,5 @@ public class Vars {
     public static String rellocation = "";
     public static Stage savedstage;
     public static indexTabel documentinvertedfile;
-    public static indexTabelQuery queryinvertedfile;
+    public static indexTabel queryinvertedfile;
 }

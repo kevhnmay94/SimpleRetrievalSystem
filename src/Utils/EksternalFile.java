@@ -187,8 +187,9 @@ public class EksternalFile {
      * @param path
      * @param invertedFileQuery
      */
-    public  void writeInvertedFileQuery(String path,  indexTabelQuery invertedFileQuery) {
-        FileOutputStream fout = null;
+    public  void writeInvertedFileQuery(String path,  indexTabel invertedFileQuery) {
+        writeInvertedFile(path,invertedFileQuery);
+        /* FileOutputStream fout = null;
         try {
             fout = new FileOutputStream(path);
         } catch (FileNotFoundException e) {
@@ -203,7 +204,7 @@ public class EksternalFile {
                 weight += "@" + currentTerm + ";*" + weightTerm + "^";
             }
             new PrintStream(fout).print("~" + indexQuery + weight + "\n");
-        }
+        } */
     }
 
     /**
@@ -211,7 +212,7 @@ public class EksternalFile {
      * @param path
      * @return
      */
-    public  indexTabel loadInvertedFile(String path) {
+    public indexTabel loadInvertedFile(String path) {
         String rawContent = "";
         indexTabel invertedFile = new indexTabel();
         PreprocessWords word = new PreprocessWords();
@@ -250,8 +251,9 @@ public class EksternalFile {
      * @param path
      * @return
      */
-    public  indexTabelQuery loadInvertedFileQuery(String path) {
-        PreprocessWords word = new PreprocessWords();
+    public  indexTabel loadInvertedFileQuery(String path) {
+        return loadInvertedFile(path);
+       /* PreprocessWords word = new PreprocessWords();
         word.loadQueriesFinal();
         String rawContent = "";
         indexTabelQuery invertedFile = new indexTabelQuery();
@@ -298,7 +300,7 @@ public class EksternalFile {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return invertedFile;
+        return invertedFile; */
     }
 
     public static void main(String[] arg) {

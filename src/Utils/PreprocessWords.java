@@ -11,19 +11,23 @@ import java.util.StringTokenizer;
  * Created by steve on 08/10/2015.
  */
 public class PreprocessWords {
-    private indexTabel invertedFile = new indexTabel();
-    private indexTabelQuery invertedFileQuery = new indexTabelQuery();
-    private queryRelevances listQueryRelevancesFinal = new queryRelevances();
-    private ArrayList<query> listQueriesFinal = new ArrayList<query>();
-    private ArrayList<document> listDocumentsFinal = new ArrayList<document>();
-    private ArrayList<String> listStopWordsFinal = new ArrayList<String>();
+    // ATTRIBUTE
+    private indexTabel invertedFile;
+    private indexTabel invertedFileQuery;
+    private queryRelevances listQueryRelevancesFinal;
+    private ArrayList<query> listQueriesFinal;
+    private ArrayList<document> listDocumentsFinal;
+    private ArrayList<String> listStopWordsFinal;
+    private indexTabel invertedFileManualQuery = new indexTabel();
 
-    private ArrayList<Integer> listIndexDocuments = new ArrayList<Integer>();
-    private ArrayList<String> listTopicDocuments = new ArrayList<String>();
-    private ArrayList<String> listAuthorDocuments = new ArrayList<String>();
-    private ArrayList<String> listContentDocuments = new ArrayList<String>();
+    // COMPLEMENTER ATTRIBUTE
+    private ArrayList<Integer> listIndexDocuments;
+    private ArrayList<String> listTopicDocuments;
+    private ArrayList<String> listAuthorDocuments;
+    private ArrayList<String> listContentDocuments;
 
-    public indexTabelQuery getInvertedFileQuery() {
+    // GETTER ATTRIBUTE
+    public indexTabel getInvertedFileQuery() {
         return invertedFileQuery;
     }
     public ArrayList<document> getListDocumentsFinal() {
@@ -41,20 +45,29 @@ public class PreprocessWords {
     public ArrayList<String> getListStopWordsFinal() {
         return listStopWordsFinal;
     }
+    public indexTabel getInvertedFileManualQuery() {
+        return invertedFileManualQuery;
+    }
 
-    public void setInvertedFileQuery(indexTabelQuery invertedFileQuery) { this.invertedFileQuery = invertedFileQuery; }
-
+    // SETTER ATTRIBUTE
+    public void setInvertedFileQuery(indexTabel invertedFileQuery) { this.invertedFileQuery = invertedFileQuery; }
     public void setInvertedFile(indexTabel invertedFile) {
         this.invertedFile = invertedFile;
     }
 
-    // Singel query
-    public indexTabelQuery getInvertedFileManualQuery() {
-        return invertedFileManualQuery;
+    // CONSTRUCTOR
+    public PreprocessWords() {
+        invertedFile = new indexTabel();
+        invertedFileQuery = new indexTabel();
+        listQueryRelevancesFinal = new queryRelevances();
+        listQueriesFinal = new ArrayList<>();
+        listDocumentsFinal = new ArrayList<>();
+        listStopWordsFinal = new ArrayList<>();
+        listIndexDocuments = new ArrayList<>();
+        listTopicDocuments = new ArrayList<>();
+        listAuthorDocuments = new ArrayList<>();
+        listContentDocuments = new ArrayList<>();
     }
-
-    // Single query
-    private indexTabelQuery invertedFileManualQuery = new indexTabelQuery();
 
     /**
      * Check if a word is stop word or not
@@ -102,9 +115,20 @@ public class PreprocessWords {
      */
     public void loadIndexTabelForManualQuery(String query, boolean isStemmingApplied) {
         loadStopWordsFinal();
-        query Query = new query(0, query);
-
-        termWeightingQuery weightingQuery = new termWeightingQuery();
+        StringTokenizer token = new StringTokenizer(query, " +=-1234567890'(){}[]/.:;?!,\n");
+        while (token.hasMoreTokens()) {
+            String word = token.nextToken();
+            if (!isStopWords(word)) {
+                String filteredWord = "";
+                if (isStemmingApplied) {
+                    filteredWord = StemmingPorter.stripAffixes(word);
+                } else {
+                    filteredWord = word;
+                }
+                invertedFileQuery.insertRowTable(filteredWord,0,1.0);
+            }
+        }
+        /* termWeightingQuery weightingQuery = new termWeightingQuery();
         String contentQuery = Query.getQueryContent().replace(EksternalFile.KONTEN_TOKEN,"");
         StringTokenizer token = new StringTokenizer(contentQuery, " +=-1234567890'(){}[]/.:;?!,\n");
         while (token.hasMoreTokens()) {
@@ -127,14 +151,18 @@ public class PreprocessWords {
         }
         query newQuery = new query(Query.getIndex(),contentQuery);
         weightingQuery.setCurrentQuery(newQuery);
-        invertedFileManualQuery.getListQueryWeighting().add(weightingQuery);
+        invertedFileManualQuery.getListQueryWeighting().add(weightingQuery); */
     }
 
+    /**
+     * Create inverted file for all queries in experiment
+     * @param isStemmingApplied
+     */
     public void loadIndexTabelForQueries(boolean isStemmingApplied) {
         loadQueriesFinal();
         loadStopWordsFinal();
         for (query Query : listQueriesFinal) {
-            termWeightingQuery weightingQuery = new termWeightingQuery();
+            int indexQuery = Query.getIndex();
             String contentQuery = Query.getQueryContent().replace(EksternalFile.KONTEN_TOKEN,"");
             StringTokenizer token = new StringTokenizer(contentQuery, " +=-1234567890'(){}[]/.:;?!,\n");
             while (token.hasMoreTokens()) {
@@ -146,18 +174,9 @@ public class PreprocessWords {
                     } else {
                         filteredWord = word;
                     }
-                    if (weightingQuery.getTermCounterInOneQuery().containsKey(filteredWord)) {
-                        int currentCounter = weightingQuery.getTermCounterInOneQuery().get(filteredWord);
-                        weightingQuery.getTermCounterInOneQuery().replace(filteredWord,currentCounter,currentCounter++);
-                    } else {
-                        weightingQuery.getTermCounterInOneQuery().put(filteredWord, 1);
-                    }
-                    weightingQuery.getTermWeightInOneQuery().put(filteredWord, 1.0);
+                    invertedFileQuery.insertRowTable(filteredWord,indexQuery,1.0);
                 }
             }
-            query newQuery = new query(Query.getIndex(),contentQuery);
-            weightingQuery.setCurrentQuery(newQuery);
-            invertedFileQuery.getListQueryWeighting().add(weightingQuery);
         }
     }
 

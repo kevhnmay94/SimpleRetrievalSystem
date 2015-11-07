@@ -89,8 +89,8 @@ public class TermsWeight {
             // int numberDocument = numDocumentsContainTerm(m.getKey().toString(),invertedFile);
             for (Map.Entry n : ((termWeightingDocument) m.getValue()).getDocumentWeightCounterInOneTerm().entrySet()) {
                 if ((Integer) n.getKey() == indexDocument) {
-                    if (((counterWeightPair) m.getValue()).getCounter() > maxTerm) {
-                        maxTerm = ((counterWeightPair) m.getValue()).getCounter();
+                    if (((counterWeightPair) n.getValue()).getCounter() > maxTerm) {
+                        maxTerm = ((counterWeightPair) n.getValue()).getCounter();
                     }
                 }
             }
@@ -147,7 +147,6 @@ public class TermsWeight {
     public static void termFrequencyWeighting(int termFrequencyCode, indexTabel invertedFile) {
         indexTabel copyInvertedFile = invertedFile;
         for(Map.Entry m: invertedFile.getListTermWeights().entrySet()) {
-        //    int numberDocument = numDocumentsContainTerm(m.getKey().toString(),invertedFile);
             String keyTerm = (String) m.getKey();
             for (Map.Entry n : invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
                 int indexDocument = (Integer) n.getKey();
@@ -179,8 +178,9 @@ public class TermsWeight {
      * @param termFrequencyCode
      * @param invertedFileQuery
      */
-    public static void termFrequencyWeightingQuery(int termFrequencyCode, indexTabelQuery invertedFileQuery) {
-        for (int i=0; i<invertedFileQuery.getListQueryWeighting().size(); i++) {
+    public static void termFrequencyWeightingQuery(int termFrequencyCode, indexTabel invertedFileQuery) {
+        termFrequencyWeighting(termFrequencyCode,invertedFileQuery);
+       /* for (int i=0; i<invertedFileQuery.getListQueryWeighting().size(); i++) {
             for (Map.Entry m : invertedFileQuery.getListQueryWeighting().get(i).getTermWeightInOneQuery().entrySet()) {
                 int rawTerm = rawTermsInOneQuery(invertedFileQuery.getListQueryWeighting().get(i),(String) m.getKey());
                 int maxTerm = maxTermInOneQuery(invertedFileQuery.getListQueryWeighting().get(i));
@@ -202,7 +202,7 @@ public class TermsWeight {
                 }
                 invertedFileQuery.getListQueryWeighting().get(i).getTermWeightInOneQuery().replace((String) m.getKey(),weightTerm);
             }
-        }
+        } */
     }
 
     /**
@@ -242,26 +242,29 @@ public class TermsWeight {
      * @param invertedFileQuery
      * @param invertedFile
      */
-    public static void inverseDocumentWeightingQuery(int inverseDocumentCode, indexTabelQuery invertedFileQuery, indexTabel invertedFile) {
+    public static void inverseDocumentWeightingQuery(int inverseDocumentCode, indexTabel invertedFileQuery, indexTabel invertedFile) {
         int numDocumentTotal = numDocumentsTotal();
-        for (int i=0; i<invertedFileQuery.getListQueryWeighting().size(); i++) {
-            for (Map.Entry m : invertedFileQuery.getListQueryWeighting().get(i).getTermWeightInOneQuery().entrySet()) {
-                double weightTerm = invertedFileQuery.getListQueryWeighting().get(i).getTermWeightInOneQuery().get(m.getKey());
-                int numDocumentContainTerm = numDocumentsContainTerm((String) m.getKey(),invertedFile);
+        indexTabel copyInvertedFile = invertedFile;
+        indexTabel copyInvertedFileQuery = invertedFileQuery;
+        for(Map.Entry m: copyInvertedFileQuery.getListTermWeights().entrySet()) {
+            String keyTerm = (String) m.getKey();
+            for (Map.Entry n : copyInvertedFileQuery.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
+                int numDocumentContainTerm = numDocumentsContainTerm((String) m.getKey(),copyInvertedFile);
+                double oldWeight = ((counterWeightPair) n.getValue()).getWeight();
                 switch (inverseDocumentCode) {
                     case 0:        // No IDS
-                        weightTerm *= 1.0; break;
+                        oldWeight *= 1.0; break;
                     case 1:        // With IDS
                         if (numDocumentContainTerm != 0) {
-                            weightTerm *= Math.log10(((double) numDocumentTotal) / ((double) numDocumentContainTerm));
+                            oldWeight *= Math.log10(((double) numDocumentTotal) / ((double) numDocumentContainTerm));
                         } else {
-                            weightTerm *= 1.0;
+                            oldWeight *= 1.0;
                         }
                         break;
                     default:        // No option valid
-                        weightTerm *= 1.0; break;
+                        oldWeight *= 1.0; break;
                 }
-                invertedFileQuery.getListQueryWeighting().get(i).getTermWeightInOneQuery().replace((String) m.getKey(),weightTerm);
+                ((counterWeightPair) n.getValue()).setWeight(oldWeight);
             }
         }
     }
@@ -270,42 +273,29 @@ public class TermsWeight {
         PreprocessWords processingWord = new PreprocessWords();
         processingWord.loadIndexTabel(true);
 
-        /* processingWord.loadIndexTabel(true);
-        TermsWeight.termFrequencyWeighting(2, processingWord.getInvertedFile());
+        /* TermsWeight.termFrequencyWeighting(2, processingWord.getInvertedFile());
         TermsWeight.inverseDocumentWeighting(1, processingWord.getInvertedFile());
-        for(Map.Entry m : processingWord.getInvertedFile().getListTermWeights().entrySet()) {
-            System.out.println("Key : " + m.getKey().toString());
-            for (document Document:((termWeightingDocument) m.getValue()).getDocumentPerTerm()) {
-                System.out.println("Id : " + Document.getIndex());
-                System.out.println("Judul : " + Document.getJudul());
-                // System.out.println("Author : " + Document.getAuthor());
-                // System.out.println("Konten : " + Document.getKonten());
-            }
-            System.out.println("BOBOT TERM INI PER DOKUMEN DI ATAS : ");
-            for (double weights :((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm()) {
-                System.out.println("Bobot : " + weights);
-            }
-            System.out.println("COUNTER TERM INI PER DOKUMEN DI ATAS : ");
-            for (int counter:((termWeightingDocument) m.getValue()).getDocumentCountersPerTerm()) {
-                System.out.println("Counter : " + counter);
+        // Keluarkan isi hashmap
+        for(Map.Entry m:processingWord.getInvertedFile().getListTermWeights().entrySet()) {
+            System.out.println("Key : " + m.getKey().toString() + "\n");
+            for (Map.Entry n:((termWeightingDocument) m.getValue()).getDocumentWeightCounterInOneTerm().entrySet()) {
+                System.out.println("Nomor Dokumen : " + n.getKey());
+                System.out.println("Counter term di dokumen ini : " + ((counterWeightPair) n.getValue()).getCounter());
+                System.out.println("Bobot term di dokumen ini : " + ((counterWeightPair) n.getValue()).getWeight() + "\n");
             }
             System.out.println("====================================================================================");
         } */
 
         processingWord.loadIndexTabelForQueries(true);
-        TermsWeight.termFrequencyWeightingQuery(2, processingWord.getInvertedFileQuery());
-        TermsWeight.inverseDocumentWeightingQuery(1, processingWord.getInvertedFileQuery(),processingWord.getInvertedFile());
-        for (int i=0; i<processingWord.getInvertedFileQuery().getListQueryWeighting().size(); i++) {
-            termWeightingQuery relation = processingWord.getInvertedFileQuery().getListQueryWeighting().get(i);
-            System.out.println("QUERY DIPROSES : " + relation.getCurrentQuery().getQueryContent());
-            System.out.println("COUNTER PER TERM DARI QUERY DI ATAS : ");
-            for (Map.Entry m : relation.getTermCounterInOneQuery().entrySet()) {
-                System.out.println("Term : " + (String) m.getKey());
-                System.out.println("Counter : " + (Integer) m.getValue());
-            }
-            for (Map.Entry m : relation.getTermWeightInOneQuery().entrySet()) {
-                System.out.println("Term : " + (String) m.getKey());
-                System.out.println("Weight : " + (Double) m.getValue());
+        TermsWeight.termFrequencyWeightingQuery(2, processingWord.getInvertedFile());
+        TermsWeight.inverseDocumentWeightingQuery(1, processingWord.getInvertedFileQuery(), processingWord.getInvertedFile());
+        // Keluarkan isi hashmap
+        for(Map.Entry m:processingWord.getInvertedFileQuery().getListTermWeights().entrySet()) {
+            System.out.println("Key : " + m.getKey().toString() + "\n");
+            for (Map.Entry n:((termWeightingDocument) m.getValue()).getDocumentWeightCounterInOneTerm().entrySet()) {
+                System.out.println("Nomor Query : " + n.getKey());
+                System.out.println("Counter term di query ini : " + ((counterWeightPair) n.getValue()).getCounter());
+                System.out.println("Bobot term di query ini : " + ((counterWeightPair) n.getValue()).getWeight() + "\n");
             }
             System.out.println("====================================================================================");
         }
