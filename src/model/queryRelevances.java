@@ -2,14 +2,15 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by steve on 10/10/2015.
  */
 public class queryRelevances {
-    private HashMap<Integer,ArrayList<Integer>> listQueryRelevances = new HashMap<Integer, ArrayList<Integer>>();
+    private ConcurrentHashMap<Integer,ArrayList<Integer>> listQueryRelevances = new ConcurrentHashMap<Integer, ArrayList<Integer>>();
 
-    public HashMap<Integer, ArrayList<Integer>> getListQueryRelevances() {
+    public ConcurrentHashMap<Integer, ArrayList<Integer>> getListQueryRelevances() {
         return listQueryRelevances;
     }
 

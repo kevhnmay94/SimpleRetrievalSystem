@@ -20,10 +20,6 @@ public class document {
         return index;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
     public String getJudul() {
         return judul;
     }

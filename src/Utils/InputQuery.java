@@ -5,6 +5,8 @@ import model.indexTabel;
 import model.query;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by khaidzir on 27/10/2015.
@@ -14,7 +16,7 @@ public class InputQuery {
     int qTfMode, qIdfMode;
     boolean isStem;
     PreprocessWords wordProcessor;
-    static HashMap<document, Double> result;
+    static ConcurrentHashMap<document, Double> result;
     String query;
     double exectime;
 
@@ -48,7 +50,7 @@ public class InputQuery {
     public void SearchDocumentsUsingQuery(String query, boolean isNormalize) {
         double start, finish;
         this.query = query;
-        result = new HashMap<>();
+        result = new ConcurrentHashMap<>();
 
         // Proses query
         System.out.println("Indexing queries...");
@@ -68,11 +70,12 @@ public class InputQuery {
 
         query q = new query(0, query);
 
-
-        for (document doc : wordProcessor.getListDocumentsFinal()) {
+        Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
+        while (listDocuments.hasNext()) {
+            document Document = (document) listDocuments.next();
             double weight = DocumentRanking.countSimilarityDocument(q, wordProcessor.getInvertedFileManualQuery(),
-                    doc, wordProcessor.getInvertedFile(), isNormalize);
-            result.put(doc, weight);
+                    Document, wordProcessor.getInvertedFile(), isNormalize);
+            result.put(Document, weight);
         }
         result = DocumentRanking.rankDocuments(result);
 

@@ -3,19 +3,20 @@ package model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by steve on 07/10/2015.
  */
 public class indexTabel {
-    private HashMap<String,termWeightingDocument> listTermWeights;
+    private ConcurrentHashMap<String,termWeightingDocument> listTermWeights;
 
-    public HashMap<String,termWeightingDocument> getListTermWeights() {
+    public ConcurrentHashMap<String,termWeightingDocument> getListTermWeights() {
         return listTermWeights;
     }
 
     public indexTabel() {
-        listTermWeights = new HashMap<>();
+        listTermWeights = new ConcurrentHashMap<>();
     }
 
     public void insertRowTable(String term, int indexDocument, double weight) {

@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by khaidzir on 15/10/2015.
@@ -20,12 +21,12 @@ public class Experiment {
 
     ArrayList<SingleQueryEvaluation> evals;
     PreprocessWords wordProcessor;
-    HashMap<query, HashMap<document, Double> > resultMap;
+    ConcurrentHashMap<query, ConcurrentHashMap<document, Double> > resultMap;
 
     public Experiment() {
         evals = new ArrayList<>();
         wordProcessor = new PreprocessWords();
-        resultMap = new HashMap<>();
+        resultMap = new ConcurrentHashMap<>();
     }
 
     public indexTabel getInvertedFile() {
@@ -72,12 +73,16 @@ public class Experiment {
         System.out.println("Calculating similarity...");
         start = System.currentTimeMillis();
 
-        for (query q : wordProcessor.getListQueriesFinal()) {
-            HashMap<document, Double> docweightMap = new HashMap<>();
-            for (document doc : wordProcessor.getListDocumentsFinal()) {
+        Iterator listQueries = wordProcessor.getListQueriesFinal().iterator();
+        while (listQueries.hasNext()) {
+            query q = (query) listQueries.next();
+            ConcurrentHashMap<document, Double> docweightMap = new ConcurrentHashMap<>();
+            Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
+            while (listDocuments.hasNext()) {
+                document Document = (document) listDocuments.next();
                 double weight = DocumentRanking.countSimilarityDocument(q, wordProcessor.getInvertedFileQuery(),
-                        doc, wordProcessor.getInvertedFile(), isNormalize);
-                docweightMap.put(doc, weight);
+                        Document, wordProcessor.getInvertedFile(), isNormalize);
+                docweightMap.put(Document, weight);
             }
             docweightMap = DocumentRanking.rankDocuments(docweightMap);
             resultMap.put(q, docweightMap);
@@ -128,9 +133,9 @@ public class Experiment {
 
     public static void main(String[] args) {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
-        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
-        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         int[] tfcode = {0, 1, 2, 3, 4};
@@ -146,16 +151,16 @@ public class Experiment {
         String[] stringNormCode = {"norm", "no-norm"};
 
         // ADI (ALL)
-        for (int i=0; i<tfcode.length; i++) {
+        /* for (int i=0; i<tfcode.length; i++) {
             for (int j = 0; j < idfcode.length; j++) {
                 for (int k = 0; k < stemcode.length; k++) {
-                    for (int l = 0; l < normcode.length; l++) {
-                        ThreadExperiment thread = new ThreadExperiment(i, j, k, l);
+                    for (int l = 0; l < normcode.length; l++) { */
+                        ThreadExperiment thread = new ThreadExperiment(1, 1, 1, 1);
                         thread.start();
-                    }
+                  /*  }
                 }
             }
-        }
+        } */
 
         // STEVE
 

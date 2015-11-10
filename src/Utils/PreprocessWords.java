@@ -3,9 +3,7 @@ package Utils;
 import model.*;
 
 import javax.print.Doc;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by steve on 08/10/2015.
@@ -30,7 +28,7 @@ public class PreprocessWords {
     public indexTabel getInvertedFileQuery() {
         return invertedFileQuery;
     }
-    public ArrayList<document> getListDocumentsFinal() {
+    public ArrayList getListDocumentsFinal() {
         return listDocumentsFinal;
     }
     public indexTabel getInvertedFile() {
@@ -39,10 +37,10 @@ public class PreprocessWords {
     public queryRelevances getListQueryRelevancesFinal() {
         return listQueryRelevancesFinal;
     }
-    public ArrayList<query> getListQueriesFinal() {
+    public ArrayList getListQueriesFinal() {
         return listQueriesFinal;
     }
-    public ArrayList<String> getListStopWordsFinal() {
+    public ArrayList getListStopWordsFinal() {
         return listStopWordsFinal;
     }
     public indexTabel getInvertedFileManualQuery() {
@@ -74,10 +72,11 @@ public class PreprocessWords {
      * @return boolean
      */
     public boolean isStopWords(String word) {
-        //loadStopWordsFinal();
         boolean isStopWords = false;
-        for (String s : listStopWordsFinal) {
-            if (s.equalsIgnoreCase(word.trim())) {
+        Iterator listStopWords = listStopWordsFinal.iterator();
+        while (listStopWords.hasNext()) {
+            String currentWord = (String) listStopWords.next();
+            if (currentWord.equalsIgnoreCase(word.trim())) {
                 isStopWords = true; break;
             }
         }
@@ -92,16 +91,18 @@ public class PreprocessWords {
     public void loadIndexTabel(boolean isStemmingApplied) {
         loadDocumentsFinal();
         loadStopWordsFinal();
-        for (document Document : listDocumentsFinal) {
+        Iterator listDocuments = listDocumentsFinal.iterator();
+        while (listDocuments.hasNext()) {
+            document Document = (document) listDocuments.next();
             String preprocessWords = Document.getJudul() + Document.getKonten();
             StringTokenizer token = new StringTokenizer(preprocessWords," +=-1234567890'(){}[]/.:;?!,\n");
             while (token.hasMoreTokens()) {
                 String currentWord = token.nextToken();
                 if (!isStopWords(currentWord)) {
                     if (isStemmingApplied) {
-                        invertedFile.insertRowTable(StemmingPorter.stripAffixes(currentWord), Document.getIndex(), 1.0);
+                        invertedFile.insertRowTable(StemmingPorter.stripAffixes(currentWord), Document.getIndex(), 0.0);
                     } else {
-                        invertedFile.insertRowTable(currentWord, Document.getIndex(), 1.0);
+                        invertedFile.insertRowTable(currentWord, Document.getIndex(), 0.0);
                     }
                 }
             }
@@ -161,7 +162,9 @@ public class PreprocessWords {
     public void loadIndexTabelForQueries(boolean isStemmingApplied) {
         loadQueriesFinal();
         loadStopWordsFinal();
-        for (query Query : listQueriesFinal) {
+        Iterator listQueries = listQueriesFinal.iterator();
+        while (listQueries.hasNext()) {
+            query Query = (query) listQueries.next();
             int indexQuery = Query.getIndex();
             String contentQuery = Query.getQueryContent().replace(EksternalFile.KONTEN_TOKEN,"");
             StringTokenizer token = new StringTokenizer(contentQuery, " +=-1234567890'(){}[]/.:;?!,\n");
@@ -186,16 +189,17 @@ public class PreprocessWords {
     private void loadDocumentsPerSegments() {
         EksternalFile file = new EksternalFile();
         file.loadListOfDocumentsPart(file.readDocuments("documents"));
-        ArrayList<String> rawSegmentsDocuments = file.getListPartStringBetweenTokens();
-        for (int i=0; i<rawSegmentsDocuments.size(); i++) {
-            if (rawSegmentsDocuments.get(i).contains(file.INDEX_TOKEN)) {
-                listIndexDocuments.add(Integer.parseInt(rawSegmentsDocuments.get(i).replace(file.INDEX_TOKEN, "")));
-            } else if (rawSegmentsDocuments.get(i).contains(file.JUDUL_TOKEN)) {
-                listTopicDocuments.add(rawSegmentsDocuments.get(i).replace(file.JUDUL_TOKEN, ""));
-            } else if (rawSegmentsDocuments.get(i).contains(file.AUTHOR_TOKEN)) {
-                listAuthorDocuments.add(rawSegmentsDocuments.get(i).replace(file.AUTHOR_TOKEN,""));
-            } else if (rawSegmentsDocuments.get(i).contains(file.KONTEN_TOKEN)) {
-                listContentDocuments.add(rawSegmentsDocuments.get(i).replace(file.KONTEN_TOKEN,""));
+        Iterator rawSegmentsDocuments = file.getListPartStringBetweenTokens().iterator();
+        while (rawSegmentsDocuments.hasNext()) {
+            String rawSegments = (String) rawSegmentsDocuments.next();
+            if (rawSegments.contains(file.INDEX_TOKEN)) {
+                listIndexDocuments.add(Integer.parseInt(rawSegments.replace(file.INDEX_TOKEN, "")));
+            } else if (rawSegments.contains(file.JUDUL_TOKEN)) {
+                listTopicDocuments.add(rawSegments.replace(file.JUDUL_TOKEN, ""));
+            } else if (rawSegments.contains(file.AUTHOR_TOKEN)) {
+                listAuthorDocuments.add(rawSegments.replace(file.AUTHOR_TOKEN, ""));
+            } else if (rawSegments.contains(file.KONTEN_TOKEN)) {
+                listContentDocuments.add(rawSegments.replace(file.KONTEN_TOKEN, ""));
             }
         }
     }
@@ -223,12 +227,14 @@ public class PreprocessWords {
         ArrayList<String> listQueryContents = new ArrayList<String>();
         EksternalFile file = new EksternalFile();
         file.loadListOfDocumentsPart(file.readDocuments("queries"));
-        for (int i=0; i<file.getListPartStringBetweenTokens().size(); i++) {
-            if (file.getListPartStringBetweenTokens().get(i).contains(file.INDEX_TOKEN)) {
-                String index = file.getListPartStringBetweenTokens().get(i).replace(file.INDEX_TOKEN,"");
+        Iterator partString = file.getListPartStringBetweenTokens().iterator();
+        while (partString.hasNext()) {
+            String part = (String) partString.next();
+            if (part.contains(file.INDEX_TOKEN)) {
+                String index = part.replace(file.INDEX_TOKEN, "");
                 listQueryIndexes.add(Integer.parseInt(index));
-            } else if (file.getListPartStringBetweenTokens().get(i).contains(file.KONTEN_TOKEN)) {
-                listQueryContents.add(file.getListPartStringBetweenTokens().get(i));
+            } else if (part.contains(file.KONTEN_TOKEN)) {
+                listQueryContents.add(part);
             }
         }
         for (int i=0; i<listQueryIndexes.size(); i++) {
@@ -247,12 +253,14 @@ public class PreprocessWords {
         ArrayList<Integer> listQueryIndexes = new ArrayList<Integer>();
         ArrayList<Integer> listDocumentIndexes = new ArrayList<Integer>();
         int sequenceCounter = 1;
-        for (int i=0; i<file.getListPartIndexInQrels().size(); i++) {
+        Iterator partIndex = file.getListPartIndexInQrels().iterator();
+        while (partIndex.hasNext()) {
+            int partQrels = (Integer) partIndex.next();
             if (sequenceCounter == 1) {
-                listQueryIndexes.add(file.getListPartIndexInQrels().get(i));
+                listQueryIndexes.add(partQrels);
                 sequenceCounter++;
             } else {
-                listDocumentIndexes.add(file.getListPartIndexInQrels().get(i));
+                listDocumentIndexes.add(partQrels);
                 if (sequenceCounter == 2) {sequenceCounter = 1;}
             }
         }

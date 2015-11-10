@@ -2,6 +2,7 @@ package Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by khaidzir on 14/10/2015.
@@ -11,7 +12,7 @@ public class QueryRelevancesLoader {
     public static final String ADI_PATH = "E:\\ASDF\\Kuliah\\IF\\Semester 7\\STBI\\Test Collection\\ADI\\qrels.text";
     public static final String CISI_PATH = "E:\\ASDF\\Kuliah\\IF\\Semester 7\\STBI\\Test Collection\\CISI\\qrels.text";
 
-    public static HashMap<Integer, ArrayList<Integer> > qrelsCisi=null, qrelsAdi=null;
+    public static ConcurrentHashMap<Integer, ArrayList<Integer> > qrelsCisi=null, qrelsAdi=null;
     public static boolean isLoaded = false;
 
     public static void ReadQrelsFile() {
@@ -26,18 +27,18 @@ public class QueryRelevancesLoader {
         String cisifile = file.readDocuments("qrels");
 
         // Buat qrels ADI
-        qrelsAdi = new HashMap<Integer, ArrayList<Integer>>();
+        qrelsAdi = new ConcurrentHashMap<Integer, ArrayList<Integer>>();
         buildQrels(qrelsAdi, adifile);
 
         // Buat qrels CISI
-        qrelsCisi = new HashMap<Integer, ArrayList<Integer>>();
+        qrelsCisi = new ConcurrentHashMap<Integer, ArrayList<Integer>>();
         buildQrels(qrelsCisi, cisifile);
 
         // Set flag
         isLoaded = true;
     }
 
-    private static void buildQrels(HashMap qrels, String rawqrels) {
+    private static void buildQrels(ConcurrentHashMap qrels, String rawqrels) {
         String[] lines = rawqrels.split("\\r?\\n");
         int numq, i=0;
         String[] line = lines[0].split(" ");

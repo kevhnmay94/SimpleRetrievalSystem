@@ -3,6 +3,7 @@ package Utils;
 import model.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by steve on 13/10/2015.
@@ -24,14 +25,21 @@ public class DocumentRanking {
         double dotProduct = 0.0;
         for (Map.Entry m : invertedFileQuery.getListTermWeights().entrySet()) {
             String keyTerm = (String) m.getKey();
-            for (Map.Entry n : invertedFileQuery.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
+            termWeightingDocument relation = invertedFileQuery.getListTermWeights().get(keyTerm);
+            counterWeightPair counter = relation.getDocumentWeightCounterInOneTerm().get(Query.getIndex());
+            if (counter != null) {
+                double weightThisTermQuery = counter.getWeight();
+                double weightThisTermDocument = getWeightTermInDocument(Document.getIndex(),keyTerm,invertedFile);
+                dotProduct += weightThisTermDocument * weightThisTermQuery;
+            }
+           /* for (Map.Entry n : invertedFileQuery.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
                 int currentIndexQuery = (Integer) n.getKey();
                 if (currentIndexQuery == Query.getIndex()) {
                     double weightThisTermQuery = ((counterWeightPair) n.getValue()).getWeight();
                     double weightThisTermDocument = getWeightTermInDocument(Document.getIndex(),keyTerm,invertedFile);
                     dotProduct += weightThisTermDocument * weightThisTermQuery;
                 }
-            }
+            } */
         }
         double similarityDocument;
         double lengthOfQuery = lengthOfQuery(Query.getIndex(),invertedFileQuery);
@@ -53,15 +61,13 @@ public class DocumentRanking {
      */
     private static double getWeightTermInDocument(int indexDocument, String term, indexTabel invertedFile) {
         double weightTermInDocument = 0.0;
-        for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
-            if (m.getKey().equals(term)) {
-                for (Map.Entry n : invertedFile.getListTermWeights().get(term).getDocumentWeightCounterInOneTerm().entrySet()) {
-                    if ((Integer) n.getKey() == indexDocument) {
-                        weightTermInDocument = ((counterWeightPair) n.getValue()).getWeight();
-                        break;
-                    }
-                }
+        try {
+            counterWeightPair counter = invertedFile.getListTermWeights().get(term).getDocumentWeightCounterInOneTerm().get(indexDocument);
+            if (counter != null) {
+                weightTermInDocument = counter.getWeight();
             }
+        } catch (Exception e) {
+
         }
         return weightTermInDocument;
     }
@@ -96,12 +102,9 @@ public class DocumentRanking {
         double sumSquareElement = 0.0;
         for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
             String keyTerm = (String) m.getKey();
-            for (Map.Entry n : invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
-                Integer currentIndexDocument = (Integer) n.getKey();
-                if (currentIndexDocument == indexDocument) {
-                    int counterTermInCurrentDocument = invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().get(currentIndexDocument).getCounter();
-                    sumSquareElement += Math.pow(counterTermInCurrentDocument,2);
-                }
+            counterWeightPair counter = invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().get(indexDocument);
+            if (counter != null) {
+                sumSquareElement += Math.pow(counter.getCounter(),2);
             }
         }
         return Math.sqrt(sumSquareElement);
@@ -112,8 +115,8 @@ public class DocumentRanking {
      * @param weightedDocs unsorted HashMap of document and its weight
      * @return
      */
-    public static HashMap<document, Double> rankDocuments(HashMap<document, Double> weightedDocs) {
-        return (HashMap<document, Double>) sortByComparator(weightedDocs);
+    public static ConcurrentHashMap<document, Double> rankDocuments(ConcurrentHashMap<document, Double> weightedDocs) {
+        return (ConcurrentHashMap<document, Double>) sortByComparator(weightedDocs);
     }
 
     private static Map<document, Double> sortByComparator(Map<document, Double> unsortMap) {
@@ -150,14 +153,14 @@ public class DocumentRanking {
     public static void main(String[] arg) {
         // PENTING DIBUAT DULU KELASNYA
         PreprocessWords wordProcessor = new PreprocessWords();
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+       /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
-       /* EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");*/
+        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
         EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
@@ -170,12 +173,20 @@ public class DocumentRanking {
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile()); // IDS khusus query
 
         // SIMILARITY DOCUMENT QUERY KE-1 (INDEX 0) DENGAN DOKUMEN 1-82 ADI.ALL
-        for (int j=0; j<wordProcessor.getListDocumentsFinal().size(); j++) {
-            System.out.println("SIMILARITY QUERY KE-" + wordProcessor.getListQueriesFinal().get(13).getIndex()
-            + " DENGAN DOKUMEN KE-" + wordProcessor.getListDocumentsFinal().get(j).getIndex() + " : ");
-            System.out.println(countSimilarityDocument(wordProcessor.getListQueriesFinal().get(13),wordProcessor.getInvertedFileQuery(),
-                    wordProcessor.getListDocumentsFinal().get(j),wordProcessor.getInvertedFile(),false));
-            System.out.println("========================================================================================");
+        Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
+        Iterator listQueries = wordProcessor.getListQueriesFinal().iterator();
+        while (listQueries.hasNext()) {
+            query Query = (query) listQueries.next();
+            if (Query.getIndex() == 13) {
+                while (listDocuments.hasNext()) {
+                    document Document = (document) listDocuments.next();
+                    System.out.println("SIMILARITY QUERY KE-" + Query.getIndex()
+                            + " DENGAN DOKUMEN KE-" + Document.getIndex() + " : ");
+                    System.out.println(countSimilarityDocument(Query, wordProcessor.getInvertedFileQuery(),
+                            Document, wordProcessor.getInvertedFile(), false));
+                    System.out.println("========================================================================================");
+                }
+            }
         }
 
         // TEST WRITE INVERTED FILE QUERY EKSTERNAL

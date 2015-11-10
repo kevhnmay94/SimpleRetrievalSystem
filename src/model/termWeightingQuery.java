@@ -1,14 +1,15 @@
 package model;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by steve on 14/10/2015.
  */
 public class termWeightingQuery {
     private query currentQuery;
-    private HashMap<String,Double> termWeightInOneQuery = new HashMap<String, Double>();
-    private HashMap<String,Integer> termCounterInOneQuery = new HashMap<String,Integer>();
+    private ConcurrentHashMap<String,Double> termWeightInOneQuery = new ConcurrentHashMap<String, Double>();
+    private ConcurrentHashMap<String,Integer> termCounterInOneQuery = new ConcurrentHashMap<String,Integer>();
 
     public query getCurrentQuery() {
         return currentQuery;
@@ -18,19 +19,19 @@ public class termWeightingQuery {
         this.currentQuery = currentQuery;
     }
 
-    public HashMap<String, Double> getTermWeightInOneQuery() {
+    public ConcurrentHashMap<String, Double> getTermWeightInOneQuery() {
         return termWeightInOneQuery;
     }
 
-    public void setTermWeightInOneQuery(HashMap<String, Double> termWeightInOneQuery) {
+    public void setTermWeightInOneQuery(ConcurrentHashMap<String, Double> termWeightInOneQuery) {
         this.termWeightInOneQuery = termWeightInOneQuery;
     }
 
-    public HashMap<String, Integer> getTermCounterInOneQuery() {
+    public ConcurrentHashMap<String, Integer> getTermCounterInOneQuery() {
         return termCounterInOneQuery;
     }
 
-    public void setTermCounterInOneQuery(HashMap<String, Integer> termCounterInOneQuery) {
+    public void setTermCounterInOneQuery(ConcurrentHashMap<String, Integer> termCounterInOneQuery) {
         this.termCounterInOneQuery = termCounterInOneQuery;
     }
 }

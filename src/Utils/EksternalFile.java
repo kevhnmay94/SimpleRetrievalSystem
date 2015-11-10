@@ -8,30 +8,27 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by steve on 07/10/2015.
  */
 public class EksternalFile {
-    private ArrayList<String> listPartStringBetweenTokens = new ArrayList<String>();
-    private ArrayList<Integer> listPartIndexInQrels = new ArrayList<Integer>();
+    private ArrayList<String> listPartStringBetweenTokens;
+    private ArrayList<Integer> listPartIndexInQrels;
     public static final String INDEX_TOKEN = "Index : ";
     public static final String JUDUL_TOKEN = "Topic : ";
     public static final String KONTEN_TOKEN = "Content : ";
     public static final String AUTHOR_TOKEN = "Author : ";
-    private static String pathDocumentsFile = "D:\\Informatika\\Materi Semester 7\\IF4042 Sistem Temu Balik Informasi\\Tugas\\Tubes 2\\Test Collection\\ADI\\adi.all";
-    private static String pathQueriesFile = "D:\\Informatika\\Materi Semester 7\\IF4042 Sistem Temu Balik Informasi\\Tugas\\Tubes 2\\Test Collection\\ADI\\query.text";
-    private static String pathQrelsFile = "D:\\Informatika\\Materi Semester 7\\IF4042 Sistem Temu Balik Informasi\\Tugas\\Tubes 2\\Test Collection\\ADI\\qrels.text";
-    private static String pathStopWordsFile = "D:\\Informatika\\Materi Semester 7\\IF4042 Sistem Temu Balik Informasi\\Tugas\\Tubes 2\\Test Collection\\stopwords_en.txt";
+    private static String pathDocumentsFile = "test\\ADI\\adi.all";
+    private static String pathQueriesFile = "test\\ADI\\query.text";
+    private static String pathQrelsFile = "test\\ADI\\qrels.text";
+    private static String pathStopWordsFile = "test\\stopwords_en.txt";
 
-    public ArrayList<String> getListPartStringBetweenTokens() {
+    public ArrayList getListPartStringBetweenTokens() {
         return listPartStringBetweenTokens;
     }
-    public ArrayList<Integer> getListPartIndexInQrels() {
+    public ArrayList getListPartIndexInQrels() {
         return listPartIndexInQrels;
     }
     public static void setPathDocumentsFile(String pathDocumentsFile) {
@@ -45,6 +42,12 @@ public class EksternalFile {
     }
     public static void setPathStopWordsFile(String pathStopWordsFile) {
         EksternalFile.pathStopWordsFile = pathStopWordsFile;
+    }
+
+    // KONSTRUKTOR
+    public EksternalFile() {
+        listPartStringBetweenTokens = new ArrayList<>();
+        listPartIndexInQrels = new ArrayList<>();
     }
 
     /**
@@ -305,9 +308,10 @@ public class EksternalFile {
 
     public static void main(String[] arg) {
         EksternalFile file = new EksternalFile();
-        file.loadListOfDocumentsPart(file.readDocuments("queries"));
-        for (int i=0; i<file.getListPartStringBetweenTokens().size(); i++) {
-            System.out.println(file.getListPartStringBetweenTokens().get(i));
+        file.loadListOfDocumentsPart(file.readDocuments("documents"));
+        Iterator listPart = file.getListPartStringBetweenTokens().iterator();
+        while (listPart.hasNext()) {
+            System.out.println(listPart.next());
             System.out.println("============================================================");
         }
 

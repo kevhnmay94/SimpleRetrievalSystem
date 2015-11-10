@@ -6,6 +6,7 @@ import model.query;
 import model.queryRelevances;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by khaidzir on 14/10/2015.
@@ -22,7 +23,7 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
     queryRelevances qRelevances;
 
     // Retrieved document yg relevan
-    HashMap <Integer, Boolean> relDocMap;
+    ConcurrentHashMap <Integer, Boolean> relDocMap;
 
     // Konstruktor - konstruktor
     public SingleQueryEvaluation() {}
@@ -96,7 +97,7 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
         ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
 
         // Map untuk mengecek agar tidak menghitung dokumen yang sama 2 kali
-        relDocMap = new HashMap<Integer, Boolean>();
+        relDocMap = new ConcurrentHashMap<Integer, Boolean>();
 
         nonInterpolatedAvgPrecision = 0.0f;
         int counter = 1;
