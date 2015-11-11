@@ -29,8 +29,8 @@ public class InputQuery {
         double start = System.currentTimeMillis();
 
         wordProcessor.loadIndexTabel(stem);
-        TermsWeight.termFrequencyWeighting(tfmode, wordProcessor.getInvertedFile());
-        TermsWeight.inverseDocumentWeighting(idfmode, wordProcessor.getInvertedFile());
+        TermsWeight.termFrequencyWeighting(tfmode, wordProcessor.getInvertedFile(),wordProcessor.getNormalFile());
+        TermsWeight.inverseDocumentWeighting(idfmode, wordProcessor.getInvertedFile(),wordProcessor.getNormalFile());
 
         double finish = System.currentTimeMillis();
         System.out.println("Indexing documents done in " + (finish-start) + " ms.\n");
@@ -44,7 +44,7 @@ public class InputQuery {
 
     public void setInvertedFile(indexTabel idxtab) {
         wordProcessor.setInvertedFile(idxtab);
-        wordProcessor.loadDocumentsFinal();
+       // wordProcessor.loadDocumentsFinal();
     }
 
     public void SearchDocumentsUsingQuery(String query, boolean isNormalize) {
@@ -57,9 +57,9 @@ public class InputQuery {
         start = System.currentTimeMillis();
 
         wordProcessor.loadIndexTabelForManualQuery(query, isStem);
-        TermsWeight.termFrequencyWeightingQuery(qTfMode, wordProcessor.getInvertedFileManualQuery());
+        TermsWeight.termFrequencyWeightingQuery(qTfMode, wordProcessor.getInvertedFileManualQuery(), wordProcessor.getNormalFile());
         TermsWeight.inverseDocumentWeightingQuery(qIdfMode, wordProcessor.getInvertedFileManualQuery(),
-                wordProcessor.getInvertedFile());
+                wordProcessor.getInvertedFile(), wordProcessor.getNormalFile());
 
         finish = System.currentTimeMillis();
         System.out.println("Indexing queries done in " + (finish-start) + " ms.\n");

@@ -218,8 +218,6 @@ public class EksternalFile {
     public indexTabel loadInvertedFile(String path) {
         String rawContent = "";
         indexTabel invertedFile = new indexTabel();
-        PreprocessWords word = new PreprocessWords();
-        word.loadDocumentsFinal();
         Path pathInvertedFile = Paths.get(path);
         try {
             Scanner scanner = new Scanner(pathInvertedFile);

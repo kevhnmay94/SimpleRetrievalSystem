@@ -119,7 +119,7 @@ public class DocumentRanking {
         return (ConcurrentHashMap<document, Double>) sortByComparator(weightedDocs);
     }
 
-    private static Map<document, Double> sortByComparator(Map<document, Double> unsortMap) {
+    private static ConcurrentHashMap<document, Double> sortByComparator(Map<document, Double> unsortMap) {
 
         // Convert Map to List
         List<Map.Entry<document, Double>> list =
@@ -134,7 +134,7 @@ public class DocumentRanking {
         });
 
         // Convert sorted map back to a Map
-        Map<document, Double> sortedMap = new LinkedHashMap<document, Double>();
+        ConcurrentHashMap<document, Double> sortedMap = new ConcurrentHashMap<document, Double>();
         int counter=0;
         double val;
         for (Iterator<Map.Entry<document, Double>> it = list.iterator(); it.hasNext();) {
@@ -153,24 +153,24 @@ public class DocumentRanking {
     public static void main(String[] arg) {
         // PENTING DIBUAT DULU KELASNYA
         PreprocessWords wordProcessor = new PreprocessWords();
-       /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");*/
-        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+      /*  EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
         EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");*/
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
-        TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile()); // TF dengan logarithmic TF (khusus dokumen)
-        TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
+        TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus dokumen)
+        TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY
         wordProcessor.loadIndexTabelForQueries(false); // True : stemming diberlakukan
-        TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery()); // TF dengan logarithmic TF (khusus query)
-        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile()); // IDS khusus query
+        TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
+        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 
         // SIMILARITY DOCUMENT QUERY KE-1 (INDEX 0) DENGAN DOKUMEN 1-82 ADI.ALL
         Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();

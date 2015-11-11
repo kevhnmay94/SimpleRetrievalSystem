@@ -89,26 +89,36 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
     }
 
     private void calculateRecall() {
-        double numRel = qRelevances.getListQueryRelevances().get(queryNum).size();
+        recall = 0.0;
+        double numRel = 0.0;
+        try {
+            numRel = qRelevances.getListQueryRelevances().get(queryNum).size();
+        } catch (Exception e) {
+
+        }
         recall = (double)relDocMap.size()/numRel;
     }
 
     private void calculateNonInterpolatedAvgPrecision() {
-        ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
+        try {
+            ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
 
-        // Map untuk mengecek agar tidak menghitung dokumen yang sama 2 kali
-        relDocMap = new ConcurrentHashMap<Integer, Boolean>();
+            // Map untuk mengecek agar tidak menghitung dokumen yang sama 2 kali
+            relDocMap = new ConcurrentHashMap<Integer, Boolean>();
 
-        nonInterpolatedAvgPrecision = 0.0f;
-        int counter = 1;
-        for (int dnum : retDocNums) {
-            if (docRels != null && docRels.contains(dnum) && !relDocMap.containsKey(dnum)) {
-                relDocMap.put(dnum, true);
-                nonInterpolatedAvgPrecision += (double)relDocMap.size() / (double)counter;
+            nonInterpolatedAvgPrecision = 0.0f;
+            int counter = 1;
+            for (int dnum : retDocNums) {
+                if (docRels != null && docRels.contains(dnum) && !relDocMap.containsKey(dnum)) {
+                    relDocMap.put(dnum, true);
+                    nonInterpolatedAvgPrecision += (double) relDocMap.size() / (double) counter;
+                }
+                counter++;
             }
-            counter++;
+            nonInterpolatedAvgPrecision /= (double) docRels.size();
+        } catch (Exception e) {
+
         }
-        nonInterpolatedAvgPrecision /= (double)docRels.size();
     }
 
     public void printEvalSummary() {
@@ -118,18 +128,22 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
             System.out.print (dnum + " ");
         }
         System.out.print("\nRelevant document numbers in collection : ");
-        ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
+        try {
+            ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
 
-        for(int dnum : docRels) {
-            System.out.print (dnum + " ");
+            for (int dnum : docRels) {
+                System.out.print(dnum + " ");
+            }
+            System.out.print("\nRelevant retrieved document numbers : ");
+            for (int dnum : relDocMap.keySet()) {
+                System.out.print(dnum + " ");
+            }
+            System.out.println("\nRecall : " + recall);
+            System.out.println("Precision : " + precision);
+            System.out.println("Non Interpolated Average Precision : " + nonInterpolatedAvgPrecision);
+        } catch (Exception e) {
+
         }
-        System.out.print("\nRelevant retrieved document numbers : ");
-        for (int dnum : relDocMap.keySet()) {
-            System.out.print(dnum + " ");
-        }
-        System.out.println("\nRecall : " + recall);
-        System.out.println("Precision : " + precision);
-        System.out.println("Non Interpolated Average Precision : " + nonInterpolatedAvgPrecision);
     }
 
     public String getEvalSummary() {
@@ -141,20 +155,28 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
         }
         sb.append("\nRelevant document numbers in collection : ");
 
-        ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
+        try {
+            ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
 
-        for(int dnum : docRels) {
-            sb.append(dnum); sb.append(" ");
-        }
-        sb.append("\nRelevant retrieved document numbers : ");
-        for (int dnum : relDocMap.keySet()) {
-            sb.append(dnum); sb.append(" ");
-        }
-        sb.append("\nRecall : "); sb.append(recall);
-        sb.append("\nPrecision : "); sb.append(precision);
-        sb.append("\nNon Interpolated Average Precision : "); sb.append(nonInterpolatedAvgPrecision);
-        sb.append("\n");
+            for (int dnum : docRels) {
+                sb.append(dnum);
+                sb.append(" ");
+            }
+            sb.append("\nRelevant retrieved document numbers : ");
+            for (int dnum : relDocMap.keySet()) {
+                sb.append(dnum);
+                sb.append(" ");
+            }
+            sb.append("\nRecall : ");
+            sb.append(recall);
+            sb.append("\nPrecision : ");
+            sb.append(precision);
+            sb.append("\nNon Interpolated Average Precision : ");
+            sb.append(nonInterpolatedAvgPrecision);
+            sb.append("\n");
+        } catch (Exception e) {
 
+        }
         return sb.toString();
     }
 

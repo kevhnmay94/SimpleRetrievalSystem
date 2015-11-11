@@ -2,9 +2,7 @@ package Utils;
 
 import model.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by steve on 10/10/2015.
@@ -49,10 +47,13 @@ public class TermsWeight {
      * @param invertedFile
      * @return maxTerm
      */
-    private static int maxTermInOneDocument(int indexDocument, indexTabel invertedFile) {
+    private static int maxTermInOneDocument(int indexDocument, indexTabel invertedFile, normalTabel normalFile) {
         int maxTerm = 0;
-        for(Map.Entry m: invertedFile.getListTermWeights().entrySet()) {
-            termWeightingDocument relation = (termWeightingDocument) m.getValue();
+        HashSet<String> listTermsInDocument = normalFile.getNormalFile().get(indexDocument);
+        Iterator listTerms = listTermsInDocument.iterator();
+        while (listTerms.hasNext()) {
+            String term = (String) listTerms.next();
+            termWeightingDocument relation = invertedFile.getListTermWeights().get(term);
             counterWeightPair counter = relation.getDocumentWeightCounterInOneTerm().get(indexDocument);
             if (counter != null) {
                 if (counter.getCounter() > maxTerm) {
@@ -97,10 +98,8 @@ public class TermsWeight {
      * Count total number of documents from external source
      * @return number of documents processed
      */
-    private static int numDocumentsTotal() {
-        PreprocessWords processingWord = new PreprocessWords();
-        processingWord.loadDocumentsFinal();
-        return processingWord.getListDocumentsFinal().size();
+    private static int numDocumentsTotal(normalTabel normalFile) {
+        return normalFile.getNormalFile().size();
     }
 
 
@@ -108,8 +107,9 @@ public class TermsWeight {
      * Update inverted file (weight per term per document) based on Term Frequency
      * @param termFrequencyCode (0-4)
      * @param invertedFile
+     * @param normalFile
      */
-    public static void termFrequencyWeighting(int termFrequencyCode, indexTabel invertedFile) {
+    public static void termFrequencyWeighting(int termFrequencyCode, indexTabel invertedFile, normalTabel normalFile) {
         indexTabel copyInvertedFile = invertedFile;
         for(Map.Entry m: invertedFile.getListTermWeights().entrySet()) {
             String keyTerm = (String) m.getKey();
@@ -117,7 +117,7 @@ public class TermsWeight {
                 int indexDocument = (Integer) n.getKey();
                 int termCountInDocument = rawTermsInOneDocument(indexDocument,keyTerm,copyInvertedFile);
                 int binaryCountInDocument = binaryTermInOneDocument(indexDocument,keyTerm,copyInvertedFile);
-                int maxTermInDocument = maxTermInOneDocument(indexDocument,copyInvertedFile);
+                int maxTermInDocument = maxTermInOneDocument(indexDocument,copyInvertedFile,normalFile);
                 double newWeight;
                 switch (termFrequencyCode)  {
                     case 0 :        // No TF
@@ -131,7 +131,7 @@ public class TermsWeight {
                     case 4 :        // Augmented TF
                         newWeight = 0.5 + (0.5 * (((double) termCountInDocument) / ((double) maxTermInDocument))); break;
                     default :       // No valid option
-                        newWeight = 0.0; break;
+                        newWeight = 1.0; break;
                 }
                 ((counterWeightPair) n.getValue()).setWeight(newWeight);
             }
@@ -142,18 +142,20 @@ public class TermsWeight {
      * Update inverted file for list of queries based on Term Frequency
      * @param termFrequencyCode
      * @param invertedFileQuery
+     * @param normalFile
      */
-    public static void termFrequencyWeightingQuery(int termFrequencyCode, indexTabel invertedFileQuery) {
-        termFrequencyWeighting(termFrequencyCode,invertedFileQuery);
+    public static void termFrequencyWeightingQuery(int termFrequencyCode, indexTabel invertedFileQuery, normalTabel normalFile) {
+        termFrequencyWeighting(termFrequencyCode,invertedFileQuery,normalFile);
     }
 
     /**
      * Update inverted file (weight per term per document) based on Inverse Document
      * @param inverseDocumentCode
      * @param invertedFile
+     * @param normalFile
      */
-    public static void inverseDocumentWeighting(int inverseDocumentCode, indexTabel invertedFile) {
-        int numDocumentTotal = numDocumentsTotal();
+    public static void inverseDocumentWeighting(int inverseDocumentCode, indexTabel invertedFile, normalTabel normalFile) {
+        int numDocumentTotal = numDocumentsTotal(normalFile);
         for(Map.Entry m: invertedFile.getListTermWeights().entrySet()) {
             String keyTerm = m.getKey().toString();
             for(Map.Entry n : invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
@@ -170,7 +172,7 @@ public class TermsWeight {
                         }
                         break;
                     default :       // No valid options
-                        newWeight = 0.0; break;
+                        newWeight = 1.0; break;
                 }
                 ((counterWeightPair) n.getValue()).setWeight(newWeight);
             }
@@ -183,9 +185,10 @@ public class TermsWeight {
      * @param inverseDocumentCode
      * @param invertedFileQuery
      * @param invertedFile
+     * @param normalFile
      */
-    public static void inverseDocumentWeightingQuery(int inverseDocumentCode, indexTabel invertedFileQuery, indexTabel invertedFile) {
-        int numDocumentTotal = numDocumentsTotal();
+    public static void inverseDocumentWeightingQuery(int inverseDocumentCode, indexTabel invertedFileQuery, indexTabel invertedFile, normalTabel normalFile) {
+        int numDocumentTotal = numDocumentsTotal(normalFile);
         indexTabel copyInvertedFile = invertedFile;
         indexTabel copyInvertedFileQuery = invertedFileQuery;
         for(Map.Entry m: copyInvertedFileQuery.getListTermWeights().entrySet()) {
@@ -204,7 +207,7 @@ public class TermsWeight {
                         }
                         break;
                     default:        // No option valid
-                        newWeight = 0.0; break;
+                        newWeight = 1.0; break;
                 }
                 ((counterWeightPair) n.getValue()).setWeight(newWeight);
             }
@@ -212,8 +215,8 @@ public class TermsWeight {
     }
 
     public static void main(String[] arg) {
-        PreprocessWords processingWord = new PreprocessWords();
-        processingWord.loadIndexTabel(true);
+      //  PreprocessWords processingWord = new PreprocessWords();
+      //  processingWord.loadIndexTabel(true);
 
         /* TermsWeight.termFrequencyWeighting(2, processingWord.getInvertedFile());
         TermsWeight.inverseDocumentWeighting(1, processingWord.getInvertedFile());
@@ -228,7 +231,7 @@ public class TermsWeight {
             System.out.println("====================================================================================");
         } */
 
-        processingWord.loadIndexTabelForQueries(true);
+      /* processingWord.loadIndexTabelForQueries(true);
         TermsWeight.termFrequencyWeightingQuery(2, processingWord.getInvertedFile());
         TermsWeight.inverseDocumentWeightingQuery(1, processingWord.getInvertedFileQuery(), processingWord.getInvertedFile());
         // Keluarkan isi hashmap
@@ -240,6 +243,17 @@ public class TermsWeight {
                 System.out.println("Bobot term di query ini : " + ((counterWeightPair) n.getValue()).getWeight() + "\n");
             }
             System.out.println("====================================================================================");
-        }
+        } */
+
+      /*  HashSet listWords = new HashSet();
+        listWords.add("aw");
+        listWords.add("aw");
+        listWords.add("hei");
+        listWords.add("hei");
+        listWords.add("ugh");
+        Iterator iterator = listWords.iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        } */
     }
 }

@@ -35,11 +35,11 @@ public class Experiment {
     public indexTabel getInvertedFileQuery() { return wordProcessor.getInvertedFileQuery(); }
     public void setInvertedFile (indexTabel idxTable) {
         wordProcessor.setInvertedFile(idxTable);
-        wordProcessor.loadDocumentsFinal();
+       // wordProcessor.loadDocumentsFinal();
     }
     public void setInvertedFileQuery (indexTabel idxTable) {
         wordProcessor.setInvertedFileQuery(idxTable);
-        wordProcessor.loadQueriesFinal();
+      //  wordProcessor.loadQueriesFinal();
     }
 
     public void processDocuments(int tfcode, int idfcode, boolean stem) {
@@ -47,8 +47,8 @@ public class Experiment {
         double start = System.currentTimeMillis();
 
         wordProcessor.loadIndexTabel(stem);
-        TermsWeight.termFrequencyWeighting(tfcode, wordProcessor.getInvertedFile());
-        TermsWeight.inverseDocumentWeighting(idfcode, wordProcessor.getInvertedFile());
+        TermsWeight.termFrequencyWeighting(tfcode, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile());
+        TermsWeight.inverseDocumentWeighting(idfcode, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile());
 
         double finish = System.currentTimeMillis();
         System.out.println("Indexing documents done in " + (finish - start) + " ms.\n");
@@ -59,8 +59,8 @@ public class Experiment {
         double start = System.currentTimeMillis();
 
         wordProcessor.loadIndexTabelForQueries(stem);
-        TermsWeight.termFrequencyWeightingQuery(tfcode, wordProcessor.getInvertedFileQuery());
-        TermsWeight.inverseDocumentWeightingQuery(idfcode, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile());
+        TermsWeight.termFrequencyWeightingQuery(tfcode, wordProcessor.getInvertedFileQuery(), wordProcessor.getNormalFile());
+        TermsWeight.inverseDocumentWeightingQuery(idfcode, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile());
 
         double finish = System.currentTimeMillis();
         System.out.println("Indexing queries done in " + (finish-start) + " ms.\n");
@@ -133,6 +133,11 @@ public class Experiment {
 
     public static void main(String[] args) {
         // Setting awal awal
+        /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+
         EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
         EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");

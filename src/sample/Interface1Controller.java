@@ -244,13 +244,13 @@ public class Interface1Controller implements Initializable {
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(Vars.documentstem);
-        TermsWeight.termFrequencyWeighting(Vars.documenttf, wordProcessor.getInvertedFile());
-        TermsWeight.inverseDocumentWeighting(Vars.documentidf, wordProcessor.getInvertedFile());
+        TermsWeight.termFrequencyWeighting(Vars.documenttf, wordProcessor.getInvertedFile(),wordProcessor.getNormalFile());
+        TermsWeight.inverseDocumentWeighting(Vars.documentidf, wordProcessor.getInvertedFile(),wordProcessor.getNormalFile());
 
         // PROSES BUAT INVERTED FILE BUAT QUERY
         wordProcessor.loadIndexTabelForQueries(Vars.querystem); // True : stemming diberlakukan
-        TermsWeight.termFrequencyWeightingQuery(Vars.querytf, wordProcessor.getInvertedFileQuery());
-        TermsWeight.inverseDocumentWeightingQuery(Vars.queryidf, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile());
+        TermsWeight.termFrequencyWeightingQuery(Vars.querytf, wordProcessor.getInvertedFileQuery(),wordProcessor.getNormalFile());
+        TermsWeight.inverseDocumentWeightingQuery(Vars.queryidf, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(),wordProcessor.getNormalFile());
 
         String path = "test\\invertedFile.txt", path2 = "test\\invertedFileQuery.txt";
         EksternalFile file = new EksternalFile();
