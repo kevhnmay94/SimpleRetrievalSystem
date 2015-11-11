@@ -2,10 +2,7 @@ package Utils;
 
 import model.*;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -20,9 +17,13 @@ public class EksternalFile {
     public static final String JUDUL_TOKEN = "Topic : ";
     public static final String KONTEN_TOKEN = "Content : ";
     public static final String AUTHOR_TOKEN = "Author : ";
-    private static String pathDocumentsFile = "test\\CISI\\cisi.all";
+    /* private static String pathDocumentsFile = "test\\CISI\\cisi.all";
     private static String pathQueriesFile = "test\\CISI\\query.text";
     private static String pathQrelsFile = "test\\CISI\\qrels.text";
+    private static String pathStopWordsFile = "test\\stopwords_en.txt"; */
+    private static String pathDocumentsFile = "test\\ADI\\adi.all";
+    private static String pathQueriesFile = "test\\ADI\\query.text";
+    private static String pathQrelsFile = "test\\ADI\\qrels.text";
     private static String pathStopWordsFile = "test\\stopwords_en.txt";
 
     public ArrayList getListPartStringBetweenTokens() {
@@ -66,20 +67,34 @@ public class EksternalFile {
      */
     public String readDocuments(String fileType) {
         String rawFileContent = "";
-        Path path = null;
+        String path = "";
         if (fileType.equals("documents")) {
-            path = Paths.get(pathDocumentsFile);
+            path = pathDocumentsFile;
         } else if (fileType.equals("queries")) {
-            path = Paths.get(pathQueriesFile);
+            path = pathQueriesFile;
         } else if (fileType.equals("qrels")) {
-            path = Paths.get(pathQrelsFile);
+            path = pathQrelsFile;
         } else if (fileType.equals("stopwords")) {
-            path = Paths.get(pathStopWordsFile);
+            path = pathStopWordsFile;
         }
-        try {
+       /* try {
             Scanner scanner = new Scanner(path);
             while (scanner.hasNextLine()) {
                 rawFileContent += scanner.nextLine() + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } */
+        String  thisLine;
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(path));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            while ((thisLine = br.readLine()) != null) {
+                    rawFileContent += thisLine + "\n";
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -306,14 +321,14 @@ public class EksternalFile {
 
     public static void main(String[] arg) {
         EksternalFile file = new EksternalFile();
-       /* file.loadListOfDocumentsPart(file.readDocuments("documents"));
+        file.loadListOfDocumentsPart(file.readDocuments("documents"));
         Iterator listPart = file.getListPartStringBetweenTokens().iterator();
         while (listPart.hasNext()) {
             System.out.println(listPart.next());
             System.out.println("============================================================");
-        } */
+        }
 
-        System.out.println(file.readDocuments("documents"));
+      //  System.out.println(file.readDocuments("documents"));
         /*loadQueryRelevances(readDocuments("qrels"));
         for (int i=0; i<EksternalFile.getListPartIndexInQrels().size(); i++) {
             System.out.println(EksternalFile.getListPartIndexInQrels().get(i));

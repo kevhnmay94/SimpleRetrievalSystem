@@ -103,26 +103,6 @@ public class PreprocessWords {
     public void loadIndexTabel(boolean isStemmingApplied) {
         loadStopWordsFinal();
         loadDocumentsFinal(isStemmingApplied);
-       // loadStopWordsFinal();
-      /* Iterator listDocuments = listDocumentsFinal.iterator();
-        while (listDocuments.hasNext()) {
-            document Document = (document) listDocuments.next();
-            String preprocessWords = Document.getKonten();
-            StringTokenizer token = new StringTokenizer(preprocessWords," +=-1234567890'(){}[]/.:;?!,\n");
-            while (token.hasMoreTokens()) {
-                String currentWord = token.nextToken();
-                if (!isStopWords(currentWord)) {
-                    String filteredWord;
-                    if (isStemmingApplied) {
-                        filteredWord = StemmingPorter.stripAffixes(currentWord);
-                    } else {
-                        filteredWord = currentWord;
-                    }
-                    invertedFile.insertRowTable(filteredWord,Document.getIndex(),0.0);
-                    normalFile.insertElement(Document.getIndex(),filteredWord);
-                }
-            }
-        } */
     }
 
     /**
@@ -154,26 +134,6 @@ public class PreprocessWords {
     public void loadIndexTabelForQueries(boolean isStemmingApplied) {
         loadStopWordsFinal();
         loadQueriesFinal(isStemmingApplied);
-      /*  Iterator listQueries = listQueriesFinal.iterator();
-        while (listQueries.hasNext()) {
-            query Query = (query) listQueries.next();
-            int indexQuery = Query.getIndex();
-            String contentQuery = Query.getQueryContent().replace(EksternalFile.KONTEN_TOKEN,"");
-            StringTokenizer token = new StringTokenizer(contentQuery, " +=-1234567890'(){}[]/.:;?!,\n");
-            while (token.hasMoreTokens()) {
-                String word = token.nextToken();
-                if (!isStopWords(word)) {
-                    String filteredWord = "";
-                    if (isStemmingApplied) {
-                        filteredWord = StemmingPorter.stripAffixes(word);
-                    } else {
-                        filteredWord = word;
-                    }
-                    invertedFileQuery.insertRowTable(filteredWord,indexQuery,1.0);
-                    normalFileQuery.insertElement(indexQuery,filteredWord);
-                }
-            }
-        } */
     }
 
     /**
@@ -202,27 +162,36 @@ public class PreprocessWords {
      * @param isStemmingApplied
      */
     public void loadDocumentsFinal(boolean isStemmingApplied) {
-        loadDocumentsPerSegments();
-        for (int i=0; i<listIndexDocuments.size(); i++) {
-            int indexDocument = listIndexDocuments.get(i);
-            String contentDocument = listContentDocuments.get(i);
-            String authorDocument = listAuthorDocuments.get(i);
-            String topicDocument = listTopicDocuments.get(i);
-            document Document = new document(indexDocument,topicDocument,authorDocument,contentDocument);
-            listDocumentsFinal.add(Document);
-
-            StringTokenizer token = new StringTokenizer(contentDocument," +=-1234567890'(){}[]/.:;?!,\n");
-            while (token.hasMoreTokens()) {
-                String currentWord = token.nextToken();
-                if (!isStopWords(currentWord)) {
-                    String filteredWord;
-                    if (isStemmingApplied) {
-                        filteredWord = StemmingPorter.stripAffixes(currentWord);
-                    } else {
-                        filteredWord = currentWord;
+        EksternalFile file = new EksternalFile();
+        file.loadListOfDocumentsPart(file.readDocuments("documents"));
+        Iterator rawSegmentsDocuments = file.getListPartStringBetweenTokens().iterator();
+        int indexDocument = 0;
+        String authorDocument = null, topicDocument = null;
+        while (rawSegmentsDocuments.hasNext()) {
+            String rawSegments = (String) rawSegmentsDocuments.next();
+            if (rawSegments.contains(file.INDEX_TOKEN)) {
+                indexDocument = Integer.parseInt(rawSegments.replace(file.INDEX_TOKEN,""));
+            } else if (rawSegments.contains(file.JUDUL_TOKEN)) {
+                topicDocument = rawSegments.replace(file.JUDUL_TOKEN,"");
+            } else if (rawSegments.contains(file.AUTHOR_TOKEN)) {
+                authorDocument = rawSegments.replace(file.AUTHOR_TOKEN,"");
+            } else if (rawSegments.contains(file.KONTEN_TOKEN)) {
+                String contentDocument = rawSegments.replace(file.KONTEN_TOKEN,"");
+                listDocumentsFinal.add(new document(indexDocument,topicDocument,authorDocument,contentDocument));
+                // Add this document into inverted file
+                StringTokenizer token = new StringTokenizer(contentDocument," +=-1234567890'(){}[]/.:;?!,\n");
+                while (token.hasMoreTokens()) {
+                    String currentWord = token.nextToken();
+                    if (!isStopWords(currentWord)) {
+                        String filteredWord;
+                        if (isStemmingApplied) {
+                            filteredWord = StemmingPorter.stripAffixes(currentWord);
+                        } else {
+                            filteredWord = currentWord;
+                        }
+                        invertedFile.insertRowTable(filteredWord.toLowerCase(),indexDocument,0.0);
+                        normalFile.insertElement(indexDocument,filteredWord.toLowerCase());
                     }
-                    invertedFile.insertRowTable(filteredWord.toLowerCase(),indexDocument,0.0);
-                    normalFile.insertElement(indexDocument,filteredWord.toLowerCase());
                 }
             }
         }
@@ -233,37 +202,31 @@ public class PreprocessWords {
      * @param isStemmingApplied
      */
     public void loadQueriesFinal(boolean isStemmingApplied) {
-        ArrayList<Integer> listQueryIndexes = new ArrayList<Integer>();
-        ArrayList<String> listQueryContents = new ArrayList<String>();
         EksternalFile file = new EksternalFile();
         file.loadListOfDocumentsPart(file.readDocuments("queries"));
         Iterator partString = file.getListPartStringBetweenTokens().iterator();
+        int indexQuery = 0;
         while (partString.hasNext()) {
             String part = (String) partString.next();
             if (part.contains(file.INDEX_TOKEN)) {
-                String index = part.replace(file.INDEX_TOKEN, "");
-                listQueryIndexes.add(Integer.parseInt(index));
+                indexQuery = Integer.parseInt(part.replace(file.INDEX_TOKEN, ""));
             } else if (part.contains(file.KONTEN_TOKEN)) {
-                listQueryContents.add(part.replace(file.KONTEN_TOKEN,""));
-            }
-        }
-        for (int i=0; i<listQueryIndexes.size(); i++) {
-            int indexQuery = listQueryIndexes.get(i);
-            String contentQuery = listQueryContents.get(i);
-            listQueriesFinal.add(new query(indexQuery,contentQuery));
-
-            StringTokenizer token = new StringTokenizer(contentQuery, " +=-1234567890'(){}[]/.:;?!,\n");
-            while (token.hasMoreTokens()) {
-                String word = token.nextToken();
-                if (!isStopWords(word)) {
-                    String filteredWord = "";
-                    if (isStemmingApplied) {
-                        filteredWord = StemmingPorter.stripAffixes(word);
-                    } else {
-                        filteredWord = word;
+                String contentQuery = part.replace(file.KONTEN_TOKEN,"");
+                listQueriesFinal.add(new query(indexQuery,contentQuery));
+                // Add this query into inverted file query
+                StringTokenizer token = new StringTokenizer(contentQuery, " +=-1234567890'(){}[]/.:;?!,\n");
+                while (token.hasMoreTokens()) {
+                    String word = token.nextToken();
+                    if (!isStopWords(word)) {
+                        String filteredWord = "";
+                        if (isStemmingApplied) {
+                            filteredWord = StemmingPorter.stripAffixes(word);
+                        } else {
+                            filteredWord = word;
+                        }
+                        invertedFileQuery.insertRowTable(filteredWord.toLowerCase(),indexQuery,1.0);
+                        normalFileQuery.insertElement(indexQuery,filteredWord.toLowerCase());
                     }
-                    invertedFileQuery.insertRowTable(filteredWord.toLowerCase(),indexQuery,1.0);
-                    normalFileQuery.insertElement(indexQuery,filteredWord.toLowerCase());
                 }
             }
         }
@@ -309,19 +272,22 @@ public class PreprocessWords {
     }
 
     public static void main(String[] arg) {
-       /* // CEK LOAD DOKUMEN DARI FILE ADI.ALL ATAU CISI.ALL
-        PreprocessWords.loadDocumentsFinal();
-        for (int i=0; i<PreprocessWords.getListDocumentsFinal().size(); i++) {
-            System.out.println("No : " + PreprocessWords.getListDocumentsFinal().get(i).getIndex());
-            System.out.println("Judul : " + PreprocessWords.getListDocumentsFinal().get(i).getJudul());
-            System.out.println("Author : " + PreprocessWords.getListDocumentsFinal().get(i).getAuthor());
-            System.out.println("Konten : " + PreprocessWords.getListDocumentsFinal().get(i).getKonten());
+        PreprocessWords word = new PreprocessWords();
+        // CEK LOAD DOKUMEN DARI FILE ADI.ALL ATAU CISI.ALL
+        word.loadDocumentsFinal(true);
+        Iterator listDocuments = word.getListDocumentsFinal().iterator();
+        while (listDocuments.hasNext()) {
+            document Document = (document) listDocuments.next();
+            System.out.println("No : " + Document.getIndex());
+            System.out.println("Judul : " + Document.getJudul());
+            System.out.println("Author : " + Document.getAuthor());
+            System.out.println("Konten : " + Document.getKonten());
             System.out.println("================================================================================");
         }
-        System.out.println("TOTAL DOKUMEN : " + PreprocessWords.getListDocumentsFinal().size());
+        System.out.println("TOTAL DOKUMEN : " + word.getListDocumentsFinal().size());
 
         // CEK LOAD QUERY RELEVANCE DARI FILE QUERYRELEVANCE.TEXT
-        PreprocessWords.loadQueryRelevancesFinal();
+      /*  PreprocessWords.loadQueryRelevancesFinal();
         for (int i=0; i<PreprocessWords.getListQueryRelevancesFinal().getListQueryRelevances().size(); i++) {
             for (ArrayList<Integer> j : PreprocessWords.getListQueryRelevancesFinal().getListQueryRelevances().values()) {
                 System.out.println("Daftar dokumen relevan dengan query X");
@@ -333,9 +299,11 @@ public class PreprocessWords {
         } */
 
         // CEK LOAD QUERY DARI FILE QUERY.TEXT
-        /* PreprocessWords.loadQueriesFinal();
-        for (int i=0; i<PreprocessWords.getListQueriesFinal().size(); i++) {
-            System.out.println("Isi Query : " + PreprocessWords.getListQueriesFinal().get(i).getQueryContent());
+       /* word.loadQueriesFinal(true);
+        Iterator listQueries = word.getListQueriesFinal().iterator();
+        while (listQueries.hasNext()) {
+            query Query = (query) listQueries.next();
+            System.out.println("Isi Query : " + Query.getQueryContent());
             System.out.println("====================================================================================");
         } */
 

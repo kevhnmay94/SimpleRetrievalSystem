@@ -39,7 +39,7 @@ public class ThreadExperiment extends Thread {
 
         try {
             String filename = stringTfcode[i]+"_"+stringIdfcode[j]+"_"+stringStemcode[k]+"_"+stringNormCode[l]+".txt";
-            File file = new File("D:\\Eksperiment2\\" + filename);
+            File file = new File("D:\\Eksperiment\\" + filename);
 
             // if file doesnt exists, then create it
             if (!file.exists()) {
