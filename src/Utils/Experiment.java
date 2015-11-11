@@ -155,30 +155,24 @@ public class Experiment {
         boolean[] normcode = {true, false};
         String[] stringNormCode = {"norm", "no-norm"};
 
-        // ADI (ALL)
-       /* for (int i=0; i<tfcode.length; i++) {
-            for (int j = 0; j < idfcode.length; j++) {
-                for (int k = 0; k < stemcode.length; k++) {
-                    for (int l = 0; l < normcode.length; l++) {
-                        ThreadExperiment thread = new ThreadExperiment(i, j, k, l);
-                        thread.start();
-                    }
-                }
-            }
-        }*/
+        // ADI / CISI (ALL)
+        for (int i=1; i<tfcode.length; i++) {
+            ThreadExperiment thread = new ThreadExperiment(i);
+            thread.start();
+        }
 
         // STEVE
 
-        for(int j=0; j<idfcode.length; j++) {
+       /* for(int j=0; j<idfcode.length; j++) {
             for(int k=0; k<stemcode.length; k++) {
                 for(int l=0; l<normcode.length; l++) {
                     ThreadExperiment thread = new ThreadExperiment(1,j,k,l);
                     thread.start();
                 }
             }
-        } 
+        } */
 
-       /* for(int j=0; j<idfcode.length; j++) {
+     /*   for(int j=0; j<idfcode.length; j++) {
             for(int k=0; k<stemcode.length; k++) {
                 for(int l=0; l<normcode.length; l++) {
                     ThreadExperiment thread = new ThreadExperiment(2,j,k,l);
@@ -189,7 +183,7 @@ public class Experiment {
 
         // KEVMAU
 
-        /* for(int j=0; j<idfcode.length; j++) {
+       /* for(int j=0; j<idfcode.length; j++) {
             for(int k=0; k<stemcode.length; k++) {
                 for(int l=0; l<normcode.length; l++) {
                     ThreadExperiment thread = new ThreadExperiment(3,0,1,0);
@@ -205,7 +199,7 @@ public class Experiment {
                     thread.start();
                 }
             }
-        } */
+        }*/
     }
 
 }
