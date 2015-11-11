@@ -74,7 +74,7 @@ public class InputQuery {
         while (listDocuments.hasNext()) {
             document Document = (document) listDocuments.next();
             double weight = DocumentRanking.countSimilarityDocument(q, wordProcessor.getInvertedFileManualQuery(),
-                    Document, wordProcessor.getInvertedFile(), isNormalize);
+                    Document, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile(), wordProcessor.getNormalFileQuery(), isNormalize);
             result.put(Document, weight);
         }
         result = DocumentRanking.rankDocuments(result);

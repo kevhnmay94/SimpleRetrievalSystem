@@ -49,17 +49,21 @@ public class TermsWeight {
      */
     private static int maxTermInOneDocument(int indexDocument, indexTabel invertedFile, normalTabel normalFile) {
         int maxTerm = 0;
-        HashSet<String> listTermsInDocument = normalFile.getNormalFile().get(indexDocument);
-        Iterator listTerms = listTermsInDocument.iterator();
-        while (listTerms.hasNext()) {
-            String term = (String) listTerms.next();
-            termWeightingDocument relation = invertedFile.getListTermWeights().get(term);
-            counterWeightPair counter = relation.getDocumentWeightCounterInOneTerm().get(indexDocument);
-            if (counter != null) {
-                if (counter.getCounter() > maxTerm) {
-                    maxTerm = counter.getCounter();
+        try {
+            HashSet<String> listTermsInDocument = normalFile.getNormalFile().get(indexDocument);
+            Iterator listTerms = listTermsInDocument.iterator();
+            while (listTerms.hasNext()) {
+                String term = (String) listTerms.next();
+                termWeightingDocument relation = invertedFile.getListTermWeights().get(term);
+                counterWeightPair counter = relation.getDocumentWeightCounterInOneTerm().get(indexDocument);
+                if (counter != null) {
+                    if (counter.getCounter() > maxTerm) {
+                        maxTerm = counter.getCounter();
+                    }
                 }
             }
+        } catch (Exception e) {
+
         }
         return maxTerm;
     }

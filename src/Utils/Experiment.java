@@ -81,7 +81,7 @@ public class Experiment {
             while (listDocuments.hasNext()) {
                 document Document = (document) listDocuments.next();
                 double weight = DocumentRanking.countSimilarityDocument(q, wordProcessor.getInvertedFileQuery(),
-                        Document, wordProcessor.getInvertedFile(), isNormalize);
+                        Document, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile(), wordProcessor.getNormalFileQuery(),isNormalize);
                 docweightMap.put(Document, weight);
             }
             docweightMap = DocumentRanking.rankDocuments(docweightMap);
@@ -133,7 +133,7 @@ public class Experiment {
 
     public static void main(String[] args) {
         // Setting awal awal
-        /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+       /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */

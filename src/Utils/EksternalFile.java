@@ -20,9 +20,9 @@ public class EksternalFile {
     public static final String JUDUL_TOKEN = "Topic : ";
     public static final String KONTEN_TOKEN = "Content : ";
     public static final String AUTHOR_TOKEN = "Author : ";
-    private static String pathDocumentsFile = "test\\ADI\\adi.all";
-    private static String pathQueriesFile = "test\\ADI\\query.text";
-    private static String pathQrelsFile = "test\\ADI\\qrels.text";
+    private static String pathDocumentsFile = "test\\CISI\\cisi.all";
+    private static String pathQueriesFile = "test\\CISI\\query.text";
+    private static String pathQrelsFile = "test\\CISI\\qrels.text";
     private static String pathStopWordsFile = "test\\stopwords_en.txt";
 
     public ArrayList getListPartStringBetweenTokens() {
@@ -306,13 +306,14 @@ public class EksternalFile {
 
     public static void main(String[] arg) {
         EksternalFile file = new EksternalFile();
-        file.loadListOfDocumentsPart(file.readDocuments("documents"));
+       /* file.loadListOfDocumentsPart(file.readDocuments("documents"));
         Iterator listPart = file.getListPartStringBetweenTokens().iterator();
         while (listPart.hasNext()) {
             System.out.println(listPart.next());
             System.out.println("============================================================");
-        }
+        } */
 
+        System.out.println(file.readDocuments("documents"));
         /*loadQueryRelevances(readDocuments("qrels"));
         for (int i=0; i<EksternalFile.getListPartIndexInQrels().size(); i++) {
             System.out.println(EksternalFile.getListPartIndexInQrels().get(i));

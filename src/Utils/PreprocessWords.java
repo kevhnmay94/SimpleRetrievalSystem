@@ -221,8 +221,8 @@ public class PreprocessWords {
                     } else {
                         filteredWord = currentWord;
                     }
-                    invertedFile.insertRowTable(filteredWord,indexDocument,0.0);
-                    normalFile.insertElement(indexDocument,filteredWord);
+                    invertedFile.insertRowTable(filteredWord.toLowerCase(),indexDocument,0.0);
+                    normalFile.insertElement(indexDocument,filteredWord.toLowerCase());
                 }
             }
         }
@@ -262,8 +262,8 @@ public class PreprocessWords {
                     } else {
                         filteredWord = word;
                     }
-                    invertedFileQuery.insertRowTable(filteredWord,indexQuery,1.0);
-                    normalFileQuery.insertElement(indexQuery,filteredWord);
+                    invertedFileQuery.insertRowTable(filteredWord.toLowerCase(),indexQuery,1.0);
+                    normalFileQuery.insertElement(indexQuery,filteredWord.toLowerCase());
                 }
             }
         }

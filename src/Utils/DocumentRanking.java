@@ -21,29 +21,26 @@ public class DocumentRanking {
      * @param isNormalized
      * @return double
      */
-    public static double countSimilarityDocument(query Query, indexTabel invertedFileQuery, document Document, indexTabel invertedFile, boolean isNormalized) {
+    public static double countSimilarityDocument(query Query, indexTabel invertedFileQuery, document Document, indexTabel invertedFile, normalTabel normalFile, normalTabel normalFileQuery, boolean isNormalized) {
         double dotProduct = 0.0;
-        for (Map.Entry m : invertedFileQuery.getListTermWeights().entrySet()) {
-            String keyTerm = (String) m.getKey();
-            termWeightingDocument relation = invertedFileQuery.getListTermWeights().get(keyTerm);
-            counterWeightPair counter = relation.getDocumentWeightCounterInOneTerm().get(Query.getIndex());
-            if (counter != null) {
-                double weightThisTermQuery = counter.getWeight();
-                double weightThisTermDocument = getWeightTermInDocument(Document.getIndex(),keyTerm,invertedFile);
-                dotProduct += weightThisTermDocument * weightThisTermQuery;
-            }
-           /* for (Map.Entry n : invertedFileQuery.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().entrySet()) {
-                int currentIndexQuery = (Integer) n.getKey();
-                if (currentIndexQuery == Query.getIndex()) {
-                    double weightThisTermQuery = ((counterWeightPair) n.getValue()).getWeight();
-                    double weightThisTermDocument = getWeightTermInDocument(Document.getIndex(),keyTerm,invertedFile);
+        try {
+            Iterator listTermsInQuery = normalFileQuery.getNormalFile().get(Query.getIndex()).iterator();
+            while (listTermsInQuery.hasNext()) {
+                String keyTerm = (String) listTermsInQuery.next();
+                termWeightingDocument relation = invertedFileQuery.getListTermWeights().get(keyTerm);
+                counterWeightPair counter = relation.getDocumentWeightCounterInOneTerm().get(Query.getIndex());
+                if (counter != null) {
+                    double weightThisTermQuery = counter.getWeight();
+                    double weightThisTermDocument = getWeightTermInDocument(Document.getIndex(), keyTerm, invertedFile);
                     dotProduct += weightThisTermDocument * weightThisTermQuery;
                 }
-            } */
+            }
+        } catch (Exception e) {
+
         }
         double similarityDocument;
-        double lengthOfQuery = lengthOfQuery(Query.getIndex(),invertedFileQuery);
-        double lengthOfDocument = lengthOfDocument(Document.getIndex(),invertedFile);
+        double lengthOfQuery = lengthOfQuery(Query.getIndex(),invertedFileQuery,normalFileQuery);
+        double lengthOfDocument = lengthOfDocument(Document.getIndex(),invertedFile,normalFile);
         if (isNormalized) {
             similarityDocument = dotProduct / (lengthOfQuery * lengthOfDocument);
         } else {
@@ -78,8 +75,8 @@ public class DocumentRanking {
      * @param invertedFileQuery
      * @return
      */
-    private static double lengthOfQuery(int indexQuery, indexTabel invertedFileQuery) {
-        return lengthOfDocument(indexQuery, invertedFileQuery);
+    private static double lengthOfQuery(int indexQuery, indexTabel invertedFileQuery, normalTabel normalFileQuery) {
+        return lengthOfDocument(indexQuery, invertedFileQuery, normalFileQuery);
         /* double sumSquareElement = 0.0;
         for (int i=0; i<invertedFileQuery.getListQueryWeighting().size(); i++) {
             int currentQueryIndex = invertedFileQuery.getListQueryWeighting().get(i).getCurrentQuery().getIndex();
@@ -98,14 +95,19 @@ public class DocumentRanking {
      * @param invertedFile
      * @return
      */
-    private static double lengthOfDocument(int indexDocument, indexTabel invertedFile) {
+    private static double lengthOfDocument(int indexDocument, indexTabel invertedFile, normalTabel normalFile) {
         double sumSquareElement = 0.0;
-        for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
-            String keyTerm = (String) m.getKey();
-            counterWeightPair counter = invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().get(indexDocument);
-            if (counter != null) {
-                sumSquareElement += Math.pow(counter.getCounter(),2);
+        try {
+            Iterator iterator = normalFile.getNormalFile().get(indexDocument).iterator();
+            while (iterator.hasNext()) {
+                String keyTerm = (String) iterator.next();
+                counterWeightPair counter = invertedFile.getListTermWeights().get(keyTerm).getDocumentWeightCounterInOneTerm().get(indexDocument);
+                if (counter != null) {
+                    sumSquareElement += Math.pow(counter.getCounter(), 2);
+                }
             }
+        } catch (Exception e) {
+
         }
         return Math.sqrt(sumSquareElement);
     }
@@ -177,13 +179,13 @@ public class DocumentRanking {
         Iterator listQueries = wordProcessor.getListQueriesFinal().iterator();
         while (listQueries.hasNext()) {
             query Query = (query) listQueries.next();
-            if (Query.getIndex() == 13) {
+            if (Query.getIndex() == 12) {
                 while (listDocuments.hasNext()) {
                     document Document = (document) listDocuments.next();
                     System.out.println("SIMILARITY QUERY KE-" + Query.getIndex()
                             + " DENGAN DOKUMEN KE-" + Document.getIndex() + " : ");
                     System.out.println(countSimilarityDocument(Query, wordProcessor.getInvertedFileQuery(),
-                            Document, wordProcessor.getInvertedFile(), false));
+                            Document, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile(), wordProcessor.getNormalFileQuery(), false));
                     System.out.println("========================================================================================");
                 }
             }
