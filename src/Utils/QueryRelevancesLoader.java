@@ -20,11 +20,11 @@ public class QueryRelevancesLoader {
 
         // Load ADI/qrels.txt
         EksternalFile.setPathQrelsFile(ADI_PATH);
-        String adifile = file.readDocuments("qrels");
+        String adifile = file.readDocuments("qrels").toString();
 
         // Load CISI/qrels.txt
         EksternalFile.setPathQrelsFile(CISI_PATH);
-        String cisifile = file.readDocuments("qrels");
+        String cisifile = file.readDocuments("qrels").toString();
 
         // Buat qrels ADI
         qrelsAdi = new ConcurrentHashMap<Integer, ArrayList<Integer>>();

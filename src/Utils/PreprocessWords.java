@@ -237,7 +237,7 @@ public class PreprocessWords {
      */
     public void loadQueryRelevancesFinal() {
         EksternalFile file = new EksternalFile();
-        file.loadQueryRelevances(file.readDocuments("qrels"));
+        file.loadQueryRelevances(file.readDocuments("qrels").toString());
         ArrayList<Integer> listQueryIndexes = new ArrayList<Integer>();
         ArrayList<Integer> listDocumentIndexes = new ArrayList<Integer>();
         int sequenceCounter = 1;
@@ -264,7 +264,7 @@ public class PreprocessWords {
      */
     private void loadStopWordsFinal() {
         EksternalFile file = new EksternalFile();
-        String rawFileContent = file.readDocuments("stopwords");
+        String rawFileContent = file.readDocuments("stopwords").toString();
         String[] lines = rawFileContent.split("\\r?\\n");
         for (String line : lines) {
             listStopWordsFinal.add(line);

@@ -17,14 +17,14 @@ public class EksternalFile {
     public static final String JUDUL_TOKEN = "Topic : ";
     public static final String KONTEN_TOKEN = "Content : ";
     public static final String AUTHOR_TOKEN = "Author : ";
-    /* private static String pathDocumentsFile = "test\\CISI\\cisi.all";
+    private static String pathDocumentsFile = "test\\CISI\\cisi.all";
     private static String pathQueriesFile = "test\\CISI\\query.text";
     private static String pathQrelsFile = "test\\CISI\\qrels.text";
-    private static String pathStopWordsFile = "test\\stopwords_en.txt"; */
-    private static String pathDocumentsFile = "test\\ADI\\adi.all";
+    private static String pathStopWordsFile = "test\\stopwords_en.txt";
+   /* private static String pathDocumentsFile = "test\\ADI\\adi.all";
     private static String pathQueriesFile = "test\\ADI\\query.text";
     private static String pathQrelsFile = "test\\ADI\\qrels.text";
-    private static String pathStopWordsFile = "test\\stopwords_en.txt";
+    private static String pathStopWordsFile = "test\\stopwords_en.txt"; */
 
     public ArrayList getListPartStringBetweenTokens() {
         return listPartStringBetweenTokens;
@@ -65,8 +65,8 @@ public class EksternalFile {
      * @param fileType
      * @return rawFileContent
      */
-    public String readDocuments(String fileType) {
-        String rawFileContent = "";
+    public StringBuffer readDocuments(String fileType) {
+        StringBuffer rawFileContent = new StringBuffer();
         String path = "";
         if (fileType.equals("documents")) {
             path = pathDocumentsFile;
@@ -77,14 +77,6 @@ public class EksternalFile {
         } else if (fileType.equals("stopwords")) {
             path = pathStopWordsFile;
         }
-       /* try {
-            Scanner scanner = new Scanner(path);
-            while (scanner.hasNextLine()) {
-                rawFileContent += scanner.nextLine() + "\n";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } */
         String  thisLine;
         BufferedReader br = null;
         try {
@@ -94,7 +86,7 @@ public class EksternalFile {
         }
         try {
             while ((thisLine = br.readLine()) != null) {
-                    rawFileContent += thisLine + "\n";
+                rawFileContent.append(thisLine + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -126,12 +118,12 @@ public class EksternalFile {
      * Special case : documents or queries
      * @param rawFileContent
      */
-     void loadListOfDocumentsPart(String rawFileContent) {
+     void loadListOfDocumentsPart(StringBuffer rawFileContent) {
         listPartStringBetweenTokens.clear();
         String partStringBetweenTokens = "";
         int counterDocument = 1;
         String tokenType = "";
-        String[] lines = rawFileContent.split("\\r?\\n");
+        String[] lines = rawFileContent.toString().split("\\r?\\n");
         for (String line : lines) {
             if (isStringToken(line)) {
                 if (tokenType.equals(INDEX_TOKEN)) {
