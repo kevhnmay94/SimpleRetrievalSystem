@@ -135,8 +135,8 @@ public class PreprocessWords {
                 } else {
                     filteredWord = word;
                 }
-                invertedFileQueryManual.insertRowTable(filteredWord,0,1.0);
-                normalFileQueryManual.insertElement(0,filteredWord);
+                invertedFileQueryManual.insertRowTable(filteredWord.toLowerCase(),0,1.0);
+                normalFileQueryManual.insertElement(0,filteredWord.toLowerCase());
             }
         }
     }

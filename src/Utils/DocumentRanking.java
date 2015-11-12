@@ -192,8 +192,8 @@ public class DocumentRanking {
         }
 
         // TEST WRITE INVERTED FILE QUERY EKSTERNAL
-        String path = "test\\invertedFile.txt";
-        String path2 = "test\\invertedFileQuery.txt";
+        String path = "test\\invertedFile.csv";
+        String path2 = "test\\invertedFileQuery.csv";
         EksternalFile file = new EksternalFile();
         file.writeInvertedFile(path, wordProcessor.getInvertedFile());
         file.writeInvertedFileQuery(path2,wordProcessor.getInvertedFileQuery());
