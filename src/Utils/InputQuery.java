@@ -62,8 +62,8 @@ public class InputQuery {
         start = System.currentTimeMillis();
 
         wordProcessor.loadIndexTabelForManualQuery(query, isStem);
-        TermsWeight.termFrequencyWeightingQuery(qTfMode, wordProcessor.getInvertedFileManualQuery(), wordProcessor.getNormalFile());
-        TermsWeight.inverseDocumentWeightingQuery(qIdfMode, wordProcessor.getInvertedFileManualQuery(),
+        TermsWeight.termFrequencyWeightingQuery(qTfMode, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getNormalFile());
+        TermsWeight.inverseDocumentWeightingQuery(qIdfMode, wordProcessor.getInvertedFileQueryManual(),
                 wordProcessor.getInvertedFile(), wordProcessor.getNormalFile());
 
         finish = System.currentTimeMillis();
@@ -78,8 +78,8 @@ public class InputQuery {
         Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
         while (listDocuments.hasNext()) {
             document Document = (document) listDocuments.next();
-            double weight = DocumentRanking.countSimilarityDocument(q, wordProcessor.getInvertedFileManualQuery(),
-                    Document, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile(), wordProcessor.getNormalFileQuery(), isNormalize);
+            double weight = DocumentRanking.countSimilarityDocument(q, wordProcessor.getInvertedFileQueryManual(),
+                    Document, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile(), wordProcessor.getNormalFileQueryManual(), isNormalize);
             result.put(Document, weight);
         }
         result = DocumentRanking.rankDocuments(result);

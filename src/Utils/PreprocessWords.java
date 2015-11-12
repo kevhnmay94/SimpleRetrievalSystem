@@ -12,13 +12,14 @@ public class PreprocessWords {
     // ATTRIBUTE
     private indexTabel invertedFile;
     private indexTabel invertedFileQuery;
+    private indexTabel invertedFileQueryManual;
     private queryRelevances listQueryRelevancesFinal;
     private ArrayList<query> listQueriesFinal;
     private ArrayList<document> listDocumentsFinal;
     private ArrayList<String> listStopWordsFinal;
-    private indexTabel invertedFileManualQuery;
     private normalTabel normalFile;
     private normalTabel normalFileQuery;
+    private normalTabel normalFileQueryManual;
 
     // COMPLEMENTER ATTRIBUTE
     private ArrayList<Integer> listIndexDocuments;
@@ -52,8 +53,12 @@ public class PreprocessWords {
     public ArrayList getListStopWordsFinal() {
         return listStopWordsFinal;
     }
-    public indexTabel getInvertedFileManualQuery() {
-        return invertedFileManualQuery;
+    public indexTabel getInvertedFileQueryManual() {
+        return invertedFileQueryManual;
+    }
+
+    public normalTabel getNormalFileQueryManual() {
+        return normalFileQueryManual;
     }
 
     // SETTER ATTRIBUTE
@@ -74,6 +79,7 @@ public class PreprocessWords {
     public PreprocessWords() {
         invertedFile = new indexTabel();
         invertedFileQuery = new indexTabel();
+        invertedFileQueryManual = new indexTabel();
         listQueryRelevancesFinal = new queryRelevances();
         listQueriesFinal = new ArrayList<>();
         listDocumentsFinal = new ArrayList<>();
@@ -82,9 +88,9 @@ public class PreprocessWords {
         listTopicDocuments = new ArrayList<>();
         listAuthorDocuments = new ArrayList<>();
         listContentDocuments = new ArrayList<>();
-        invertedFileManualQuery = new indexTabel();
         normalFile = new normalTabel();
         normalFileQuery = new normalTabel();
+        normalFileQueryManual = new normalTabel();
     }
 
     /**
@@ -129,7 +135,8 @@ public class PreprocessWords {
                 } else {
                     filteredWord = word;
                 }
-                invertedFileQuery.insertRowTable(filteredWord,0,1.0);
+                invertedFileQueryManual.insertRowTable(filteredWord,0,1.0);
+                normalFileQueryManual.insertElement(0,filteredWord);
             }
         }
     }
