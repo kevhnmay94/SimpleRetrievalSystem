@@ -1,8 +1,7 @@
 *.class
 
 # Mobile Tools for Java (J2ME)
-/test/invertedFile.txt
-/test/invertedFileQuery.txt
+*.csv
 .mtj.tmp/
 
 # Package Files #
