@@ -36,7 +36,7 @@ public class DocumentRanking {
                 }
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         double similarityDocument;
         double lengthOfQuery = lengthOfQuery(Query.getIndex(),invertedFileQuery,normalFileQuery);
@@ -155,14 +155,14 @@ public class DocumentRanking {
     public static void main(String[] arg) {
         // PENTING DIBUAT DULU KELASNYA
         PreprocessWords wordProcessor = new PreprocessWords();
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+      /*  EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
-      /*  EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
         EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");*/
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
@@ -199,41 +199,27 @@ public class DocumentRanking {
         file.writeInvertedFileQuery(path2,wordProcessor.getInvertedFileQuery());
 
         // TEST LOAD INVERTED FILE EKSTERNAL
-        /* indexTabel anotherInvertedFile = EksternalFile.loadInvertedFile(path);
-        for(Map.Entry m : anotherInvertedFile.getListTermWeights().entrySet()) {
-             System.out.println("Key : " + m.getKey().toString());
-             for (document Document:((termWeightingDocument) m.getValue()).getDocumentPerTerm()) {
-                 System.out.println("Id : " + Document.getIndex());
-                 System.out.println("Judul : " + Document.getJudul());
-                 // System.out.println("Author : " + Document.getAuthor());
-                 // System.out.println("Konten : " + Document.getKonten());
-             }
-             System.out.println("BOBOT TERM INI PER DOKUMEN DI ATAS : ");
-             for (double weights :((termWeightingDocument) m.getValue()).getDocumentWeightingsPerTerm()) {
-                 System.out.println("Bobot : " + weights);
-             }
-             // System.out.println("COUNTER TERM INI PER DOKUMEN DI ATAS : ");
-             // for (int counter:((termWeightingDocument) m.getValue()).getDocumentCountersPerTerm()) {
-                // System.out.println("Counter : " + counter);
-             // }
-             System.out.println("====================================================================================");
-        }*/
-
-        // TEST LOAD INVERTED FILE QUERY
-       /* indexTabelQuery indexTabel = EksternalFile.loadInvertedFileQuery(path2);
-        for (int i=0; i<indexTabel.getListQueryWeighting().size(); i++) {
-            termWeightingQuery relation = indexTabel.getListQueryWeighting().get(i);
-            System.out.println("QUERY DIPROSES : " + relation.getCurrentQuery().getQueryContent());
-            System.out.println("COUNTER PER TERM DARI QUERY DI ATAS : ");
-            //for (Map.Entry m : relation.getTermCounterInOneQuery().entrySet()) {
-              //  System.out.println("Term : " + (String) m.getKey());
-                //System.out.println("Counter : " + (Integer) m.getValue());
-            //}
-            for (Map.Entry m : relation.getTermWeightInOneQuery().entrySet()) {
-                System.out.println("Term : " + (String) m.getKey());
-                System.out.println("Weight : " + (Double) m.getValue());
+        indexTabel anotherInvertedFile = file.loadInvertedFile(path);
+        for(Map.Entry m: anotherInvertedFile.getListTermWeights().entrySet()) {
+            System.out.println("Key : " + m.getKey().toString() + "\n");
+            for (Map.Entry n:((termWeightingDocument) m.getValue()).getDocumentWeightCounterInOneTerm().entrySet()) {
+                System.out.println("Nomor Dokumen : " + n.getKey());
+                System.out.println("Counter term di dokumen ini : " + ((counterWeightPair) n.getValue()).getCounter());
+                System.out.println("Bobot term di dokumen ini : " + ((counterWeightPair) n.getValue()).getWeight() + "\n");
             }
             System.out.println("====================================================================================");
-        } */
+        }
+
+        // TEST LOAD INVERTED FILE QUERY
+        indexTabel anotherInvertedFile2 = file.loadInvertedFileQuery(path2);
+        for(Map.Entry m: anotherInvertedFile2.getListTermWeights().entrySet()) {
+            System.out.println("Key : " + m.getKey().toString() + "\n");
+            for (Map.Entry n:((termWeightingDocument) m.getValue()).getDocumentWeightCounterInOneTerm().entrySet()) {
+                System.out.println("Nomor Query : " + n.getKey());
+                System.out.println("Counter term di query ini : " + ((counterWeightPair) n.getValue()).getCounter());
+                System.out.println("Bobot term di query ini : " + ((counterWeightPair) n.getValue()).getWeight() + "\n");
+            }
+            System.out.println("====================================================================================");
+        }
     }
 }

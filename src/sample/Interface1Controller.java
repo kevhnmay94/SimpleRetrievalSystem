@@ -247,15 +247,17 @@ public class Interface1Controller implements Initializable {
         TermsWeight.termFrequencyWeighting(Vars.documenttf, wordProcessor.getInvertedFile(),wordProcessor.getNormalFile());
         TermsWeight.inverseDocumentWeighting(Vars.documentidf, wordProcessor.getInvertedFile(),wordProcessor.getNormalFile());
 
-        // PROSES BUAT INVERTED FILE BUAT QUERY
+        // PROSES BIKIN INVERTED FILE BUAT QUERY
         wordProcessor.loadIndexTabelForQueries(Vars.querystem); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(Vars.querytf, wordProcessor.getInvertedFileQuery(),wordProcessor.getNormalFile());
         TermsWeight.inverseDocumentWeightingQuery(Vars.queryidf, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(),wordProcessor.getNormalFile());
 
-        String path = "test\\invertedFile.txt", path2 = "test\\invertedFileQuery.txt";
+        String path = "test\\invertedFile.csv", path2 = "test\\invertedFileQuery.csv", path3 = "test\\normalFile.csv", path4 = "test\\normalFileQuery.csv";
         EksternalFile file = new EksternalFile();
         file.writeInvertedFile(path, wordProcessor.getInvertedFile());
         file.writeInvertedFileQuery(path2, wordProcessor.getInvertedFileQuery());
+        file.writeNormalFile(path3, wordProcessor.getNormalFile());
+        file.writeNormalFileQuery(path4, wordProcessor.getNormalFileQuery());
 
         Parent root = FXMLLoader.load(getClass().getResource("interface2.fxml"));
         Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();

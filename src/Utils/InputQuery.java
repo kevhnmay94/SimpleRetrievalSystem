@@ -2,6 +2,7 @@ package Utils;
 
 import model.document;
 import model.indexTabel;
+import model.normalTabel;
 import model.query;
 
 import java.util.HashMap;
@@ -42,9 +43,13 @@ public class InputQuery {
         isStem = stem;
     }
 
-    public void setInvertedFile(indexTabel idxtab) {
-        wordProcessor.setInvertedFile(idxtab);
-       // wordProcessor.loadDocumentsFinal();
+    public void setInvertedFile (indexTabel idxTable, boolean isInvertedFileCreated, boolean isStemmingApplied) {
+        wordProcessor.setInvertedFile(idxTable);
+        wordProcessor.loadDocumentsFinal(isInvertedFileCreated,isStemmingApplied);
+    }
+
+    public void setNormalFile (normalTabel normalFile) {
+        wordProcessor.setNormalFile(normalFile);
     }
 
     public void SearchDocumentsUsingQuery(String query, boolean isNormalize) {

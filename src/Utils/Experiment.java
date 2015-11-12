@@ -2,10 +2,7 @@ package Utils;
 
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
-import model.document;
-import model.indexTabel;
-import model.indexTabelQuery;
-import model.query;
+import model.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,6 +18,10 @@ public class Experiment {
 
     ArrayList<SingleQueryEvaluation> evals;
     PreprocessWords wordProcessor;
+    normalTabel normalFile;
+    normalTabel normalFileQuery;
+    indexTabel invertedFile;
+    indexTabel invertedFileQuery;
     ConcurrentHashMap<query, ConcurrentHashMap<document, Double> > resultMap;
 
     public Experiment() {
@@ -33,13 +34,22 @@ public class Experiment {
         return wordProcessor.getInvertedFile();
     }
     public indexTabel getInvertedFileQuery() { return wordProcessor.getInvertedFileQuery(); }
-    public void setInvertedFile (indexTabel idxTable) {
+
+    public void setInvertedFile (indexTabel idxTable, boolean isInvertedFileCreated, boolean isStemmingApplied) {
         wordProcessor.setInvertedFile(idxTable);
-       // wordProcessor.loadDocumentsFinal();
+        wordProcessor.loadDocumentsFinal(isInvertedFileCreated,isStemmingApplied);
     }
-    public void setInvertedFileQuery (indexTabel idxTable) {
+    public void setInvertedFileQuery (indexTabel idxTable, boolean isInvertedFileCreated, boolean isStemmingApplied) {
         wordProcessor.setInvertedFileQuery(idxTable);
-      //  wordProcessor.loadQueriesFinal();
+        wordProcessor.loadQueriesFinal(isInvertedFileCreated,isStemmingApplied);
+    }
+
+    public void setNormalFile (normalTabel normalFile) {
+        wordProcessor.setNormalFile(normalFile);
+    }
+
+    public void setNormalFileQuery (normalTabel normalFileQuery) {
+        wordProcessor.setNormalFileQuery(normalFileQuery);
     }
 
     public void processDocuments(int tfcode, int idfcode, boolean stem) {

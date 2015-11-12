@@ -3,6 +3,7 @@ package sample;
 import javafx.stage.Stage;
 import model.indexTabel;
 import model.indexTabelQuery;
+import model.normalTabel;
 
 /**
  * Created by User on 26/10/2015.
@@ -22,4 +23,6 @@ public class Vars {
     public static Stage savedstage;
     public static indexTabel documentinvertedfile;
     public static indexTabel queryinvertedfile;
+    public static normalTabel documentnormalfile;
+    public static normalTabel querynormalfile;
 }

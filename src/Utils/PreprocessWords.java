@@ -62,6 +62,14 @@ public class PreprocessWords {
         this.invertedFile = invertedFile;
     }
 
+    public void setNormalFile(normalTabel normalFile) {
+        this.normalFile = normalFile;
+    }
+
+    public void setNormalFileQuery(normalTabel normalFileQuery) {
+        this.normalFileQuery = normalFileQuery;
+    }
+
     // CONSTRUCTOR
     public PreprocessWords() {
         invertedFile = new indexTabel();
@@ -101,8 +109,7 @@ public class PreprocessWords {
      * @param isStemmingApplied
      */
     public void loadIndexTabel(boolean isStemmingApplied) {
-        loadStopWordsFinal();
-        loadDocumentsFinal(isStemmingApplied);
+        loadDocumentsFinal(true,isStemmingApplied);
     }
 
     /**
@@ -112,7 +119,7 @@ public class PreprocessWords {
      */
     public void loadIndexTabelForManualQuery(String query, boolean isStemmingApplied) {
         loadStopWordsFinal();
-        StringTokenizer token = new StringTokenizer(query, " +=-1234567890'(){}[]/.:;?!,\n");
+        StringTokenizer token = new StringTokenizer(query, " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
         while (token.hasMoreTokens()) {
             String word = token.nextToken();
             if (!isStopWords(word)) {
@@ -132,8 +139,7 @@ public class PreprocessWords {
      * @param isStemmingApplied
      */
     public void loadIndexTabelForQueries(boolean isStemmingApplied) {
-        loadStopWordsFinal();
-        loadQueriesFinal(isStemmingApplied);
+        loadQueriesFinal(true,isStemmingApplied);
     }
 
     /**
@@ -159,9 +165,11 @@ public class PreprocessWords {
 
     /**
      * Arrange list of documents before extracting words
+     * @param isInvertedFileCreated
      * @param isStemmingApplied
      */
-    public void loadDocumentsFinal(boolean isStemmingApplied) {
+    public void loadDocumentsFinal(boolean isInvertedFileCreated, boolean isStemmingApplied) {
+        loadStopWordsFinal();
         EksternalFile file = new EksternalFile();
         file.loadListOfDocumentsPart(file.readDocuments("documents"));
         Iterator rawSegmentsDocuments = file.getListPartStringBetweenTokens().iterator();
@@ -179,18 +187,20 @@ public class PreprocessWords {
                 String contentDocument = rawSegments.replace(file.KONTEN_TOKEN,"");
                 listDocumentsFinal.add(new document(indexDocument,topicDocument,authorDocument,contentDocument));
                 // Add this document into inverted file
-                StringTokenizer token = new StringTokenizer(contentDocument," +=-1234567890'(){}[]/.:;?!,\n");
-                while (token.hasMoreTokens()) {
-                    String currentWord = token.nextToken();
-                    if (!isStopWords(currentWord)) {
-                        String filteredWord;
-                        if (isStemmingApplied) {
-                            filteredWord = StemmingPorter.stripAffixes(currentWord);
-                        } else {
-                            filteredWord = currentWord;
+                if (isInvertedFileCreated) {       // Membuat inverted file sekaligus
+                    StringTokenizer token = new StringTokenizer(contentDocument, " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
+                    while (token.hasMoreTokens()) {
+                        String currentWord = token.nextToken();
+                        if (!isStopWords(currentWord)) {
+                            String filteredWord;
+                            if (isStemmingApplied) {
+                                filteredWord = StemmingPorter.stripAffixes(currentWord);
+                            } else {
+                                filteredWord = currentWord;
+                            }
+                            invertedFile.insertRowTable(filteredWord.toLowerCase(), indexDocument, 0.0);
+                            normalFile.insertElement(indexDocument, filteredWord.toLowerCase());
                         }
-                        invertedFile.insertRowTable(filteredWord.toLowerCase(),indexDocument,0.0);
-                        normalFile.insertElement(indexDocument,filteredWord.toLowerCase());
                     }
                 }
             }
@@ -199,9 +209,9 @@ public class PreprocessWords {
 
     /**
      * Load list of queries from eksternal source
-     * @param isStemmingApplied
      */
-    public void loadQueriesFinal(boolean isStemmingApplied) {
+    public void loadQueriesFinal(boolean isInvertedFileCreated, boolean isStemmingApplied) {
+        loadStopWordsFinal();
         EksternalFile file = new EksternalFile();
         file.loadListOfDocumentsPart(file.readDocuments("queries"));
         Iterator partString = file.getListPartStringBetweenTokens().iterator();
@@ -214,18 +224,20 @@ public class PreprocessWords {
                 String contentQuery = part.replace(file.KONTEN_TOKEN,"");
                 listQueriesFinal.add(new query(indexQuery,contentQuery));
                 // Add this query into inverted file query
-                StringTokenizer token = new StringTokenizer(contentQuery, " +=-1234567890'(){}[]/.:;?!,\n");
-                while (token.hasMoreTokens()) {
-                    String word = token.nextToken();
-                    if (!isStopWords(word)) {
-                        String filteredWord = "";
-                        if (isStemmingApplied) {
-                            filteredWord = StemmingPorter.stripAffixes(word);
-                        } else {
-                            filteredWord = word;
+                if (isInvertedFileCreated) {       // Membuat inverted file sekaligus
+                    StringTokenizer token = new StringTokenizer(contentQuery, " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
+                    while (token.hasMoreTokens()) {
+                        String word = token.nextToken();
+                        if (!isStopWords(word)) {
+                            String filteredWord = "";
+                            if (isStemmingApplied) {
+                                filteredWord = StemmingPorter.stripAffixes(word);
+                            } else {
+                                filteredWord = word;
+                            }
+                            invertedFileQuery.insertRowTable(filteredWord.toLowerCase(), indexQuery, 1.0);
+                            normalFileQuery.insertElement(indexQuery, filteredWord.toLowerCase());
                         }
-                        invertedFileQuery.insertRowTable(filteredWord.toLowerCase(),indexQuery,1.0);
-                        normalFileQuery.insertElement(indexQuery,filteredWord.toLowerCase());
                     }
                 }
             }
@@ -274,7 +286,7 @@ public class PreprocessWords {
     public static void main(String[] arg) {
         PreprocessWords word = new PreprocessWords();
         // CEK LOAD DOKUMEN DARI FILE ADI.ALL ATAU CISI.ALL
-        word.loadDocumentsFinal(true);
+        word.loadDocumentsFinal(false,false);
         Iterator listDocuments = word.getListDocumentsFinal().iterator();
         while (listDocuments.hasNext()) {
             document Document = (document) listDocuments.next();

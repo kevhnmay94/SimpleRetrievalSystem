@@ -186,7 +186,7 @@ public class EksternalFile {
             for (Map.Entry n : ((termWeightingDocument) m.getValue()).getDocumentWeightCounterInOneTerm().entrySet()) {
                 int indexDocument = (Integer) n.getKey();
                 double weightTermInDocument = ((counterWeightPair) n.getValue()).getWeight();
-                new PrintStream(fout).print("~" + keyTerm + "~" + indexDocument + "~" + weightTermInDocument + "\n");
+                new PrintStream(fout).print(/*"~" + */keyTerm + "," + indexDocument + "," + weightTermInDocument + "," + "\n");
             }
         }
     }
@@ -197,24 +197,30 @@ public class EksternalFile {
      * @param path
      * @param invertedFileQuery
      */
-    public  void writeInvertedFileQuery(String path,  indexTabel invertedFileQuery) {
+    public void writeInvertedFileQuery(String path,indexTabel invertedFileQuery) {
         writeInvertedFile(path,invertedFileQuery);
-        /* FileOutputStream fout = null;
+    }
+
+    public void writeNormalFileQuery(String path,normalTabel normalFileQuery) {
+        writeNormalFile(path,normalFileQuery);
+    }
+
+    public void writeNormalFile(String path, normalTabel normalFile) {
+        FileOutputStream fout = null;
         try {
             fout = new FileOutputStream(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        for (termWeightingQuery q : invertedFileQuery.getListQueryWeighting()) {
-            String indexQuery = String.valueOf(q.getCurrentQuery().getIndex()) + "^";
-            String weight = "";
-            for (Map.Entry m : q.getTermWeightInOneQuery().entrySet()) {
-                String currentTerm = (String) m.getKey();
-                double weightTerm = (Double) m.getValue();
-                weight += "@" + currentTerm + ";*" + weightTerm + "^";
+        for (Map.Entry m : normalFile.getNormalFile().entrySet()) {
+            Integer indexDocument = (Integer) m.getKey();
+            HashSet<String> listTerms = (HashSet<String>) m.getValue();
+            Iterator iterator = listTerms.iterator();
+            while (iterator.hasNext()) {
+                String thisTerm = (String) iterator.next();
+                new PrintStream(fout).print(/*"~" + */indexDocument + "," + thisTerm + "," + "\n");
             }
-            new PrintStream(fout).print("~" + indexQuery + weight + "\n");
-        } */
+        }
     }
 
     /**
@@ -223,15 +229,15 @@ public class EksternalFile {
      * @return
      */
     public indexTabel loadInvertedFile(String path) {
-        String rawContent = "";
+        StringBuffer rawContent = new StringBuffer();
         indexTabel invertedFile = new indexTabel();
         Path pathInvertedFile = Paths.get(path);
         try {
             Scanner scanner = new Scanner(pathInvertedFile);
             while (scanner.hasNextLine()) {
-                rawContent += scanner.nextLine() + "\n";
+                rawContent.append(scanner.nextLine());
             }
-            StringTokenizer token = new StringTokenizer(rawContent,"~\n");
+            StringTokenizer token = new StringTokenizer(rawContent.toString(),",");
             int counter = 1;
             String keyTerm = null;
             int indexDocument = 0;
@@ -259,61 +265,46 @@ public class EksternalFile {
      * @param path
      * @return
      */
-    public  indexTabel loadInvertedFileQuery(String path) {
+    public indexTabel loadInvertedFileQuery(String path) {
         return loadInvertedFile(path);
-       /* PreprocessWords word = new PreprocessWords();
-        word.loadQueriesFinal();
-        String rawContent = "";
-        indexTabelQuery invertedFile = new indexTabelQuery();
+    }
+
+    public normalTabel loadNormalFile(String path) {
+        StringBuffer rawContent = new StringBuffer();
+        normalTabel normalFile = new normalTabel();
         Path pathInvertedFile = Paths.get(path);
         try {
             Scanner scanner = new Scanner(pathInvertedFile);
             while (scanner.hasNextLine()) {
-                rawContent += scanner.nextLine();
+                rawContent.append(scanner.nextLine());
             }
-            StringTokenizer token1 = new StringTokenizer(rawContent,"~");
-            while (token1.hasMoreTokens()) {
-                int indexQuery = 0;
-                termWeightingQuery relation = new termWeightingQuery();
-                String currentWordToken1 = token1.nextToken();
-                StringTokenizer token2 = new StringTokenizer(currentWordToken1,"^");
-                while (token2.hasMoreTokens()) {
-                    String currentWordToken2 = token2.nextToken();
-                    if (!currentWordToken2.contains(";")) {
-                        indexQuery = Integer.parseInt(currentWordToken2);
-                    } else {
-                        String keyTerm = "";
-                        double weightTerm = 0.0;
-                        StringTokenizer token3 = new StringTokenizer(currentWordToken2,";");
-                        while (token3.hasMoreTokens()) {
-                            String currentWordToken3 = token3.nextToken();
-                            if (currentWordToken3.contains("@")) {
-                                keyTerm = currentWordToken3.replace("@","");
-                            } else if (currentWordToken3.contains("*")) {
-                                weightTerm = Double.parseDouble(currentWordToken3.replace("*",""));
-                                relation.getTermWeightInOneQuery().put(keyTerm,weightTerm);
-                            }
-                        }
-                    }
-                    ArrayList<query> listQueries = word.getListQueriesFinal();
-                    for (query Query : listQueries) {
-                        if (Query.getIndex() == indexQuery) {
-                            query currentQuery = new query(indexQuery,Query.getQueryContent());
-                            relation.setCurrentQuery(currentQuery);
-                        }
-                    }
+            StringTokenizer token = new StringTokenizer(rawContent.toString(),",");
+            int counter = 1;
+            int indexDocument = 0;
+            String thisTerm = "";
+            while (token.hasMoreTokens()) {
+                String tokenString = token.nextToken();
+                if ((counter % 2) == 1) {
+                    indexDocument = Integer.parseInt(tokenString);
+                } else if ((counter % 2) == 0) {
+                    thisTerm = tokenString;
+                    normalFile.insertElement(indexDocument,thisTerm);
                 }
-                invertedFile.getListQueryWeighting().add(relation);
+                counter++;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return invertedFile; */
+        return normalFile;
+    }
+
+    public normalTabel loadNormalFileQuery(String path) {
+        return (loadNormalFile(path));
     }
 
     public static void main(String[] arg) {
         EksternalFile file = new EksternalFile();
-        file.loadListOfDocumentsPart(file.readDocuments("documents"));
+        file.loadListOfDocumentsPart(file.readDocuments("queries"));
         Iterator listPart = file.getListPartStringBetweenTokens().iterator();
         while (listPart.hasNext()) {
             System.out.println(listPart.next());

@@ -42,8 +42,10 @@ public class Interface2Controller implements Initializable {
         experimentQuery.setSelected(true);
         experimentQuery.requestFocus();
         EksternalFile file = new EksternalFile();
-        Vars.documentinvertedfile = file.loadInvertedFile("test\\invertedFile.txt");
-        Vars.queryinvertedfile = file.loadInvertedFileQuery("test\\invertedFileQuery.txt");
+        Vars.documentinvertedfile = file.loadInvertedFile("test\\invertedFile.csv");
+        Vars.queryinvertedfile = file.loadInvertedFileQuery("test\\invertedFileQuery.csv");
+        Vars.documentnormalfile = file.loadNormalFile("test\\normalFile.csv");
+        Vars.querynormalfile = file.loadNormalFileQuery("test\\normalFileQuery.csv");
     }
 
     public void handleSearchButton(ActionEvent actionEvent) {
@@ -51,8 +53,10 @@ public class Interface2Controller implements Initializable {
         if((Boolean)searchMethod.getSelectedToggle().getUserData()){
             // do something with the freaking query from text
             Experiment exp = new Experiment();
-            exp.setInvertedFile(Vars.documentinvertedfile);
-            exp.setInvertedFileQuery(Vars.queryinvertedfile);
+            exp.setInvertedFile(Vars.documentinvertedfile,false,Vars.documentstem);
+            exp.setInvertedFileQuery(Vars.queryinvertedfile,false,Vars.querystem);
+            exp.setNormalFile(Vars.documentnormalfile);
+            exp.setNormalFileQuery(Vars.querynormalfile);
             exp.evaluate(Vars.norm);
             result = exp.getSummary();
         }
@@ -60,7 +64,8 @@ public class Interface2Controller implements Initializable {
             String query = searchTextField.getText();
             // do something with the query
             InputQuery iq = new InputQuery();
-            iq.setInvertedFile(Vars.documentinvertedfile);
+            iq.setInvertedFile(Vars.documentinvertedfile,false,Vars.documentstem);
+            iq.setNormalFile(Vars.documentnormalfile);
             iq.SearchDocumentsUsingQuery(query, Vars.norm);
             result = iq.getSummaryResult();
         }
