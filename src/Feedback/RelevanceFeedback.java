@@ -15,25 +15,52 @@ public class RelevanceFeedback {
     indexTabel invertedFile;
     indexTabel invertedFileQuery;
     normalTabel normalFileQuery;
-    HashSet<Integer> listDocumentRelevant;
-    HashSet<Integer> listDocumentIrrelevant;
+    ArrayList<Integer> listDocumentRelevant;
+    ArrayList<Integer> listDocumentIrrelevant;
     documentsRelevancesFeedback listDocumentRelevancesThisQuery;
     HashMap<String,Double> newQueryComposition;
+    queryRelevances updatedQueryRelevances;
 
-    /**
-     * Getter for NewQueryComposition
-     * @return
-     */
+    // GETTER ATTRIBUTE
+
     public HashMap<String, Double> getNewQueryComposition() {
         return newQueryComposition;
     }
 
-    /**
-     * Getter for inverted file query modified relevance feedback
-     * @return
-     */
     public indexTabel getInvertedFileQuery() {
         return invertedFileQuery;
+    }
+
+    public ArrayList<Integer> getListDocumentRelevant() {
+        return listDocumentRelevant;
+    }
+
+    public indexTabel getInvertedFile() {
+        return invertedFile;
+    }
+
+    public normalTabel getNormalFileQuery() {
+        return normalFileQuery;
+    }
+
+    public queryRelevances getUpdatedQueryRelevances() {
+        return updatedQueryRelevances;
+    }
+
+    /**
+     * Getter for list of irrelevant documents according to user
+     * @return
+     */
+    public ArrayList<Integer> getListDocumentIrrelevant() {
+        return listDocumentIrrelevant;
+    }
+
+    /**
+     * Getter for list feedback from user for this query
+     * @return
+     */
+    public documentsRelevancesFeedback getListDocumentRelevancesThisQuery() {
+        return listDocumentRelevancesThisQuery;
     }
 
     /**
@@ -42,34 +69,38 @@ public class RelevanceFeedback {
      * @param invertedFileQuery
      * @param normalFileQuery
      * @param listDocumentRelevances
+     * @param updatedQueryRelevances
      */
-    public RelevanceFeedback(indexTabel invertedFile, indexTabel invertedFileQuery, normalTabel normalFileQuery, documentsRelevancesFeedback listDocumentRelevances) {
+    public RelevanceFeedback(indexTabel invertedFile, indexTabel invertedFileQuery, normalTabel normalFileQuery,
+                             documentsRelevancesFeedback listDocumentRelevances, queryRelevances updatedQueryRelevances)
+    {
         this.invertedFile = invertedFile;
         this.invertedFileQuery = invertedFileQuery;
         this.normalFileQuery = normalFileQuery;
         this.listDocumentRelevancesThisQuery = listDocumentRelevances;
+        this.updatedQueryRelevances = updatedQueryRelevances;
         newQueryComposition = new HashMap<>();
-        listDocumentRelevant = new HashSet<>();
-        listDocumentIrrelevant = new HashSet<>();
+        listDocumentRelevant = new ArrayList<>();
+        listDocumentIrrelevant = new ArrayList<>();
+        // Split relevant and irrelevant document from all user feedback
         for (Map.Entry m : listDocumentRelevances.getIsDocumentsRelevantList().entrySet()) {
             int indexDocument = (Integer) m.getKey();
             boolean isRelevant = (Boolean) m.getValue();
-           // System.out.println("Index Document : " + indexDocument);
             if (isRelevant) {
                 listDocumentRelevant.add(indexDocument);
             } else {
                 listDocumentIrrelevant.add(indexDocument);
             }
         }
-       /* Iterator iterator1 = listDocumentRelevant.iterator();
-        while (iterator1.hasNext()) {
-            System.out.println("Relevant Index Document : " + (Integer) iterator1.next());
+        // Remove irrelevant document in query relevance for this query
+        int thisIndexQuery = listDocumentRelevancesThisQuery.getQuery().getIndex();
+        for (Integer indexIrrelevantDocument : listDocumentIrrelevant) {
+            try {
+                updatedQueryRelevances.getListQueryRelevances().get(thisIndexQuery).remove(indexIrrelevantDocument);
+            } catch (Exception e) {
+
+            }
         }
-        Iterator iterator2 = listDocumentIrrelevant.iterator();
-        while (iterator2.hasNext()) {
-            System.out.println("Irrelevant Index Document : " + (Integer) iterator2.next());
-        }
-        System.out.println("==================================================================="); */
     }
 
     /**
@@ -128,6 +159,7 @@ public class RelevanceFeedback {
                 if (newWeight > 0) {
                     newQueryComposition.put(keyTerm,newWeight);
                     invertedFileQuery.insertRowTable(keyTerm,thisQueryIndex,newWeight);
+                    normalFileQuery.insertElement(thisQueryIndex,keyTerm);
                 }
             }
         }
@@ -166,7 +198,7 @@ public class RelevanceFeedback {
      * @param listDocumentsIrrelevant
      * @return
      */
-    private double findWeightTopIrrelevantDocument(String term,HashSet<Integer> listDocumentsIrrelevant) {
+    private double findWeightTopIrrelevantDocument(String term,ArrayList<Integer> listDocumentsIrrelevant) {
         int counter = 1;
         int topIndexDocumentIrrelevant = 0;
         Iterator iterator = listDocumentsIrrelevant.iterator();
@@ -184,9 +216,6 @@ public class RelevanceFeedback {
         } catch (Exception e) {
 
         }
-       /* System.out.println("Top index : " + topIndexDocumentIrrelevant);
-        System.out.println("Term : " + term);
-        System.out.println("Bobot : " + weight); */
         return weight;
     }
 
@@ -216,7 +245,7 @@ public class RelevanceFeedback {
      * @param listDocumentsSameType : relevant or irrelevant
      * @return
      */
-    private double computeSumWeightDocuments(String term, HashSet<Integer> listDocumentsSameType) {
+    private double computeSumWeightDocuments(String term, ArrayList<Integer> listDocumentsSameType) {
         double sumWeightDoc = 0.0;
         Iterator iterator = listDocumentsSameType.iterator();
         while (iterator.hasNext()) {
@@ -262,30 +291,20 @@ public class RelevanceFeedback {
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
         exp.evaluate(false);
 
+        /*
+        =======================================RELEVANCE FEEDBACK (NEW EKSPERIMENT) ============================================
+         */
+
         // ISI FORM RELEVANCE FEEDBACK (SEMUA QUERY)
-       /* for (Map.Entry m : exp.getResultMap().entrySet()) {
-            query Query = (query) m.getKey();
-            documentsRelevancesFeedback relevanceThisQuery = new documentsRelevancesFeedback(Query);
-            ConcurrentHashMap<document,Double> relation = (ConcurrentHashMap<document,Double>) m.getValue();
-            for (Map.Entry n : relation.entrySet()) {
-                document Document = (document) n.getKey();
-                if (Document.getIndex() % 2 == 0) {
-                    relevanceThisQuery.insertDocumentRelevance(Document.getIndex(),true);
-                } else {
-                    relevanceThisQuery.insertDocumentRelevance(Document.getIndex(),false);
-                }
-            }
-            listFeedbacksEachQueries.add(relevanceThisQuery);
-        } */
         ArrayList<documentsRelevancesFeedback> listFeedbacksEachQueries = new ArrayList<>();
         int counter = 0;
         for (SingleQueryEvaluation m : exp.getEvals()) {
             query Query = (query) wordProcessor.getListQueriesFinal().get(counter);
             documentsRelevancesFeedback relevances = new documentsRelevancesFeedback(Query);
             for (Integer index : m.getRetDocNums()) {
-                if (index % 2 == 0) {
+                if (index % 2 == 0) {       // Index dokumen genap : relevant
                     relevances.insertDocumentRelevance(index,true);
-                } else {
+                } else {                    // Index dokumen ganjil : irrelevant
                     relevances.insertDocumentRelevance(index,false);
                 }
             }
@@ -295,13 +314,25 @@ public class RelevanceFeedback {
 
 
         // RELEVANCE FEEDBACK (SEMUA QUERY)
-        indexTabel invertedFileQuery = wordProcessor.getInvertedFileQuery();        // Inverted File Di-update berkali-kali untuk setiap reformulasi queyr
+        // Inverted File dan Normal File untuk QUERY di-update berkali-kali untuk setiap reformulasi query
+        indexTabel invertedFileQuery = wordProcessor.getInvertedFileQuery();
+        normalTabel normalFileQuery = wordProcessor.getNormalFileQuery();
+        queryRelevances listQueriesRelevance = wordProcessor.getListQueryRelevancesFinal();
+        ArrayList<RelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
         for (documentsRelevancesFeedback relevance : listFeedbacksEachQueries) {
-            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), invertedFileQuery, wordProcessor.getNormalFileQuery(), relevance);
-            feedback.updateTermInThisQuery(3);
-            feedback.updateUnseenTermInThisQuery(3);
+            // Update inverted file and normal file query based on relevance feedback
+            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), invertedFileQuery, normalFileQuery, relevance,listQueriesRelevance);
+            feedback.updateTermInThisQuery(1);
+            feedback.updateUnseenTermInThisQuery(1);
+            listRelevanceFeedbackExperiment.add(feedback);
+            // Recursively assign inverted file and normal file query for next iteration
+            invertedFileQuery = feedback.getInvertedFileQuery();
+            normalFileQuery = feedback.getNormalFileQuery();
+            // Update new query into current list queries
             query newQuery = feedback.convertNewQueryComposition();
             wordProcessor.getListQueriesFinal().set((newQuery.getIndex()-1),newQuery);
+            // Update query relevances
+            listQueriesRelevance = feedback.getUpdatedQueryRelevances();
         }
 
         // LIST NEW QUERIES BASED ON RELEVANCE FEEDBACK
@@ -312,11 +343,19 @@ public class RelevanceFeedback {
         } */
 
         // RE-EKSPERIMENT AFTER RELEVANCE FEEDBACK
+        PreprocessWords newWordProcessor = new PreprocessWords();
+        newWordProcessor.setInvertedFile(wordProcessor.getInvertedFile());  // Tidak perlu diupdate
+        newWordProcessor.setInvertedFileQuery(invertedFileQuery);           // Sudah diupdate oleh relevance feedback
+        newWordProcessor.setNormalFile(wordProcessor.getNormalFile());      // Tidak perlu diupdate
+        newWordProcessor.setNormalFileQuery(normalFileQuery);               // Sudah diupdate oleh relevance feedback
+        newWordProcessor.setListQueryRelevancesFinal(listQueriesRelevance); // Sudah diupdate oleh relevance feedback
+
         Experiment exp2 = new Experiment();
-        exp2.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
-        exp2.setInvertedFileQuery(invertedFileQuery, false, false);
+        exp2.setWordProcessor(newWordProcessor,false);
+      /*  exp2.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
+        exp2.setInvertedFileQuery(invertedFileQuery,false,false);
         exp2.setNormalFile(wordProcessor.getNormalFile());
-        exp2.setNormalFileQuery(wordProcessor.getNormalFileQuery());
+        exp2.setNormalFileQuery(wordProcessor.getNormalFileQuery()); */
         exp2.evaluate(false);
         System.out.println(exp2.getSummary());
     }

@@ -21,14 +21,7 @@ public class PreprocessWords {
     private normalTabel normalFileQuery;
     private normalTabel normalFileQueryManual;
 
-    // COMPLEMENTER ATTRIBUTE
-    private ArrayList<Integer> listIndexDocuments;
-    private ArrayList<String> listTopicDocuments;
-    private ArrayList<String> listAuthorDocuments;
-    private ArrayList<String> listContentDocuments;
-
     // GETTER ATTRIBUTE
-
     public normalTabel getNormalFile() {
         return normalFile;
     }
@@ -66,13 +59,17 @@ public class PreprocessWords {
     public void setInvertedFile(indexTabel invertedFile) {
         this.invertedFile = invertedFile;
     }
-
     public void setNormalFile(normalTabel normalFile) {
         this.normalFile = normalFile;
     }
-
     public void setNormalFileQuery(normalTabel normalFileQuery) {
         this.normalFileQuery = normalFileQuery;
+    }
+    public void setListDocumentsFinal(ArrayList<document> listDocumentsFinal) {
+        this.listDocumentsFinal = listDocumentsFinal;
+    }
+    public void setListQueryRelevancesFinal(queryRelevances listQueryRelevancesFinal) {
+        this.listQueryRelevancesFinal = listQueryRelevancesFinal;
     }
 
     // CONSTRUCTOR
@@ -84,13 +81,63 @@ public class PreprocessWords {
         listQueriesFinal = new ArrayList<>();
         listDocumentsFinal = new ArrayList<>();
         listStopWordsFinal = new ArrayList<>();
-        listIndexDocuments = new ArrayList<>();
-        listTopicDocuments = new ArrayList<>();
-        listAuthorDocuments = new ArrayList<>();
-        listContentDocuments = new ArrayList<>();
         normalFile = new normalTabel();
         normalFileQuery = new normalTabel();
         normalFileQueryManual = new normalTabel();
+    }
+
+    /**
+     * Create new list of documents based on relevance feedback yields list of irrelevants documents
+     * @param listDocumentIrrelevant
+     * @return
+     */
+    public ArrayList<document> recreateDocumentList(ArrayList<Integer> listDocumentIrrelevant) {
+        ArrayList<document> newListDocuments = new ArrayList<>();
+        for (document Document : listDocumentsFinal) {
+            if (isDocumentRelevant(Document.getIndex(),listDocumentIrrelevant)) {
+                // Tambahkan ke list document baru jika ternyata tidak termasuk dokumen irrelevant
+                newListDocuments.add(Document);
+            }
+        }
+        return newListDocuments;
+    }
+
+    /**
+     * Create new query relevances based on relevance feedback yields list of irrelevant documents
+     * @param listDocumentIrrelevant
+     * @return
+     */
+    public queryRelevances recreateQueryRelevances(ArrayList<Integer> listDocumentIrrelevant) {
+        queryRelevances newListQueryRelevances = new queryRelevances();
+        for (Map.Entry m : listQueryRelevancesFinal.getListQueryRelevances().entrySet()) {
+            int indexQuery = (Integer) m.getKey();
+            ArrayList<Integer> listDocumentRelevant = (ArrayList) m.getValue();
+            for (int indexDocument : listDocumentRelevant) {
+                if (isDocumentRelevant(indexDocument,listDocumentIrrelevant)) {
+                    // Tambahkan ke query relevance yang baru jika document relevant
+                    newListQueryRelevances.insertQueryRelevances(indexQuery,indexDocument);
+                }
+            }
+        }
+        return newListQueryRelevances;
+    }
+
+    /**
+     * Check if document with indexDocument appears in list of irrelevant documents
+     * @param indexDocument
+     * @param listDocumentIrrelevant
+     * @return
+     */
+    public boolean isDocumentRelevant(int indexDocument, ArrayList<Integer> listDocumentIrrelevant) {
+        boolean isRelevant = true;
+        Iterator iterator = listDocumentIrrelevant.iterator();
+        while (iterator.hasNext()) {
+            int indexIrrelevant = (Integer) iterator.next();
+            if (indexDocument == indexIrrelevant) {
+                isRelevant = false;
+            }
+        }
+        return isRelevant;
     }
 
     /**
@@ -147,27 +194,6 @@ public class PreprocessWords {
      */
     public void loadIndexTabelForQueries(boolean isStemmingApplied) {
         loadQueriesFinal(true,isStemmingApplied);
-    }
-
-    /**
-     * Save documents segments from eksternal database into memory
-     */
-    private void loadDocumentsPerSegments() {
-        EksternalFile file = new EksternalFile();
-        file.loadListOfDocumentsPart(file.readDocuments("documents"));
-        Iterator rawSegmentsDocuments = file.getListPartStringBetweenTokens().iterator();
-        while (rawSegmentsDocuments.hasNext()) {
-            String rawSegments = (String) rawSegmentsDocuments.next();
-            if (rawSegments.contains(file.INDEX_TOKEN)) {
-                listIndexDocuments.add(Integer.parseInt(rawSegments.replace(file.INDEX_TOKEN, "")));
-            } else if (rawSegments.contains(file.JUDUL_TOKEN)) {
-                listTopicDocuments.add(rawSegments.replace(file.JUDUL_TOKEN, ""));
-            } else if (rawSegments.contains(file.AUTHOR_TOKEN)) {
-                listAuthorDocuments.add(rawSegments.replace(file.AUTHOR_TOKEN, ""));
-            } else if (rawSegments.contains(file.KONTEN_TOKEN)) {
-                listContentDocuments.add(rawSegments.replace(file.KONTEN_TOKEN, ""));
-            }
-        }
     }
 
     /**

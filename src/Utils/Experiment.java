@@ -24,6 +24,7 @@ public class Experiment {
     indexTabel invertedFileQuery;
     ConcurrentHashMap<query, ConcurrentHashMap<document, Double> > resultMap;
 
+    // GETTER - GETTER
     public ConcurrentHashMap<query, ConcurrentHashMap<document, Double>> getResultMap() {
         return resultMap;
     }
@@ -43,6 +44,7 @@ public class Experiment {
     }
     public indexTabel getInvertedFileQuery() { return wordProcessor.getInvertedFileQuery(); }
 
+    // SETTER-SETTER
     public void setInvertedFile (indexTabel idxTable, boolean isInvertedFileCreated, boolean isStemmingApplied) {
         wordProcessor.setInvertedFile(idxTable);
         wordProcessor.loadDocumentsFinal(isInvertedFileCreated,isStemmingApplied);
@@ -59,6 +61,14 @@ public class Experiment {
     public void setNormalFileQuery (normalTabel normalFileQuery) {
         wordProcessor.setNormalFileQuery(normalFileQuery);
     }
+
+    public void setWordProcessor(PreprocessWords wordProcessor, boolean isStemmingApplied) {
+        this.wordProcessor = wordProcessor;
+        wordProcessor.loadQueriesFinal(false,isStemmingApplied);
+        wordProcessor.loadDocumentsFinal(false,isStemmingApplied);
+    }
+
+    // FUNGSI-FUNGSI
 
     public void processDocuments(int tfcode, int idfcode, boolean stem) {
         System.out.println("Indexing documents...");
