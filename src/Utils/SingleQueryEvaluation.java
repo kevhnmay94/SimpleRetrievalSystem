@@ -25,6 +25,10 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
     // Retrieved document yg relevan
     ConcurrentHashMap <Integer, Boolean> relDocMap;
 
+    public ArrayList<Integer> getRetDocNums() {
+        return retDocNums;
+    }
+
     // Konstruktor - konstruktor
     public SingleQueryEvaluation() {}
 

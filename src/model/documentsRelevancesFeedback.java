@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 public class documentsRelevancesFeedback {
     private HashMap<Integer,Boolean> isDocumentsRelevantList;
     private query Query;
+    private int topDocumentsNumber;
 
     // GETTER AND SETTER
     public HashMap<Integer, Boolean> getIsDocumentsRelevantList() {
@@ -28,15 +29,33 @@ public class documentsRelevancesFeedback {
         Query = query;
     }
 
-    // CONSTRUCTOR
+    public int getTopDocumentsNumber() {
+        return topDocumentsNumber;
+    }
+
+    public void setTopDocumentsNumber(int topDocumentsNumber) {
+        this.topDocumentsNumber = topDocumentsNumber;
+    }
+
+    // CONSTRUCTOR 1
     public documentsRelevancesFeedback() {
         isDocumentsRelevantList = new HashMap<>();
         Query = new query(0,"computer science");
+        topDocumentsNumber = 0;
     }
 
+    // CONSTRUCTOR 2
     public documentsRelevancesFeedback(query Query) {
         isDocumentsRelevantList = new HashMap<>();
         this.Query = Query;
+        topDocumentsNumber = 0;
+    }
+
+    // CONSTRUCTOR 3
+    public documentsRelevancesFeedback(query Query, int topDocumentsNumber) {
+        isDocumentsRelevantList = new HashMap<>();
+        this.Query = Query;
+        this.topDocumentsNumber = topDocumentsNumber;
     }
 
     // INSERT ELEMENT

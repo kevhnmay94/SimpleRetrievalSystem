@@ -24,6 +24,14 @@ public class Experiment {
     indexTabel invertedFileQuery;
     ConcurrentHashMap<query, ConcurrentHashMap<document, Double> > resultMap;
 
+    public ConcurrentHashMap<query, ConcurrentHashMap<document, Double>> getResultMap() {
+        return resultMap;
+    }
+
+    public ArrayList<SingleQueryEvaluation> getEvals() {
+        return evals;
+    }
+
     public Experiment() {
         evals = new ArrayList<>();
         wordProcessor = new PreprocessWords();
@@ -143,15 +151,15 @@ public class Experiment {
 
     public static void main(String[] args) {
         // Setting awal awal
-       /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");*/
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
-        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+       /* EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
         EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
 
         int[] tfcode = {0, 1, 2, 3, 4};
         String[] stringTfcode = {"no", "raw", "log", "bin", "aug"};

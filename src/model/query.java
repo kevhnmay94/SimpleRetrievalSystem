@@ -16,6 +16,10 @@ public class query {
         return index;
     }
 
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     public String getQueryContent() {
         return queryContent;
     }
