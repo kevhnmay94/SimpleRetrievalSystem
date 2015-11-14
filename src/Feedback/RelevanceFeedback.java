@@ -303,9 +303,6 @@ public class RelevanceFeedback {
             // Recursively assign inverted file and normal file query for next iteration
             invertedFileQuery = feedback.getInvertedFileQuery();
             normalFileQuery = feedback.getNormalFileQuery();
-            // Update new query into current list queries
-            query newQuery = feedback.convertNewQueryComposition();
-            wordProcessor.getListQueriesFinal().set((newQuery.getIndex()-1),newQuery);
         }
 
         // LIST NEW QUERIES BASED ON RELEVANCE FEEDBACK
