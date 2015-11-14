@@ -87,39 +87,37 @@ public class PreprocessWords {
     }
 
     /**
-     * Create new list of documents based on relevance feedback yields list of irrelevants documents
+     * Update list of documents based on relevance feedback yields list of irrelevants documents
      * @param listDocumentIrrelevant
-     * @return
      */
-    public ArrayList<document> recreateDocumentList(ArrayList<Integer> listDocumentIrrelevant) {
-        ArrayList<document> newListDocuments = new ArrayList<>();
-        for (document Document : listDocumentsFinal) {
-            if (isDocumentRelevant(Document.getIndex(),listDocumentIrrelevant)) {
-                // Tambahkan ke list document baru jika ternyata tidak termasuk dokumen irrelevant
-                newListDocuments.add(Document);
-            }
+    public void recreateDocumentList(ArrayList<Integer> listDocumentIrrelevant) {
+        Iterator listDocuments = listDocumentIrrelevant.iterator();
+        while (listDocuments.hasNext()) {
+            int indexDocument = (Integer) listDocuments.next();
+            // Hapus dari list of documents : dokumen irrelevant
+            listDocumentsFinal.remove(indexDocument-1);
         }
-        return newListDocuments;
     }
 
     /**
-     * Create new query relevances based on relevance feedback yields list of irrelevant documents
+     * Update query relevances based on relevance feedback yields list of irrelevant documents
+     * @param Query
      * @param listDocumentIrrelevant
-     * @return
      */
-    public queryRelevances recreateQueryRelevances(ArrayList<Integer> listDocumentIrrelevant) {
-        queryRelevances newListQueryRelevances = new queryRelevances();
-        for (Map.Entry m : listQueryRelevancesFinal.getListQueryRelevances().entrySet()) {
-            int indexQuery = (Integer) m.getKey();
-            ArrayList<Integer> listDocumentRelevant = (ArrayList) m.getValue();
-            for (int indexDocument : listDocumentRelevant) {
-                if (isDocumentRelevant(indexDocument,listDocumentIrrelevant)) {
-                    // Tambahkan ke query relevance yang baru jika document relevant
-                    newListQueryRelevances.insertQueryRelevances(indexQuery,indexDocument);
-                }
-            }
+    public void recreateQueryRelevances(query Query, ArrayList<Integer> listDocumentIrrelevant) {
+        Iterator listDocuments = listDocumentIrrelevant.iterator();
+        while (listDocuments.hasNext()) {
+            int indexDocument = (Integer) listDocuments.next();
+            listQueryRelevancesFinal.getListQueryRelevances().get(Query.getIndex()).remove(indexDocument);
         }
-        return newListQueryRelevances;
+    }
+
+    /**
+     * Update old query list based on new query produced by relevance feedback
+     * @param newQuery
+     */
+    public void recreateQueryList(query newQuery) {
+        listQueriesFinal.get(newQuery.getIndex()-1).setQueryContent(newQuery.getQueryContent());
     }
 
     /**

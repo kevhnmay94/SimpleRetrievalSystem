@@ -19,7 +19,6 @@ public class RelevanceFeedback {
     ArrayList<Integer> listDocumentIrrelevant;
     documentsRelevancesFeedback listDocumentRelevancesThisQuery;
     HashMap<String,Double> newQueryComposition;
-    queryRelevances updatedQueryRelevances;
 
     // GETTER ATTRIBUTE
 
@@ -43,22 +42,10 @@ public class RelevanceFeedback {
         return normalFileQuery;
     }
 
-    public queryRelevances getUpdatedQueryRelevances() {
-        return updatedQueryRelevances;
-    }
-
-    /**
-     * Getter for list of irrelevant documents according to user
-     * @return
-     */
     public ArrayList<Integer> getListDocumentIrrelevant() {
         return listDocumentIrrelevant;
     }
 
-    /**
-     * Getter for list feedback from user for this query
-     * @return
-     */
     public documentsRelevancesFeedback getListDocumentRelevancesThisQuery() {
         return listDocumentRelevancesThisQuery;
     }
@@ -69,16 +56,14 @@ public class RelevanceFeedback {
      * @param invertedFileQuery
      * @param normalFileQuery
      * @param listDocumentRelevances
-     * @param updatedQueryRelevances
      */
     public RelevanceFeedback(indexTabel invertedFile, indexTabel invertedFileQuery, normalTabel normalFileQuery,
-                             documentsRelevancesFeedback listDocumentRelevances, queryRelevances updatedQueryRelevances)
+                             documentsRelevancesFeedback listDocumentRelevances) //, queryRelevances updatedQueryRelevances)
     {
         this.invertedFile = invertedFile;
         this.invertedFileQuery = invertedFileQuery;
         this.normalFileQuery = normalFileQuery;
         this.listDocumentRelevancesThisQuery = listDocumentRelevances;
-        this.updatedQueryRelevances = updatedQueryRelevances;
         newQueryComposition = new HashMap<>();
         listDocumentRelevant = new ArrayList<>();
         listDocumentIrrelevant = new ArrayList<>();
@@ -90,15 +75,6 @@ public class RelevanceFeedback {
                 listDocumentRelevant.add(indexDocument);
             } else {
                 listDocumentIrrelevant.add(indexDocument);
-            }
-        }
-        // Remove irrelevant document in query relevance for this query
-        int thisIndexQuery = listDocumentRelevancesThisQuery.getQuery().getIndex();
-        for (Integer indexIrrelevantDocument : listDocumentIrrelevant) {
-            try {
-                updatedQueryRelevances.getListQueryRelevances().get(thisIndexQuery).remove(indexIrrelevantDocument);
-            } catch (Exception e) {
-
             }
         }
     }
@@ -317,11 +293,10 @@ public class RelevanceFeedback {
         // Inverted File dan Normal File untuk QUERY di-update berkali-kali untuk setiap reformulasi query
         indexTabel invertedFileQuery = wordProcessor.getInvertedFileQuery();
         normalTabel normalFileQuery = wordProcessor.getNormalFileQuery();
-        queryRelevances listQueriesRelevance = wordProcessor.getListQueryRelevancesFinal();
         ArrayList<RelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
         for (documentsRelevancesFeedback relevance : listFeedbacksEachQueries) {
             // Update inverted file and normal file query based on relevance feedback
-            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), invertedFileQuery, normalFileQuery, relevance,listQueriesRelevance);
+            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), invertedFileQuery, normalFileQuery, relevance);
             feedback.updateTermInThisQuery(1);
             feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
@@ -331,8 +306,6 @@ public class RelevanceFeedback {
             // Update new query into current list queries
             query newQuery = feedback.convertNewQueryComposition();
             wordProcessor.getListQueriesFinal().set((newQuery.getIndex()-1),newQuery);
-            // Update query relevances
-            listQueriesRelevance = feedback.getUpdatedQueryRelevances();
         }
 
         // LIST NEW QUERIES BASED ON RELEVANCE FEEDBACK
@@ -343,20 +316,20 @@ public class RelevanceFeedback {
         } */
 
         // RE-EKSPERIMENT AFTER RELEVANCE FEEDBACK
-        PreprocessWords newWordProcessor = new PreprocessWords();
-        newWordProcessor.setInvertedFile(wordProcessor.getInvertedFile());  // Tidak perlu diupdate
-        newWordProcessor.setInvertedFileQuery(invertedFileQuery);           // Sudah diupdate oleh relevance feedback
-        newWordProcessor.setNormalFile(wordProcessor.getNormalFile());      // Tidak perlu diupdate
-        newWordProcessor.setNormalFileQuery(normalFileQuery);               // Sudah diupdate oleh relevance feedback
-        newWordProcessor.setListQueryRelevancesFinal(listQueriesRelevance); // Sudah diupdate oleh relevance feedback
-
-        Experiment exp2 = new Experiment();
-        exp2.setWordProcessor(newWordProcessor,false);
-      /*  exp2.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
-        exp2.setInvertedFileQuery(invertedFileQuery,false,false);
-        exp2.setNormalFile(wordProcessor.getNormalFile());
-        exp2.setNormalFileQuery(wordProcessor.getNormalFileQuery()); */
-        exp2.evaluate(false);
-        System.out.println(exp2.getSummary());
+        wordProcessor.setInvertedFile(wordProcessor.getInvertedFile());  // Tidak perlu diupdate
+        wordProcessor.setInvertedFileQuery(invertedFileQuery);           // Sudah diupdate oleh relevance feedback
+        wordProcessor.setNormalFile(wordProcessor.getNormalFile());      // Tidak perlu diupdate
+        wordProcessor.setNormalFileQuery(normalFileQuery);               // Sudah diupdate oleh relevance feedback
+        for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
+            query thisQuery = feedback.getListDocumentRelevancesThisQuery().getQuery();
+            query newQueryResult = feedback.convertNewQueryComposition();
+            // Untuk query ini, jumlah dokumen dalam koleksi dikurangi jumlah dokumen irrelevan menurut user
+            wordProcessor.recreateDocumentList(feedback.getListDocumentIrrelevant());
+            // Document yang relevant dengan query ini dikurangi jika termasuk dokumen irrelevan menurut user
+            wordProcessor.recreateQueryRelevances(thisQuery,feedback.getListDocumentIrrelevant());
+            // Query lama diupdate dengan query baru hasil relevance feedback method
+            wordProcessor.recreateQueryList(newQueryResult);
+            // EVALUASI DI SINI PER QUERY
+        }
     }
 }

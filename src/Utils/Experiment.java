@@ -37,6 +37,7 @@ public class Experiment {
         evals = new ArrayList<>();
         wordProcessor = new PreprocessWords();
         resultMap = new ConcurrentHashMap<>();
+
     }
 
     public indexTabel getInvertedFile() {
