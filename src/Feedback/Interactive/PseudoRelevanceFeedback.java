@@ -1,4 +1,4 @@
-package Feedback;
+package Feedback.Interactive;
 
 import model.*;
 

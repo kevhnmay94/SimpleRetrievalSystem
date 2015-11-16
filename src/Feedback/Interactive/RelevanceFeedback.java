@@ -1,12 +1,9 @@
-package Feedback;
+package Feedback.Interactive;
 
 import Utils.*;
 import model.*;
-import sample.Vars;
 
-import javax.management.Query;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by steve on 14/11/2015.
@@ -250,12 +247,12 @@ public class RelevanceFeedback {
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
-        wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus dokumen)
         TermsWeight.inverseDocumentWeighting(0, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY
-        wordProcessor.loadIndexTabelForQueries(false); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 

@@ -9,16 +9,32 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by steve on 07/10/2015.
  */
 public class indexTabel {
+    private boolean isStemmingApplied;
     private ConcurrentHashMap<String,termWeightingDocument> listTermWeights;
 
+    // GETTER DAN SETTER
     public ConcurrentHashMap<String,termWeightingDocument> getListTermWeights() {
         return listTermWeights;
     }
 
+    public boolean isStemmingApplied() {
+        return isStemmingApplied;
+    }
+
+    public void setStemmingApplied(boolean isStemmingApplied) {
+        this.isStemmingApplied = isStemmingApplied;
+    }
+
+    public void setListTermWeights(ConcurrentHashMap<String, termWeightingDocument> listTermWeights) {
+        this.listTermWeights = listTermWeights;
+    }
+
+    // CONSTRUCTOR
     public indexTabel() {
         listTermWeights = new ConcurrentHashMap<>();
     }
 
+    // INSERT NEW ELEMENT INVERTED FILE
     public void insertRowTable(String term, int indexDocument, double weight) {
         if (listTermWeights.containsKey(term)) {
             termWeightingDocument relation = listTermWeights.get(term);
