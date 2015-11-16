@@ -249,15 +249,24 @@ public class TermsWeight {
             System.out.println("====================================================================================");
         } */
 
-      /*  HashSet listWords = new HashSet();
-        listWords.add("aw");
-        listWords.add("aw");
-        listWords.add("hei");
-        listWords.add("hei");
-        listWords.add("ugh");
-        Iterator iterator = listWords.iterator();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next());
-        } */
+        ArrayList<Integer> listInteger = new ArrayList<>();
+        listInteger.add(66);
+        listInteger.add(67);
+        listInteger.add(68);
+        listInteger.add(69);
+        listInteger.add(70);
+        Iterator iterator1 = listInteger.iterator();
+        while (iterator1.hasNext()) {
+            System.out.println((Integer) iterator1.next());
+        }
+        System.out.println("bobo");
+        // Remove
+        ArrayList<Integer> listInteger2 = listInteger;
+        listInteger2.remove(0);
+        listInteger2.remove(2);
+        Iterator iterator2 = listInteger2.iterator();
+        while (iterator2.hasNext()) {
+            System.out.println((Integer) iterator2.next());
+        }
     }
 }

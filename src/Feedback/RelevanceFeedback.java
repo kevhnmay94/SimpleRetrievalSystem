@@ -291,42 +291,43 @@ public class RelevanceFeedback {
 
         // RELEVANCE FEEDBACK (SEMUA QUERY)
         // Inverted File dan Normal File untuk QUERY di-update berkali-kali untuk setiap reformulasi query
-        indexTabel invertedFileQuery = wordProcessor.getInvertedFileQuery();
-        normalTabel normalFileQuery = wordProcessor.getNormalFileQuery();
         ArrayList<RelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
         for (documentsRelevancesFeedback relevance : listFeedbacksEachQueries) {
             // Update inverted file and normal file query based on relevance feedback
-            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), invertedFileQuery, normalFileQuery, relevance);
+            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQuery(),
+                    wordProcessor.getNormalFileQuery(), relevance);
             feedback.updateTermInThisQuery(1);
-            feedback.updateUnseenTermInThisQuery(1);
+            //feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
-            // Recursively assign inverted file and normal file query for next iteration
-            invertedFileQuery = feedback.getInvertedFileQuery();
-            normalFileQuery = feedback.getNormalFileQuery();
         }
 
         // LIST NEW QUERIES BASED ON RELEVANCE FEEDBACK
-       /* for (query Query : (ArrayList<query>) wordProcessor.getListQueriesFinal()) {
-            System.out.println("Nomor Query : " + Query.getIndex());
-            System.out.println("Konten Query : " + Query.getQueryContent());
+        for (documentsRelevancesFeedback relevance : listFeedbacksEachQueries) {
+            query newQuery = relevance.getQuery();
+            System.out.println("Nomor Query : " + newQuery.getIndex());
+            System.out.println("Konten Query : " + newQuery.getQueryContent());
             System.out.println("===================================================================");
-        } */
+        }
 
         // RE-EKSPERIMENT AFTER RELEVANCE FEEDBACK
-        wordProcessor.setInvertedFile(wordProcessor.getInvertedFile());  // Tidak perlu diupdate
-        wordProcessor.setInvertedFileQuery(invertedFileQuery);           // Sudah diupdate oleh relevance feedback
-        wordProcessor.setNormalFile(wordProcessor.getNormalFile());      // Tidak perlu diupdate
-        wordProcessor.setNormalFileQuery(normalFileQuery);               // Sudah diupdate oleh relevance feedback
+      /*  ArrayList<document> newListDocumentForThisQuery = null;
         for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
-            query thisQuery = feedback.getListDocumentRelevancesThisQuery().getQuery();
+            query queryProcessed = feedback.getListDocumentRelevancesThisQuery().getQuery();
             query newQueryResult = feedback.convertNewQueryComposition();
-            // Untuk query ini, jumlah dokumen dalam koleksi dikurangi jumlah dokumen irrelevan menurut user
-            wordProcessor.recreateDocumentList(feedback.getListDocumentIrrelevant());
-            // Document yang relevant dengan query ini dikurangi jika termasuk dokumen irrelevan menurut user
-            wordProcessor.recreateQueryRelevances(thisQuery,feedback.getListDocumentIrrelevant());
-            // Query lama diupdate dengan query baru hasil relevance feedback method
-            wordProcessor.recreateQueryList(newQueryResult);
-            // EVALUASI DI SINI PER QUERY
-        }
+            newListDocumentForThisQuery = wordProcessor.recreateDocumentList(wordProcessor.getListDocumentsFinal(),feedback.getListDocumentIrrelevant());
+            queryRelevances newQueryRelevanceForThisQuery = wordProcessor.recreateQueryRelevances(queryProcessed,wordProcessor.getListQueryRelevancesFinal(),feedback.getListDocumentIrrelevant());
+            indexTabel newInvertedFileQuery = feedback.getInvertedFileQuery();
+            normalTabel newNormalFileQuery = feedback.getNormalFileQuery();
+
+            // CEK QUERY RELEVANCES
+            for (Map.Entry m : newQueryRelevanceForThisQuery.getListQueryRelevances().entrySet()) {
+                int thisQueryIndex = (Integer) m.getKey();
+                ArrayList<Integer> listDocumentRelevant = (ArrayList<Integer>) m.getValue();
+                for (Integer indexDocument : listDocumentRelevant) {
+                    System.out.println(indexDocument);
+                }
+                System.out.println("=========================================================================");
+            }
+        } */
     }
 }

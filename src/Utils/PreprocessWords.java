@@ -88,28 +88,46 @@ public class PreprocessWords {
 
     /**
      * Update list of documents based on relevance feedback yields list of irrelevants documents
+     * @param listDocumentsOld
      * @param listDocumentIrrelevant
+     * @return
      */
-    public void recreateDocumentList(ArrayList<Integer> listDocumentIrrelevant) {
+    public ArrayList<document> recreateDocumentList(ArrayList<document> listDocumentsOld, ArrayList<Integer> listDocumentIrrelevant) {
+        // Copy from this old document list
+        ArrayList<document> newDocumentList = new ArrayList<>();
+        // Buang dari dokumen list, dokumen yang termasuk irrelevant menurut user
         Iterator listDocuments = listDocumentIrrelevant.iterator();
         while (listDocuments.hasNext()) {
-            int indexDocument = (Integer) listDocuments.next();
-            // Hapus dari list of documents : dokumen irrelevant
-            listDocumentsFinal.remove(indexDocument-1);
+            int indexDocumentIrrelevant = (Integer) listDocuments.next();
+            if (isIrrelevantDocumentExist(indexDocumentIrrelevant,listDocumentsOld)) {
+                document Document = listDocumentsOld.get(indexDocumentIrrelevant-1);
+                newDocumentList.add(Document);
+            }
         }
+        return newDocumentList;
     }
 
     /**
      * Update query relevances based on relevance feedback yields list of irrelevant documents
      * @param Query
+     * @param queryRelevancesOld
      * @param listDocumentIrrelevant
+     * @return
      */
-    public void recreateQueryRelevances(query Query, ArrayList<Integer> listDocumentIrrelevant) {
+    public queryRelevances recreateQueryRelevances(query Query, queryRelevances queryRelevancesOld, ArrayList<Integer> listDocumentIrrelevant) {
+        // Copy from this old query relevances
+        queryRelevances newQueryRelevances = queryRelevancesOld;
+        // Hapus dokumen yang irrelevant menurut user terhadap Query
         Iterator listDocuments = listDocumentIrrelevant.iterator();
         while (listDocuments.hasNext()) {
             int indexDocument = (Integer) listDocuments.next();
-            listQueryRelevancesFinal.getListQueryRelevances().get(Query.getIndex()).remove(indexDocument);
+            try {
+                newQueryRelevances.getListQueryRelevances().get(Query.getIndex()).remove(indexDocument-1);
+            } catch (Exception e) {
+
+            }
         }
+        return newQueryRelevances;
     }
 
     /**
@@ -121,21 +139,22 @@ public class PreprocessWords {
     }
 
     /**
-     * Check if document with indexDocument appears in list of irrelevant documents
-     * @param indexDocument
-     * @param listDocumentIrrelevant
+     * Check if document with indexDocument appears in list of all document (adi / cisi)
+     * @param indexDocumentIrrelevant
+     * @param listDocumentsOld
      * @return
      */
-    public boolean isDocumentRelevant(int indexDocument, ArrayList<Integer> listDocumentIrrelevant) {
-        boolean isRelevant = true;
-        Iterator iterator = listDocumentIrrelevant.iterator();
+    public boolean isIrrelevantDocumentExist(int indexDocumentIrrelevant, ArrayList<document> listDocumentsOld) {
+        boolean isExist = false;
+        Iterator iterator = listDocumentsOld.iterator();
         while (iterator.hasNext()) {
-            int indexIrrelevant = (Integer) iterator.next();
-            if (indexDocument == indexIrrelevant) {
-                isRelevant = false;
+            document Document = (document) iterator.next();
+            if (Document.getIndex() == indexDocumentIrrelevant) {
+                isExist = true;
+                break;
             }
         }
-        return isRelevant;
+        return isExist;
     }
 
     /**
@@ -200,6 +219,7 @@ public class PreprocessWords {
      * @param isStemmingApplied
      */
     public void loadDocumentsFinal(boolean isInvertedFileCreated, boolean isStemmingApplied) {
+        listDocumentsFinal.clear();
         loadStopWordsFinal();
         EksternalFile file = new EksternalFile();
         file.loadListOfDocumentsPart(file.readDocuments("documents"));
@@ -279,6 +299,7 @@ public class PreprocessWords {
      * Load list of query relevances in documents from external source
      */
     public void loadQueryRelevancesFinal() {
+        listQueryRelevancesFinal.getListQueryRelevances().clear();
         EksternalFile file = new EksternalFile();
         file.loadQueryRelevances(file.readDocuments("qrels").toString());
         ArrayList<Integer> listQueryIndexes = new ArrayList<Integer>();
