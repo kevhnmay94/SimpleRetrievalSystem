@@ -10,8 +10,8 @@ import java.util.*;
  */
 public class RelevanceFeedback {
     indexTabel invertedFile;
-    indexTabel invertedFileQuery;
-    normalTabel normalFileQuery;
+    indexTabel invertedFileQueryManual;
+    normalTabel normalFileQueryManual;
     ArrayList<Integer> listDocumentRelevant;
     ArrayList<Integer> listDocumentIrrelevant;
     documentsRelevancesFeedback listDocumentRelevancesThisQuery;
@@ -23,8 +23,8 @@ public class RelevanceFeedback {
         return newQueryComposition;
     }
 
-    public indexTabel getInvertedFileQuery() {
-        return invertedFileQuery;
+    public indexTabel getInvertedFileQueryManual() {
+        return invertedFileQueryManual;
     }
 
     public ArrayList<Integer> getListDocumentRelevant() {
@@ -35,8 +35,8 @@ public class RelevanceFeedback {
         return invertedFile;
     }
 
-    public normalTabel getNormalFileQuery() {
-        return normalFileQuery;
+    public normalTabel getNormalFileQueryManual() {
+        return normalFileQueryManual;
     }
 
     public ArrayList<Integer> getListDocumentIrrelevant() {
@@ -50,16 +50,16 @@ public class RelevanceFeedback {
     /**
      * Constructor before Relevance Feedback Method implemented
      * @param invertedFile
-     * @param invertedFileQuery
-     * @param normalFileQuery
+     * @param invertedFileQueryManual
+     * @param normalFileQueryManual
      * @param listDocumentRelevances
      */
-    public RelevanceFeedback(indexTabel invertedFile, indexTabel invertedFileQuery, normalTabel normalFileQuery,
+    public RelevanceFeedback(indexTabel invertedFile, indexTabel invertedFileQueryManual, normalTabel normalFileQueryManual,
                              documentsRelevancesFeedback listDocumentRelevances) //, queryRelevances updatedQueryRelevances)
     {
         this.invertedFile = invertedFile;
-        this.invertedFileQuery = invertedFileQuery;
-        this.normalFileQuery = normalFileQuery;
+        this.invertedFileQueryManual = invertedFileQueryManual;
+        this.normalFileQueryManual = normalFileQueryManual;
         this.listDocumentRelevancesThisQuery = listDocumentRelevances;
         newQueryComposition = new HashMap<>();
         listDocumentRelevant = new ArrayList<>();
@@ -96,21 +96,23 @@ public class RelevanceFeedback {
      * with 3 options Relevance Feedback Method
      */
     public void updateTermInThisQuery(int relevanceFeedbackMethod) {
-        int thisQueryIndex = listDocumentRelevancesThisQuery.getQuery().getIndex();
-        HashSet<String> listTermsInQuery = normalFileQuery.getNormalFile().get(thisQueryIndex);
-        Iterator listTerms = listTermsInQuery.iterator();
-        while (listTerms.hasNext()) {
-            String keyTerm = (String) listTerms.next();
-            termWeightingDocument relation = invertedFileQuery.getListTermWeights().get(keyTerm);
+        query thisQuery = listDocumentRelevancesThisQuery.getQuery();
+        StringTokenizer token = new StringTokenizer(thisQuery.getQueryContent(), " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
+        while (token.hasMoreTokens()) {
+            String keyTerm = token.nextToken();
+            if (invertedFileQueryManual.isStemmingApplied()) {
+                keyTerm = StemmingPorter.stripAffixes(keyTerm);
+            }
             try {
-                if (relation.getDocumentWeightCounterInOneTerm().get(thisQueryIndex) != null) {
-                    double oldWeight = relation.getDocumentWeightCounterInOneTerm().get(thisQueryIndex).getWeight();
+                termWeightingDocument relation = invertedFileQueryManual.getListTermWeights().get(keyTerm);
+                if (relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()) != null) {
+                    double oldWeight = relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).getWeight();
                     double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,keyTerm,oldWeight);
                     if (newWeight > 0) {
                         newQueryComposition.put(keyTerm,newWeight);
-                        relation.getDocumentWeightCounterInOneTerm().get(thisQueryIndex).setWeight(newWeight);
+                        relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(newWeight);
                     } else {
-                        relation.getDocumentWeightCounterInOneTerm().get(thisQueryIndex).setWeight(0.0);
+                        relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(0.0);
                     }
                 }
             } catch (Exception e) {
@@ -131,8 +133,8 @@ public class RelevanceFeedback {
                 double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,keyTerm,0.0);
                 if (newWeight > 0) {
                     newQueryComposition.put(keyTerm,newWeight);
-                    invertedFileQuery.insertRowTable(keyTerm,thisQueryIndex,newWeight);
-                    normalFileQuery.insertElement(thisQueryIndex,keyTerm);
+                    invertedFileQueryManual.insertRowTable(keyTerm,thisQueryIndex,newWeight);
+                    normalFileQueryManual.insertElement(thisQueryIndex,keyTerm);
                 }
             }
         }
@@ -172,16 +174,9 @@ public class RelevanceFeedback {
      * @return
      */
     private double findWeightTopIrrelevantDocument(String term,ArrayList<Integer> listDocumentsIrrelevant) {
-        int counter = 1;
-        int topIndexDocumentIrrelevant = 0;
-        Iterator iterator = listDocumentsIrrelevant.iterator();
-        while (iterator.hasNext()) {
-            int indexDocument = (Integer) iterator.next();
-            if (counter == 1)
-                topIndexDocumentIrrelevant = indexDocument;
-            counter++;
-        }
+        int topIndexDocumentIrrelevant = listDocumentsIrrelevant.get(0);
         double weight = 0.0;
+
         try {
             if (invertedFile.getListTermWeights().get(term).getDocumentWeightCounterInOneTerm().get(topIndexDocumentIrrelevant) != null) {
                 weight = invertedFile.getListTermWeights().get(term).getDocumentWeightCounterInOneTerm().get(topIndexDocumentIrrelevant).getWeight();
@@ -200,7 +195,7 @@ public class RelevanceFeedback {
     private boolean isTermAppearInQuery(String term) {
         boolean isTermAppear = false;
         int thisQueryIndex = listDocumentRelevancesThisQuery.getQuery().getIndex();
-        HashSet<String> listTermsInQuery = normalFileQuery.getNormalFile().get(thisQueryIndex);
+        HashSet<String> listTermsInQuery = normalFileQueryManual.getNormalFile().get(thisQueryIndex);
         Iterator listTermsQuery = listTermsInQuery.iterator();
         while (listTermsQuery.hasNext()) {
             String keyTerm = ((String) listTermsQuery.next()).toLowerCase();

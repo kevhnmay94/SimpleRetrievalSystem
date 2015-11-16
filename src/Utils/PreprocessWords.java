@@ -199,7 +199,7 @@ public class PreprocessWords {
                 } else {
                     filteredWord = word;
                 }
-                invertedFileQueryManual.insertRowTable(filteredWord.toLowerCase(),0,1.0);
+                invertedFileQueryManual.insertRowTable(filteredWord.toLowerCase(),0,0.0);
                 normalFileQueryManual.insertElement(0,filteredWord.toLowerCase());
             }
         }
