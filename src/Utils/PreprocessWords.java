@@ -158,6 +158,27 @@ public class PreprocessWords {
     }
 
     /**
+     * Check if document with indexDocument relevant with this query with indexQuery
+     * According to qrels (ONLY used in experiment)
+     * @param indexDocument
+     * @param indexQuery
+     * @param relevances
+     * @return
+     */
+    public boolean isDocumentRelevantForThisQuery(int indexDocument, int indexQuery, queryRelevances relevances) {
+        boolean isRelevant = false;
+        if (relevances.getListQueryRelevances().get(indexQuery) != null) {
+            ArrayList<Integer> listDocumentRelevant = relevances.getListQueryRelevances().get(indexQuery);
+            for (Integer indexDocumentRelevant : listDocumentRelevant) {
+                if (indexDocumentRelevant == indexDocument) {
+                    isRelevant = true; break;
+                }
+            }
+        }
+        return isRelevant;
+    }
+
+    /**
      * Check if a word is stop word or not
      * @return boolean
      */
