@@ -302,8 +302,8 @@ public class RelevanceFeedback {
         }
 
         // LIST NEW QUERIES BASED ON RELEVANCE FEEDBACK
-        for (documentsRelevancesFeedback relevance : listFeedbacksEachQueries) {
-            query newQuery = relevance.getQuery();
+        for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
+            query newQuery = feedback.convertNewQueryComposition();
             System.out.println("Nomor Query : " + newQuery.getIndex());
             System.out.println("Konten Query : " + newQuery.getQueryContent());
             System.out.println("===================================================================");
