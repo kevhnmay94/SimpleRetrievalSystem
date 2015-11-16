@@ -198,7 +198,7 @@ public class RelevanceFeedback {
         StringTokenizer token = new StringTokenizer(thisQuery.getQueryContent(), " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
         while (token.hasMoreTokens()) {
             String keyTerm = token.nextToken();
-            if (normalFileQueryManual.isStemmingApplied()) {
+            if (invertedFile.isStemmingApplied()) {
                 keyTerm = StemmingPorter.stripAffixes(keyTerm);
             }
             if (term.equals(keyTerm.toLowerCase())) {

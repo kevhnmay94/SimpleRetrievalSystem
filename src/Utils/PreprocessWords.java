@@ -180,6 +180,8 @@ public class PreprocessWords {
      */
     public void loadIndexTabel(boolean isStemmingApplied) {
         loadDocumentsFinal(true,isStemmingApplied);
+        invertedFile.setStemmingApplied(isStemmingApplied);
+        normalFile.setStemmingApplied(isStemmingApplied);
     }
 
     /**
@@ -203,6 +205,8 @@ public class PreprocessWords {
                 normalFileQueryManual.insertElement(0,filteredWord.toLowerCase());
             }
         }
+        invertedFileQueryManual.setStemmingApplied(isStemmingApplied);
+        normalFileQueryManual.setStemmingApplied(isStemmingApplied);
     }
 
     /**
@@ -211,6 +215,8 @@ public class PreprocessWords {
      */
     public void loadIndexTabelForQueries(boolean isStemmingApplied) {
         loadQueriesFinal(true,isStemmingApplied);
+        invertedFileQuery.setStemmingApplied(isStemmingApplied);
+        normalFileQuery.setStemmingApplied(isStemmingApplied);
     }
 
     /**
