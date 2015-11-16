@@ -21,6 +21,10 @@ public class InputQuery {
     String query;
     double exectime;
 
+    public static ConcurrentHashMap<document, Double> getResult() {
+        return result;
+    }
+
     public InputQuery() {
         wordProcessor = new PreprocessWords();
     }

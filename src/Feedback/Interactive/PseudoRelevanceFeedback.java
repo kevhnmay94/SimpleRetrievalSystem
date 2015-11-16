@@ -15,6 +15,31 @@ public class PseudoRelevanceFeedback {
     HashMap<String,Double> newQueryComposition;
     documentsPseudoRelevanceFeedback listDocumentRetrievedForThisQuery;
 
+    // GETTER-GETTER
+    public indexTabel getInvertedFile() {
+        return invertedFile;
+    }
+
+    public documentsPseudoRelevanceFeedback getListDocumentRetrievedForThisQuery() {
+        return listDocumentRetrievedForThisQuery;
+    }
+
+    public indexTabel getInvertedFileQuery() {
+        return invertedFileQuery;
+    }
+
+    public normalTabel getNormalFileQuery() {
+        return normalFileQuery;
+    }
+
+    public ArrayList<Integer> getListDocumentsRelevant() {
+        return listDocumentsRelevant;
+    }
+
+    public HashMap<String, Double> getNewQueryComposition() {
+        return newQueryComposition;
+    }
+
     /**
      * Constructor
      * @param invertedFile

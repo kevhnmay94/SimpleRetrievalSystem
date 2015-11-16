@@ -1,6 +1,7 @@
 package Feedback.Interactive;
 
 import Utils.*;
+import jdk.internal.util.xml.impl.Input;
 import model.*;
 
 import java.util.*;
@@ -100,16 +101,19 @@ public class RelevanceFeedback {
         StringTokenizer token = new StringTokenizer(thisQuery.getQueryContent(), " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
         while (token.hasMoreTokens()) {
             String keyTerm = token.nextToken();
+            String filteredWord = "";
             if (invertedFileQueryManual.isStemmingApplied()) {
-                keyTerm = StemmingPorter.stripAffixes(keyTerm);
+                filteredWord = StemmingPorter.stripAffixes(keyTerm);
+            } else {
+                filteredWord = keyTerm;
             }
             try {
-                termWeightingDocument relation = invertedFileQueryManual.getListTermWeights().get(keyTerm);
+                termWeightingDocument relation = invertedFileQueryManual.getListTermWeights().get(filteredWord);
                 if (relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()) != null) {
                     double oldWeight = relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).getWeight();
-                    double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,keyTerm,oldWeight);
+                    double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,filteredWord,oldWeight);
                     if (newWeight > 0) {
-                        newQueryComposition.put(keyTerm,newWeight);
+                        newQueryComposition.put(filteredWord, newWeight);
                         relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(newWeight);
                     } else {
                         relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(0.0);
@@ -244,30 +248,42 @@ public class RelevanceFeedback {
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
-        wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus dokumen)
         TermsWeight.inverseDocumentWeighting(0, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY
-        wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
+        String contentQuery = "What problems and concerns are there in making up descriptive titles?  \n" +
+                "What difficulties are involved in automatically retrieving articles from \n" +
+                "approximate titles?  \n" +
+                "What is the usual relevance of the content of articles to their titles?";
+        wordProcessor.loadIndexTabelForManualQuery(contentQuery,false); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 
         // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY
-        Experiment exp = new Experiment();
+      /*  Experiment exp = new Experiment();
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
         exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, false);
         exp.setNormalFile(wordProcessor.getNormalFile());
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
-        exp.evaluate(false);
+        exp.evaluate(false); */
+        query manualQuery = new query(0,contentQuery);
+        InputQuery iq = new InputQuery();
+        iq.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
+        iq.setNormalFile(wordProcessor.getNormalFile());
+        iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false);
 
         /*
         =======================================RELEVANCE FEEDBACK (NEW EKSPERIMENT) ============================================
          */
 
-        // ISI FORM RELEVANCE FEEDBACK (SEMUA QUERY)
+        // ARRAY MENYIMPAN HASIL RELEVANCE FEEDBACK PER QUERY
         ArrayList<documentsRelevancesFeedback> listFeedbacksEachQueries = new ArrayList<>();
-        int counter = 0;
+
+        // ISI FORM RELEVANCE FEEDBACK (EKSPERIMENT)
+
+       /* int counter = 0;
         for (SingleQueryEvaluation m : exp.getEvals()) {
             query Query = (query) wordProcessor.getListQueriesFinal().get(counter);
             documentsRelevancesFeedback relevances = new documentsRelevancesFeedback(Query);
@@ -280,18 +296,29 @@ public class RelevanceFeedback {
             }
             listFeedbacksEachQueries.add(relevances);
             counter++;
-        }
+        } */
 
+        // ISI FORM RELEVANCE FEEDBACK (INTERACTIVE)
+        documentsRelevancesFeedback relevances = new documentsRelevancesFeedback(manualQuery);
+        for (Map.Entry m : InputQuery.getResult().entrySet()) {
+            document Document = (document) m.getKey();
+            if (Document.getIndex() % 2 == 0) {       // Index dokumen genap : relevant
+                relevances.insertDocumentRelevance(Document.getIndex(),true);
+            } else {                            // Index dokumen ganjil : irrelevant
+                relevances.insertDocumentRelevance(Document.getIndex(),false);
+            }
+        }
+        listFeedbacksEachQueries.add(relevances);
 
         // RELEVANCE FEEDBACK (SEMUA QUERY)
         // Inverted File dan Normal File untuk QUERY di-update berkali-kali untuk setiap reformulasi query
         ArrayList<RelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
         for (documentsRelevancesFeedback relevance : listFeedbacksEachQueries) {
             // Update inverted file and normal file query based on relevance feedback
-            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQuery(),
-                    wordProcessor.getNormalFileQuery(), relevance);
+            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQueryManual(),
+                    wordProcessor.getNormalFileQueryManual(), relevance);
             feedback.updateTermInThisQuery(1);
-            //feedback.updateUnseenTermInThisQuery(1);
+           // feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
         }
 
