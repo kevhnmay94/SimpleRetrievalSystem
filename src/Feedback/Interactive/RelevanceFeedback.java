@@ -194,11 +194,13 @@ public class RelevanceFeedback {
      */
     private boolean isTermAppearInQuery(String term) {
         boolean isTermAppear = false;
-        int thisQueryIndex = listDocumentRelevancesThisQuery.getQuery().getIndex();
-        HashSet<String> listTermsInQuery = normalFileQueryManual.getNormalFile().get(thisQueryIndex);
-        Iterator listTermsQuery = listTermsInQuery.iterator();
-        while (listTermsQuery.hasNext()) {
-            String keyTerm = ((String) listTermsQuery.next()).toLowerCase();
+        query thisQuery = listDocumentRelevancesThisQuery.getQuery();
+        StringTokenizer token = new StringTokenizer(thisQuery.getQueryContent(), " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
+        while (token.hasMoreTokens()) {
+            String keyTerm = token.nextToken();
+            if (normalFileQueryManual.isStemmingApplied()) {
+                keyTerm = StemmingPorter.stripAffixes(keyTerm);
+            }
             if (term.equals(keyTerm.toLowerCase())) {
                 isTermAppear = true;
                 break;
