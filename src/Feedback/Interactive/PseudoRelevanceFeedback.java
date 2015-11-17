@@ -82,7 +82,6 @@ public class PseudoRelevanceFeedback {
             }
             counter++;
         }
-        
     }
 
     /**
@@ -277,9 +276,9 @@ public class PseudoRelevanceFeedback {
         // RELEVANCE FEEDBACK (SEMUA QUERY)
         ArrayList<PseudoRelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
         for (documentsPseudoRelevanceFeedback relevance : listFeedbacksEachQueries) {
-            // Hati-hati inverted dan normal file query antara eksperiment / interactive harus benar
-            PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQuery(),
-                    wordProcessor.getNormalFileQuery(),relevance);
+            // HATI-HATI inverted dan normal file query antara eksperiment / interactive harus benar
+            PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQueryManual(),
+                    wordProcessor.getNormalFileQueryManual(),relevance);
             feedback.updateTermInThisQuery(1);
             //feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);

@@ -258,23 +258,23 @@ public class RelevanceFeedback {
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 
         // PROSES BUAT INVERTED FILE BUAT QUERY (INTERACTIVE)
-      /*  String contentQuery = "computer science";
+        String contentQuery = "computer science";
         wordProcessor.loadIndexTabelForManualQuery(contentQuery,false); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
-        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query */
+        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 
         // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY
-        Experiment exp = new Experiment();
+       /* Experiment exp = new Experiment();
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
         exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, false);
         exp.setNormalFile(wordProcessor.getNormalFile());
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
-        exp.evaluate(false);
-       /* query manualQuery = new query(0,contentQuery);
+        exp.evaluate(false); */
+        query manualQuery = new query(0,contentQuery);
         InputQuery iq = new InputQuery();
         iq.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
         iq.setNormalFile(wordProcessor.getNormalFile());
-        iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false); */
+        iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false);
 
         /*
         =======================================RELEVANCE FEEDBACK (NEW EKSPERIMENT) ============================================
@@ -284,7 +284,7 @@ public class RelevanceFeedback {
         ArrayList<documentsRelevancesFeedback> listFeedbacksEachQueries = new ArrayList<>();
 
         // ISI FORM RELEVANCE FEEDBACK (EKSPERIMENT)
-        wordProcessor.loadQueryRelevancesFinal();
+      /*  wordProcessor.loadQueryRelevancesFinal();
         queryRelevances thisQueryRelevances = wordProcessor.getListQueryRelevancesFinal();
         int counter = 0;
         for (SingleQueryEvaluation m : exp.getEvals()) {
@@ -299,10 +299,10 @@ public class RelevanceFeedback {
             }
             listFeedbacksEachQueries.add(relevances);
             counter++;
-        }
+        } */
 
         // ISI FORM RELEVANCE FEEDBACK (INTERACTIVE)
-       /* documentsRelevancesFeedback relevances = new documentsRelevancesFeedback(manualQuery);
+        documentsRelevancesFeedback relevances = new documentsRelevancesFeedback(manualQuery);
         for (Map.Entry m : InputQuery.getResult().entrySet()) {
             document Document = (document) m.getKey();
             if (Document.getIndex() % 2 == 0) {         // Index dokumen genap : relevant (Asumsi)
@@ -311,14 +311,14 @@ public class RelevanceFeedback {
                 relevances.insertDocumentRelevance(Document.getIndex(),false);
             }
         }
-        listFeedbacksEachQueries.add(relevances); */
+        listFeedbacksEachQueries.add(relevances);
 
         // RELEVANCE FEEDBACK (SEMUA QUERY)
         ArrayList<RelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
         for (documentsRelevancesFeedback relevance : listFeedbacksEachQueries) {
             // Hati-hati inverted dan normal file query antara eksperiment / interactive harus benar
-            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQuery(),
-                    wordProcessor.getNormalFileQuery(), relevance);
+            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQueryManual(),
+                    wordProcessor.getNormalFileQueryManual(), relevance);
             feedback.updateTermInThisQuery(1);
            // feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
