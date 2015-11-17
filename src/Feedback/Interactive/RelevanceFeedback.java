@@ -250,7 +250,7 @@ public class RelevanceFeedback {
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus dokumen)
-        TermsWeight.inverseDocumentWeighting(0, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
+        TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY (EKSPERIMENT)
         wordProcessor.loadIndexTabelForQueries(false); // True : stemming diberlakukan
@@ -258,10 +258,7 @@ public class RelevanceFeedback {
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 
         // PROSES BUAT INVERTED FILE BUAT QUERY (INTERACTIVE)
-      /*  String contentQuery = "What problems and concerns are there in making up descriptive titles?  \n" +
-                "What difficulties are involved in automatically retrieving articles from \n" +
-                "approximate titles?  \n" +
-                "What is the usual relevance of the content of articles to their titles?";
+      /*  String contentQuery = "computer science";
         wordProcessor.loadIndexTabelForManualQuery(contentQuery,false); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query */
@@ -295,9 +292,9 @@ public class RelevanceFeedback {
             documentsRelevancesFeedback relevances = new documentsRelevancesFeedback(Query);
             for (Integer index : m.getRetDocNums()) {
                 if (wordProcessor.isDocumentRelevantForThisQuery(index,Query.getIndex(),thisQueryRelevances)) {
-                    relevances.insertDocumentRelevance(index,true);
+                    relevances.insertDocumentRelevance(index, true);
                 } else {
-                    relevances.insertDocumentRelevance(index,false);
+                    relevances.insertDocumentRelevance(index, false);
                 }
             }
             listFeedbacksEachQueries.add(relevances);
@@ -332,6 +329,13 @@ public class RelevanceFeedback {
             query newQuery = feedback.convertNewQueryComposition();
             System.out.println("Nomor Query : " + newQuery.getIndex());
             System.out.println("Konten Query : " + newQuery.getQueryContent());
+            System.out.println("Bobot tiap term di query ini : ");
+            for (Map.Entry m : feedback.getNewQueryComposition().entrySet()) {
+                String term = (String) m.getKey();
+                double bobot = (Double) m.getValue();
+                System.out.println("Term : " + term);
+                System.out.println("Bobot : " + bobot);
+            }
             System.out.println("===================================================================");
         }
 
