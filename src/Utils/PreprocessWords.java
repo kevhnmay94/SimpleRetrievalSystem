@@ -277,6 +277,7 @@ public class PreprocessWords {
                                 filteredWord = currentWord;
                             }
                             invertedFile.insertRowTable(filteredWord.toLowerCase(), indexDocument, 0.0);
+                            invertedFile.insertStemmedTermNormalTermPair(filteredWord,currentWord);
                             normalFile.insertElement(indexDocument, filteredWord.toLowerCase());
                         }
                     }

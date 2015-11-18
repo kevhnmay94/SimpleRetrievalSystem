@@ -115,8 +115,10 @@ public class RelevanceFeedback {
                     if (newWeight > 0) {
                         newQueryComposition.put(filteredWord, newWeight);
                         relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(newWeight);
+                        System.out.println("woh");
                     } else {
                         relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(0.0);
+                        System.out.println("wah");
                     }
                 }
             } catch (Exception e) {
@@ -133,10 +135,16 @@ public class RelevanceFeedback {
         int thisQueryIndex = listDocumentRelevancesThisQuery.getQuery().getIndex();
         for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
             String keyTerm = (String) m.getKey();
-            if (!isTermAppearInQuery(keyTerm)) {
+            String filteredWord = "";
+            if (invertedFile.isStemmingApplied()) {
+                filteredWord = invertedFile.getMappingStemmedTermToNormalTerm().get(keyTerm);
+            } else {
+                filteredWord = keyTerm;
+            }
+            if (!isTermAppearInQuery(filteredWord)) {
                 double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,keyTerm,0.0);
                 if (newWeight > 0) {
-                    newQueryComposition.put(keyTerm,newWeight);
+                    newQueryComposition.put(filteredWord,newWeight);
                     invertedFileQueryManual.insertRowTable(keyTerm,thisQueryIndex,newWeight);
                     normalFileQueryManual.insertElement(thisQueryIndex,keyTerm);
                 }
@@ -248,18 +256,18 @@ public class RelevanceFeedback {
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
-        wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus dokumen)
         TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY (EKSPERIMENT)
-        wordProcessor.loadIndexTabelForQueries(false); // True : stemming diberlakukan
+       /* wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
-        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
+        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query */
 
         // PROSES BUAT INVERTED FILE BUAT QUERY (INTERACTIVE)
         String contentQuery = "computer science";
-        wordProcessor.loadIndexTabelForManualQuery(contentQuery,false); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabelForManualQuery(contentQuery,true); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 
@@ -320,7 +328,7 @@ public class RelevanceFeedback {
             RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQueryManual(),
                     wordProcessor.getNormalFileQueryManual(), relevance);
             feedback.updateTermInThisQuery(1);
-           // feedback.updateUnseenTermInThisQuery(1);
+            feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
         }
 

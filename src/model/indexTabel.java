@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by steve on 07/10/2015.
  */
 public class indexTabel {
+    private HashMap<String,String> mappingStemmedTermToNormalTerm;
     private boolean isStemmingApplied;
     private ConcurrentHashMap<String,termWeightingDocument> listTermWeights;
 
@@ -29,9 +30,18 @@ public class indexTabel {
         this.listTermWeights = listTermWeights;
     }
 
+    public HashMap<String, String> getMappingStemmedTermToNormalTerm() {
+        return mappingStemmedTermToNormalTerm;
+    }
+
+    public void setMappingStemmedTermToNormalTerm(HashMap<String, String> mappingStemmedTermToNormalTerm) {
+        this.mappingStemmedTermToNormalTerm = mappingStemmedTermToNormalTerm;
+    }
+
     // CONSTRUCTOR
     public indexTabel() {
         listTermWeights = new ConcurrentHashMap<>();
+        mappingStemmedTermToNormalTerm = new HashMap<>();
     }
 
     // INSERT NEW ELEMENT INVERTED FILE
@@ -50,6 +60,11 @@ public class indexTabel {
             newRelation.insertNewDocument(indexDocument, weight, 1);
             listTermWeights.put(term, newRelation);
         }
+    }
+
+    // INSERT STEM TERM MAPPING ELEMENT
+    public void insertStemmedTermNormalTermPair(String stemmedTerm, String normalTerm) {
+        mappingStemmedTermToNormalTerm.put(stemmedTerm,normalTerm);
     }
 
     public static void main(String[] arg) {
