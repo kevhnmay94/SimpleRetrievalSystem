@@ -1,8 +1,8 @@
 package sample;
 
+import Utils.Experiment;
 import javafx.stage.Stage;
 import model.indexTabel;
-import model.indexTabelQuery;
 import model.normalTabel;
 
 /**
