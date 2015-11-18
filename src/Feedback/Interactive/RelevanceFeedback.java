@@ -108,7 +108,7 @@ public class RelevanceFeedback {
                 filteredWord = keyTerm;
             }
             try {
-                termWeightingDocument relation = invertedFileQueryManual.getListTermWeights().get(filteredWord);
+                termWeightingDocument relation = invertedFileQueryManual.getListTermWeights().get(keyTerm);
                 if (relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()) != null) {
                     double oldWeight = relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).getWeight();
                     double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,filteredWord,oldWeight);
@@ -280,7 +280,7 @@ public class RelevanceFeedback {
         exp.evaluate(false); */
         query manualQuery = new query(0,contentQuery);
         InputQuery iq = new InputQuery();
-        iq.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
+        iq.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
         iq.setNormalFile(wordProcessor.getNormalFile());
         iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false);
 
@@ -328,7 +328,7 @@ public class RelevanceFeedback {
             RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQueryManual(),
                     wordProcessor.getNormalFileQueryManual(), relevance);
             feedback.updateTermInThisQuery(1);
-            feedback.updateUnseenTermInThisQuery(1);
+            // feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
         }
 
