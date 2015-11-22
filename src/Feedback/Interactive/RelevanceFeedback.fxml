@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="622.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Interface1Controller">
+    <children>
+        <Separator layoutX="185.0" layoutY="291.0" prefHeight="4.0" prefWidth="384.0" />
+        <Button fx:id="startIndex" layoutX="228.0" layoutY="565.0" mnemonicParsing="false" onAction="#handleStartIndex" text="Set Relevance Feedback" />
+        <Label layoutX="25.0" layoutY="284.0" text="Relevance Feedback Settings" />
+        <Separator layoutX="115.0" layoutY="21.0" prefHeight="4.0" prefWidth="454.0" />
+        <Label layoutX="25.0" layoutY="14.0" text="Retrieval Result" />
+      <ScrollPane layoutX="25.0" layoutY="70.0" prefHeight="200.0" prefWidth="547.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="535.0">
+               <children>
+                  <Label layoutX="25.0" layoutY="8.0" text="1" />
+                  <Label layoutX="150.0" layoutY="8.0" text="D1" />
+                  <Label layoutX="150.0" layoutY="30.0" text="D10" />
+                  <Label layoutX="25.0" layoutY="30.0" text="2" />
+                  <RadioButton layoutX="342.0" layoutY="8.0" mnemonicParsing="false" />
+                  <RadioButton layoutX="446.0" layoutY="8.0" mnemonicParsing="false" />
+                  <RadioButton layoutX="446.0" layoutY="30.0" mnemonicParsing="false" />
+                  <RadioButton layoutX="342.0" layoutY="30.0" mnemonicParsing="false" />
+                  <RadioButton layoutX="342.0" layoutY="52.0" mnemonicParsing="false" />
+                  <RadioButton layoutX="446.0" layoutY="52.0" mnemonicParsing="false" />
+                  <Label layoutX="25.0" layoutY="52.0" text="3" />
+                  <Label layoutX="150.0" layoutY="52.0" text="D20" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <Label layoutX="134.0" layoutY="45.0" text="Document Number" />
+      <Label layoutX="47.0" layoutY="45.0" text="No." />
+      <Label layoutX="354.0" layoutY="45.0" text="Relevant" />
+      <Label layoutX="457.0" layoutY="45.0" text="Irrelevant" />
+      <Label layoutX="25.0" layoutY="311.0" text="Method" underline="true" />
+      <RadioButton layoutX="33.0" layoutY="333.0" mnemonicParsing="false" text="Rocchio" />
+      <RadioButton layoutX="33.0" layoutY="358.0" mnemonicParsing="false" text="Ide Regular" />
+      <RadioButton layoutX="33.0" layoutY="383.0" mnemonicParsing="false" text="Ide Dec-Hi" />
+      <RadioButton layoutX="35.0" layoutY="496.0" mnemonicParsing="false" text="Different document location" />
+      <RadioButton layoutX="35.0" layoutY="471.0" mnemonicParsing="false" text="The same as first retrieval" />
+      <Label layoutX="27.0" layoutY="449.0" text="Document Collection" underline="true" />
+      <TextField layoutX="225.0" layoutY="492.0" prefHeight="25.0" prefWidth="344.0" />
+      <Button layoutX="473.0" layoutY="492.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Choose file..." />
+      <Label layoutX="28.0" layoutY="417.0" text="Top-N" />
+      <TextField layoutX="83.0" layoutY="413.0" prefHeight="25.0" prefWidth="90.0" />
+    </children>
+</AnchorPane>
