@@ -1,0 +1,11 @@
+The standard indexed version of the npl collection that has been floating
+around for years is in
+	indexed_npl.doc
+	indexed_npl.query
+	indexed_npl.rel
+Bruce Croft and Karen Spark-Jones dug up the original text form of the
+collection which is in 
+	npl.dat
+	npl.qry
+	npl.rel
+(Both forms are document file, query file, relevance judgement file)

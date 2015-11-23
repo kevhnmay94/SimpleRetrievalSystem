@@ -1,0 +1,105 @@
+#
+set database = ~smart/indexed_colls/cacm
+set lib = ~smart/lib
+
+cat > index_spec << EOF1
+database $database
+current_ctype  0
+    ctype_storage  vector
+current_ctype  1
+    ctype_storage  vector
+current_ctype  2
+    ctype_storage  vector
+current_ctype  3
+    ctype_storage  vector
+    ctype_stop  common_words
+    ctype_stem  full
+current_ctype  4
+    ctype_storage  vector
+current_ctype  5
+    ctype_storage  vector
+current_ctype  6
+    ctype_storage  vector
+current_section  i
+    section_parsing_method  begin
+current_section  t
+    section_parsing_method  full
+    token_word  3
+    token_proper_noun  3
+current_section  a
+    section_parsing_method  name
+    token_word  0
+current_section  b
+    section_parsing_method  full
+    token_date  2
+current_section  w
+    section_parsing_method  full
+    token_word  3
+    token_proper_noun  3
+current_section  c
+    section_parsing_method  full
+    token_number  1
+current_section  k
+    section_parsing_method  sequences of tokens
+    token_word  3
+current_section  n
+current_section  x
+    section_parsing_method  asis
+    token_word	4
+current_section  o
+    section_parsing_method  end_doc
+
+title_section  t
+display_format %t\n%a\n%w\n%b\n%c\n%k\n
+doc_weight_tf   none
+doc_weight_coll none
+doc_weight_norm none
+query_weight_tf   none
+query_weight_coll none
+query_weight_norm none
+EOF1
+
+cat > ret_spec << EOF2
+database $database
+collection_sim inverted
+EOF2
+
+cat > fdbk_spec << EOF3
+database $database
+EOF3
+
+
+smart_create $database << EOF
+40009
+index_spec
+ret_spec
+pre_parser
+qry_spec
+$lib/common_words
+
+EOF
+echo $cwd/cacm.all | smart_enter $database
+echo query.text | ./pre_parser | creat_index index_spec -n 1 \
+	    | look_text index_spec query_coll $database/tf_query
+rel_to_rr $database/qrels < qrels.text
+
+mv $database/doc $database/tf_doc
+mv $database/doc.var $database/tf_doc.var
+
+cnvrt_vec_wt $database/dict $database/tf_doc $database/doc.atc atc
+cnvrt_vec_wt -d $database/tf_doc $database/dict $database/tf_query $database/query.atc atc
+
+cd $database
+vec_to_inv doc.atc inv.atc
+
+ln doc.atc doc
+ln doc.atc.var doc.var
+ln query.atc query
+ln query.atc.var query.var
+
+/bin/rm -f inv inv.var
+ln inv.atc inv
+ln inv.atc.var inv.var
+
+
+time
