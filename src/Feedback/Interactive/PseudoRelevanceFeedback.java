@@ -212,13 +212,30 @@ public class PseudoRelevanceFeedback {
 
     public static void main(String[] arg) {
         PreprocessWords wordProcessor = new PreprocessWords();
+        // CISI
        /* EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
         EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        // ADI
+       /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        // CRAN
+      /*  EksternalFile.setPathDocumentsFile("test\\CRAN\\CRAN.all");
+        EksternalFile.setPathQueriesFile("test\\CRAN\\QUERYADG");
+        EksternalFile.setPathQrelsFile("test\\CRAN\\QRELSADE");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        // MED
+       /* EksternalFile.setPathDocumentsFile("test\\MED\\MED.all");
+        EksternalFile.setPathQueriesFile("test\\MED\\QUERYABW");
+        EksternalFile.setPathQrelsFile("test\\MED\\QRELSABT");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        // NPL
+        EksternalFile.setPathDocumentsFile("test\\NPL\\NPL.all");
+        EksternalFile.setPathQueriesFile("test\\NPL\\QUERYACB");
+        EksternalFile.setPathQrelsFile("test\\NPL\\QRELSACA");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
@@ -281,7 +298,10 @@ public class PseudoRelevanceFeedback {
         // RELEVANCE FEEDBACK (SEMUA QUERY)
         ArrayList<PseudoRelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
         for (documentsPseudoRelevanceFeedback relevance : listFeedbacksEachQueries) {
-            // HATI-HATI inverted dan normal file query antara eksperiment / interactive harus benar
+            // EKSPERIMEN SAJA
+            /*PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQuery(),
+                    wordProcessor.getNormalFileQuery(),relevance); */
+            // INTERACTIVE SAJA
             PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQueryManual(),
                     wordProcessor.getNormalFileQueryManual(),relevance);
             feedback.updateTermInThisQuery(1);

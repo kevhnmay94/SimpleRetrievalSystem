@@ -303,8 +303,13 @@ public class EksternalFile {
     }
 
     public static void main(String[] arg) {
+        // CRAN
+        /*EksternalFile.setPathDocumentsFile("test\\CRAN\\CRAN.all");
+        EksternalFile.setPathQueriesFile("test\\CRAN\\QUERYADG");
+        EksternalFile.setPathQrelsFile("test\\CRAN\\QRELSADE");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");*/
         EksternalFile file = new EksternalFile();
-        file.loadListOfDocumentsPart(file.readDocuments("queries"));
+        file.loadListOfDocumentsPart(file.readDocuments("documents"));
         Iterator listPart = file.getListPartStringBetweenTokens().iterator();
         while (listPart.hasNext()) {
             System.out.println(listPart.next());

@@ -364,6 +364,12 @@ public class PreprocessWords {
     }
 
     public static void main(String[] arg) {
+        // CRAN
+        EksternalFile.setPathDocumentsFile("test\\CRAN\\CRAN.all");
+        EksternalFile.setPathQueriesFile("test\\CRAN\\QUERYADG");
+        EksternalFile.setPathQrelsFile("test\\CRAN\\QRELSADE");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+
         PreprocessWords word = new PreprocessWords();
         // CEK LOAD DOKUMEN DARI FILE ADI.ALL ATAU CISI.ALL
         word.loadDocumentsFinal(false,false);
@@ -391,13 +397,12 @@ public class PreprocessWords {
         } */
 
         // CEK LOAD QUERY DARI FILE QUERY.TEXT
-       /* word.loadQueriesFinal(true);
+        word.loadQueriesFinal(false,true);
         Iterator listQueries = word.getListQueriesFinal().iterator();
         while (listQueries.hasNext()) {
             query Query = (query) listQueries.next();
             System.out.println("Isi Query : " + Query.getQueryContent());
             System.out.println("====================================================================================");
-        } */
-
+        }
     }
 }
