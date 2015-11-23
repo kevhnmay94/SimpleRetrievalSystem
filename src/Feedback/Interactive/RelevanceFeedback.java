@@ -332,6 +332,8 @@ public class RelevanceFeedback {
         // LIST NEW QUERIES BASED ON RELEVANCE FEEDBACK
         for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
+            indexTabel newInvertedFile = feedback.getInvertedFile();
+            normalTabel jjj = feedback.getNormalFileQueryManual();
             System.out.println("Nomor Query : " + newQuery.getIndex());
             System.out.println("Konten Query : " + newQuery.getQueryContent());
             System.out.println("Bobot tiap term di query ini : ");
