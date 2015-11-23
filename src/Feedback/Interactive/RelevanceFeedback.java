@@ -250,12 +250,12 @@ public class RelevanceFeedback {
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
         // ADI
-       /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
         // CRAN
-      /*  EksternalFile.setPathDocumentsFile("test\\CRAN\\CRAN.all");
+        /* EksternalFile.setPathDocumentsFile("test\\CRAN\\CRAN.all");
         EksternalFile.setPathQueriesFile("test\\CRAN\\QUERYADG");
         EksternalFile.setPathQrelsFile("test\\CRAN\\QRELSADE");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
@@ -265,10 +265,10 @@ public class RelevanceFeedback {
         EksternalFile.setPathQrelsFile("test\\MED\\QRELSABT");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
         // NPL
-        EksternalFile.setPathDocumentsFile("test\\NPL\\NPL.all");
+       /* EksternalFile.setPathDocumentsFile("test\\NPL\\NPL.all");
         EksternalFile.setPathQueriesFile("test\\NPL\\QUERYACB");
         EksternalFile.setPathQrelsFile("test\\NPL\\QRELSACA");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
@@ -288,8 +288,8 @@ public class RelevanceFeedback {
 
         // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (EKSPERIMENT)
         Experiment exp = new Experiment();
-        exp.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
-        exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, false);
+        exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
+        exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false,true);
         exp.setNormalFile(wordProcessor.getNormalFile());
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
         exp.evaluate(false);
@@ -349,22 +349,25 @@ public class RelevanceFeedback {
            /* RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQueryManual(),
                     wordProcessor.getNormalFileQueryManual(), relevance); */
             feedback.updateTermInThisQuery(1);
-            //feedback.updateUnseenTermInThisQuery(1);
+            feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
         }
 
         // LIST NEW QUERIES BASED ON RELEVANCE FEEDBACK
+        int i=0;
         for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
             System.out.println("Nomor Query : " + newQuery.getIndex());
-            System.out.println("Konten Query : " + newQuery.getQueryContent());
-            System.out.println("Bobot tiap term di query ini : ");
+            System.out.println("Konten Query Baru : " + newQuery.getQueryContent());
+            System.out.println("Konten Query Lama : " + ((query) wordProcessor.getListQueriesFinal().get(i)).getQueryContent());
+            i++;
+           /* System.out.println("Bobot tiap term di query ini : ");
             for (Map.Entry m : feedback.getNewQueryComposition().entrySet()) {
                 String term = (String) m.getKey();
                 double bobot = (Double) m.getValue();
                 System.out.println("Term : " + term);
                 System.out.println("Bobot : " + bobot);
-            }
+            } */
             System.out.println("===================================================================");
         }
 
