@@ -101,19 +101,19 @@ public class RelevanceFeedback {
         StringTokenizer token = new StringTokenizer(thisQuery.getQueryContent(), " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
         while (token.hasMoreTokens()) {
             String keyTerm = token.nextToken();
+            String filteredWord;
+            if (invertedFileQueryManual.isStemmingApplied()) {
+                filteredWord = StemmingPorter.stripAffixes(keyTerm);
+            } else {
+                filteredWord = keyTerm;
+            }
             try {
-                termWeightingDocument relation = invertedFileQueryManual.getListTermWeights().get(keyTerm);
+                termWeightingDocument relation = invertedFileQueryManual.getListTermWeights().get(filteredWord);
                 if (relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()) != null) {
                     double oldWeight = relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).getWeight();
-                    double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,keyTerm,oldWeight);
+                    double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,filteredWord,oldWeight);
                     if (newWeight > 0) {
-                        String filteredWord = "";
-                        if (invertedFileQueryManual.isStemmingApplied()) {
-                            filteredWord = StemmingPorter.stripAffixes(keyTerm);
-                        } else {
-                            filteredWord = keyTerm;
-                        }
-                        newQueryComposition.put(filteredWord, newWeight);
+                        newQueryComposition.put(keyTerm, newWeight);
                         relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(newWeight);
                     } else {
                         relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(0.0);
@@ -336,13 +336,13 @@ public class RelevanceFeedback {
             query newQuery = feedback.convertNewQueryComposition();
             System.out.println("Nomor Query : " + newQuery.getIndex());
             System.out.println("Konten Query : " + newQuery.getQueryContent());
-           /* System.out.println("Bobot tiap term di query ini : ");
+            System.out.println("Bobot tiap term di query ini : ");
             for (Map.Entry m : feedback.getNewQueryComposition().entrySet()) {
                 String term = (String) m.getKey();
                 double bobot = (Double) m.getValue();
                 System.out.println("Term : " + term);
                 System.out.println("Bobot : " + bobot);
-            } */
+            }
             System.out.println("===================================================================");
         }
 

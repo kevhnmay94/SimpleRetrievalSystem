@@ -273,11 +273,11 @@ public class PreprocessWords {
                             String filteredWord;
                             if (isStemmingApplied) {
                                 filteredWord = StemmingPorter.stripAffixes(currentWord);
+                                invertedFile.insertStemmedTermNormalTermPair(filteredWord,currentWord);
                             } else {
                                 filteredWord = currentWord;
                             }
                             invertedFile.insertRowTable(filteredWord.toLowerCase(), indexDocument, 0.0);
-                            invertedFile.insertStemmedTermNormalTermPair(filteredWord,currentWord);
                             normalFile.insertElement(indexDocument, filteredWord.toLowerCase());
                         }
                     }
