@@ -16,13 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Experiment {
 
-    ArrayList<SingleQueryEvaluation> evals;
-    PreprocessWords wordProcessor;
-    normalTabel normalFile;
-    normalTabel normalFileQuery;
-    indexTabel invertedFile;
-    indexTabel invertedFileQuery;
-    ConcurrentHashMap<query, ConcurrentHashMap<document, Double> > resultMap;
+    protected ArrayList<SingleQueryEvaluation> evals;
+    protected PreprocessWords wordProcessor;
+    protected normalTabel normalFile;
+    protected normalTabel normalFileQuery;
+    protected indexTabel invertedFile;
+    protected indexTabel invertedFileQuery;
+    protected ConcurrentHashMap<query, ConcurrentHashMap<document, Double> > resultMap;
 
     // GETTER - GETTER
     public ConcurrentHashMap<query, ConcurrentHashMap<document, Double>> getResultMap() {
@@ -37,7 +37,6 @@ public class Experiment {
         evals = new ArrayList<>();
         wordProcessor = new PreprocessWords();
         resultMap = new ConcurrentHashMap<>();
-
     }
 
     public indexTabel getInvertedFile() {
@@ -133,7 +132,8 @@ public class Experiment {
             for (document doc : resultMap.get(q).keySet()) {
                 docsNum.add(doc.getIndex());
             }
-            evals.add( new SingleQueryEvaluation(q.getIndex(), docsNum, wordProcessor.getListQueryRelevancesFinal()) );
+            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
+                evals.add( new SingleQueryEvaluation(q.getIndex(), docsNum, wordProcessor.getListQueryRelevancesFinal()) );
         }
 
         // Evaluate all results

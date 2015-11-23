@@ -357,6 +357,8 @@ public class RelevanceFeedback {
         int i=0;
         for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
+            indexTabel newInvertedFile = feedback.getInvertedFile();
+            normalTabel jjj = feedback.getNormalFileQueryManual();
             System.out.println("Nomor Query : " + newQuery.getIndex());
             System.out.println("Konten Query Baru : " + newQuery.getQueryContent());
             System.out.println("Konten Query Lama : " + ((query) wordProcessor.getListQueriesFinal().get(i)).getQueryContent());
