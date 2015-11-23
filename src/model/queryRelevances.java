@@ -24,4 +24,42 @@ public class queryRelevances {
             listQueryRelevances.put(indexQuery,newListDocumentsRelevant);
         }
     }
+
+    /**
+     * Remove document (one or more) that is judged relevant by qrels
+     * if query index is indexQuery from listIndexDocument
+     * @param listIndexDocument
+     * @param indexQuery
+     */
+    public void removeDocumentFromQrels (ArrayList<Integer> listIndexDocument, int indexQuery) {
+        ArrayList<Integer> listDocumentThisQuery = listQueryRelevances.get(indexQuery);
+        ArrayList<Integer> listDocumentRemoved = new ArrayList<>();
+        for (Integer indexDocument : listDocumentThisQuery) {
+            if (isDocumentContainedInList(indexDocument,listIndexDocument)) {
+                listDocumentRemoved.add(indexDocument); break;
+            }
+        }
+        if (!listDocumentRemoved.isEmpty()) {
+            for (Integer index : listDocumentRemoved) {
+                listQueryRelevances.get(indexQuery).remove(index);
+            }
+        }
+    }
+
+    /**
+     * Check if one document with index indexDocumentChecked
+     * contained in list listDocumentsIndex
+     * @param indexDocumentChecked
+     * @param listDocumentsIndex
+     * @return
+     */
+    public boolean isDocumentContainedInList(int indexDocumentChecked, ArrayList<Integer> listDocumentsIndex) {
+        boolean isDocumentContained = false;
+        for (Integer index : listDocumentsIndex) {
+            if (index == indexDocumentChecked) {
+                isDocumentContained = true; break;
+            }
+        }
+        return isDocumentContained;
+    }
 }
