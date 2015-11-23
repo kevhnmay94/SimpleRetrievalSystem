@@ -1,0 +1,20 @@
+#!/usr/local/bin/perl
+
+open(old,"query-no-match-CRANFIELD");
+open(new,">query-CRANFIELD");
+$line = <old>;
+$count = 1;
+while ($line ne "")
+{
+  @aray = split(/ +/,$line);
+  if ($aray[0] eq ".I")
+  {
+     print new ("$aray[0] $count \n");
+     $count++;
+   }
+  else
+   {
+     print new ("$line");
+   };
+   $line = <old>;
+}

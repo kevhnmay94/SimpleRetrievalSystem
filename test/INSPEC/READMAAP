@@ -1,0 +1,46 @@
+
+INSPEC Collection File Description
+
+8/13/96
+
+
+
+Files included in this INSPEC Collection archive:
+
+  inspec.dat 
+
+    The INSPEC document collection.
+
+
+  inspec.q 
+
+    INSPEC queries in a form suitable for submission to the INQUERY evaluation
+    program, "inqueryb" or "inqr-b"
+
+
+  inspec.queries.orig
+
+    INSPEC query set in original "dot" format.
+
+
+  inspec.rel
+
+    INSPEC relevance judgements for each query in the set.  This is current
+    INQUERY relevance format suitable for submission to the "inqueryb"
+    evaluation program.
+
+
+  inspec.rel.old
+
+    INSPEC relevance judgements using the "old" INQUERY format.  This format
+    was used on pre-2.0 versions of INQUERY and is no longer valid.
+
+
+The collection is in what we call, "dot format".  If you are using INQUERY to
+index this collection using "inparse" or "inbuild", use the "cacm_dots"
+document translator as the document type.
+
+
+
+
+

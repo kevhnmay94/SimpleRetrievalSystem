@@ -1,0 +1,531 @@
+#q1=
+I am interested in the support of high level and very high level computer
+languages by means of hardware and firmware ,microprogramming,.
+This can include the design of languages such as APL, SETL, or ADA and
+the architecture of the machines designed to support the high level language 
+,HLL,. The topics may include the design of the intermediate language ,or 
+machine architecture, or the data structures or other theoretical results 
+useful in the direct execution of HLL.
+;
+#q2=
+Application of category theory to the formal definition of languages for
+programming and logic.
+;
+#q3=
+I am interested in computer production of maps or map-like objects.
+The topics of interest would be computer aids to acquisition of map data, such
+as old maps, pictures or field data, editing and verifying maps, production of
+maps using automatic machinery.
+I am also interested in any psychological studies that might have been made of
+factors contributing to clarity of maps, such as interference of symbols, 
+color, line quality, etc.
+;
+#q4=
+Topics relating to the parallel or concurrent execution of computer programs,
+especially the logical specification of such programs, but also aspects of
+software implementation and hardware realization of parallel systems.
+;
+#q5=
+Models for software reliability assessment as well as for software performance
+evaluation.
+Also of interest are any studies that have been undertaken for validation
+purposes.
+;
+#q6=
+I am interested in computer architecture as applied to nonnumeric processing
+as a general field.
+Subfield include associative processors/memories supplied to data base 
+management, data base machines and data base computers.
+;
+#q7=
+Main interest is the user-machine interface of particular interest are:  the
+effects of artificial intelligence research on systems design, ways of making
+systems user friendly, ways of instructing/educating through the use of a 
+system.
+;
+#q8=
+The theoretical foundations of information science, particularly the notions of
+information, relevance, data, and aboutness, and the theory of indexing.
+;
+#q9=
+Computers and their impart on society:  Have any changes in our standard of
+living been caused by the introduction of computing?
+What effect has there been on the daily life of people in the general 
+population? 
+Have computers and the need for skilled professionals had any effect on
+demographic patterns?
+What new legal issues have been raised by the use of computers?
+What have computers made possible which was not feasible previously?
+Has the introduction of computers been beneficial to society as a whole?
+;
+#q10=
+I am interested in the area of document representation in information 
+retrieval, particularly controlled vocabulary systems.
+Anything on controlled vocabularies ,i.e. thesauri, subject index terms, would
+be useful but other things on document representation might be as well for
+comparative purposes.
+;
+#q11=
+I have two topics of interest which fall under the general category of 
+Automated Library Systems:
+1.  techniques of information retrieval from a bibliographic database, and
+2.  techniques for analyzing a bibliographic database to identify phrases ,not
+    just words, which occur frequently.
+;
+#q12=
+Computer text editing and formatting ,word processing, on mini- and
+micro-computers.
+;
+#q13=
+Digital phase lock loops.
+;
+#q14=
+I would like citations about abstract data types in programming language 
+design. I am interested both in the practical aspects of syntactic design, 
+typechecking, and implementations, as well as, the more theoretical aspects of 
+semantics, particularly algebraic semantics, and proofs of correctness.
+;
+#q15=
+Comparisons or evaluations of the commercially available report-generating
+and/or file manipulating packages, such as MARK IV ,Informatics, Inc.,,
+EASYTRIEVE ,Pansophic Systems,, etc.
+;
+#q16=
+Cepstrum Analysis:  Applications to detection and elimination of multi-path
+transmission distortion.
+The term Cepstrum was first coined in 1963.
+It is used to describe a novel mathematical method of processing data or
+electrical signals.
+The interest in the subject has been limited.
+I am interested in extending its applications to additional problems.
+;
+#q17=
+Of interest:  any information on quantum communications - superluminal ,faster-
+than-light, communication-based on the Einstein-Podolsky-Rosen Paradox/Effect.
+Jung's synchronicity ,esp. with W. Pauli, any connections between Heisenberg
+uncertainty principle and communication.
+General area:  physics and communication extrasensory perception ,ESP, and
+physics, entropy and communication.
+;
+#q18=
+LISP design and implementation - compilers and interpreters.
+;
+#q19=
+Resolution and theorem proving.
+;
+#q20=
+Logic programming.
+;
+#q21=
+Solution methods for simultaneous linear equations using:
+ i, software means
+ii, hardware/firmware means
+Special processors on "fast" matrix inversion
+;
+#q22=
+Verification, assessment, and validation of computerized models ,mathematical
+and simulation models,.
+;
+#q23=
+I would like information on 16-bit microprocessors--particularly the
+ZILOG 28000, the Motorola 68000, the Texas Instruments 9900, and the Intel, 
+8086 but include other 16 bit micros if found.
+;
+#q24=
+I am interested in learning about management information systems--functions,
+design and interface considerations--what top management ,executive, etc.,
+want and how to implement.
+I really don't know much about the topic-that is why I want the search-to get
+an overview and introduction.
+;
+#q25=
+I am thinking of purchasing a "home computer".
+I would like some articles about various makes and types - comparisons,
+evaluations descriptions, etc.
+Also what kinds of functions can I use them for - in terms of my own personal
+and household use and for assisting in managing a very small business.
+Any how to articles ,set up, programming, etc., would be helpful.
+;
+#q26=
+Any information on voice activated computers - computers that understand and
+respond to voice input or commands.
+;
+#q27=
+The topic of interest to me is "the numerical solution of integral equations
+of the first kind."
+This is a problem in numerical analysis but journals such as Computing Journal 
+and Journal for the Association of Computing Machinery have included articles
+on this subject in the past.
+Since this is a topic of current research, I hope you can find some references.
+Thank you.
+First kind equation:   integral sub a sup b k,x,y,f,y,dy = v,x, where k,x,y,
+and v,x, are known and f,y, is to be determined.
+It is called first kind because the unknown function appears only under the
+integration sign.
+Equations of this type are illposed and quite difficult to solve in general.
+;
+#q28=
+What level of support in terms of hardware and personnel is needed to support
+an undergraduate computer science and engineering program.
+;
+#q29=
+I am interested in estimating Wildlife in a given region.
+Problems on interest are ,i, How to sample the region, ,ii, Estimating the
+total population ,iii, Estimating the number of types of animals ,iv, 
+Properties of these estimators.
+;
+#q30=
+All aspects of "paperless" communication systems, especially the substitution
+of electronic communication by communication on paper.
+The scope includes: 1, computer conferencing, 2, electronic mail, 3, the 
+paperless office, 4, electronic publishing, 5, interactive television, 
+including Viewdata and similar systems.
+;
+#q31=
+Economic design of cumulative sum control charts including determination of
+average run length.
+;
+#q32=
+I am interested in user interfaces that simplify the use of information
+retrieval systems.
+For example, searchers who use multiple systems ,Dialog, Orbit, BRS, etc.,
+face the problem that each system has a different command languages and
+features.
+The CONIT interface ,MIT, Marcus and Reintjes, solves this problem by allowing
+the searcher to use one command language to search multiple systems.
+I would like citations on interfaces that deal with the following problems:
+1, identification and selection of appropriate data bases, 2, divergent command
+languages and protocols in different systems, 3, different subject terminology
+in different data bases ,how to translate,.
+;
+#q33=
+geo-coding.
+I am at present researching on different techniques and applications of
+geo-coding to urban and regional planning and management.
+Basically I want to know how it is done, how it is managed, how it is applied
+and what are the evaluations of it.
+;
+#q34=
+Bayesian analysis of component and system failures including considerations for
+selecting a proper prior distribution.
+;
+#q35=
+I am looking for documents on STRUCTURED TECHNIQUES which include STRUCTURED
+ANALYSIS, STRUCTURED DESIGN, and STRUCTURED PROGRAMMING.
+;
+#q36=
+I am interested in artificial intelligence applications in information systems
+,information retrieval data base management, computer-assisted instruction,.
+Specific examples of artificial intelligence applications would include
+pattern recognition, natural language understanding, question-answering
+and learning.
+I am also interested in any documents which discuss developments in knowledge
+engineering or cognitive science.
+;
+#q37=
+I am looking for material on information retrieval systems ,or interfaces to
+systems, implementing non-Boolean searching.
+This would include associative retrieval, automatic thesaurus, best-match
+searching, iterative searchings, feedback incorporation during searching,
+searching by clusters or clustering of results.
+;
+#q38=
+Information content analysis of documents--to be used in a study of the amount
+of duplication of concepts among documents retrieved by a subject search on
+an information retrieval system.
+;
+#q39=
+Computer aided design of integrated circuits especially for MSI ,Medium Scale
+Integration, and VLSI ,Very Large Scale Integration, circuit design 
+applications also any computer aided design techniques of IC's using regular 
+structures ,Programmable logic arrays, "PLA's:, uncommitted logic arrays, 
+silicon compilers, functional gate arrays,.
+;
+#q40=
+Key word:  software reliability test
+Description:  Due to the nature of the programming, errors will be introduced
+during the design and implementation of the software.
+The software test is needed to verify or validate the quality of the product.
+Reliability is one major measurement of the quality.
+The reliability can be defined as "no failures occur within a specific period
+of time."
+;
+#q41=
+I am interested in any studies, reports, articles, etc. on the effect CRT
+screens have ,adverse, positive, etc., on the eyes.
+Would include such things as how many hours exposure to CRT screen can be
+had before eye strain etc. are induced.
+Alternatives to CRT screen??
+What work has been done in this area and why?
+;
+#q42=
+Design and applications of high speed data acquisition systems utilizing 
+microprocessors 8080 or Z-80 boards.
+Data is directly fed into an analog interface and stored on digital tape or
+cassette.
+;
+#q43=
+I am considering recommending the purchase of the GEAC 8000 Library System for
+circulation automation.
+,I have been unable to find any impartial technical report on the GEAC 8000
+computer and would like to know more about its development.,
+GEAC is a Canadian firm but I understand the concepts for the "innards" of it
+are based on the design of the computers used by the Swiss banking community.
+;
+#q44=
+How does the terminal handling capacity of a GEAC 8000 computer compare with
+that of a General Eclipse S/140?
+;
+#q45=
+What are the advantages of optical character recognition ,OCR, versus bar 
+codes--particular in a library setting?
+What are the advantages of Code 39 bar codes ,the short ones, over other bar 
+codes?
+;
+#q46=
+What computer languages are best suited for the full range of library 
+automation applications?
+Is PL/1 included?
+If so, what are the characteristics of PL/2 which make it particularly 
+applicable for library applications?
+;
+#q47=
+What is the Huffman text compression developed at MIT in the 1950's?
+How much would use of this technique affect requirements for disk storage?
+;
+#q48=
+The GEAC 8000 computer uses four or five multiprocessers hooked together rather
+than one CPU, the architecture may be similar to that of Tandem computers.
+What are the advantages of this type of architecture over that of one CPU
+,e.g. A Data General Eclipse S/140,?
+;
+#q49=
+Is there a trend toward "special purpose" computers?
+What are the advantages of designing a CPU to serve the kinds of systems it
+specialized in rather than using a general purpose microcomputer?
+;
+#q50=
+Are there any micro-processor controller terminals on the market?
+How does Informer 314 compare with them?
+What are the features of Informer 314 terminals which make daisy-chaining
+easier?
+A layman's explanation of daisy-chaining and polling loops would be helpful.
+;
+#q51=
+How does MIIS compare with the ZOPL language for library information
+processing?
+Which of the two is faster?
+;
+#q52=
+Is there a trend toward "user cordial" systems where the users with no computer
+background can search the data base using natural language?
+;
+#q53=
+What would be the advantages of having two 192 MB disk drives over one 300 MB
+disk drive?
+;
+#q54=
+On-line authority files for bibliographic control in libraries, in particular
+those interactive with on-line bibliographic record files.
+To include name, subject, and series authority files.
+;
+#q55=
+What is the X-25 Protocol?
+When is this industry standard likely to be implemented?
+;
+#q56=
+I am interested in non linear, inelastic analysis of space frames, trusses
+,in particular, transmission towers,.
+Since most of the computational methods involve the computer, they should be
+covered by computer journals.
+;
+#q57=
+I am interested in receiving citations on Trace Driven Modeling.
+;
+#q58=
+Advantages and disadvantages in using DBMS's.
+Transaction Processing in relation to DBMS.
+DBMS performance tuning.
+;
+#q59=
+Comparison and/or mapping of different data models, especially the CODASYL
+,DBTG, model and the relational model.
+This is for an annotated bibliography that I am preparing on that topic.
+This is within the area of data base management.
+;
+#q60=
+I am interested in articles and books about interactive query languages for
+generalized database management systems.
+The articles may be either theoretical or practical, and they may consider
+any aspect of query languages, including mathematical and linguistic
+backgrounds, human factors, and correspondences between query languages and
+general-purpose programming languages.
+;
+#q61=
+Technical literature published since 1977 pertaining to the representation of
+large mathematical sets on computer hardware, and algorithms for their union,
+intersection, and complement.
+In particular the application of this technology to database management systems
+or other manipulation of large databases.
+;
+#q62=
+Keywords:  hashing, scatter storage, random access retrieval, associative
+retrieval, open addressing.
+;
+#q63=
+I am interested in the topic of automatic computer recognition of logic
+schematic diagrams to automatically dispense them.
+This is the general area of computer vision and pattern recognition--automatic
+input of diagrams.
+;
+#q64=
+,Patent Info Sources, or ,Computers and Patent Searching, and ,World and
+U.S. Patent Info Sources,.
+;
+#q65=
+Can you do another run for me.
+The KWIC index which you might look at are:
+1, Geo-coding
+2, Urban and regional information system
+3, Urban information system
+4, Regional information system
+5, Geographical information system
+;
+#q66=
+I would like information on the design of memory management devices and
+software.
+A large addressing space will be used for multitasking, and the memory
+management should provided for memory relocation and protection.
+The memory management unit should regulate access to dedicated storage
+segments.
+;
+#q67=
+1.  Hardware Multiplers
+2.  Multipler Algorithms
+;
+#q68=
+We are studying the problem of construction of efficient decision trees.
+Construction of optimal decision trees is an NP-complete problem and, 
+therefore, a heuristic approach for the design of efficient decision trees 
+is considered. The approach is based on information theoretic concepts and the 
+algorithm provides us with a simple procedure for the construction of
+near-optimal decision trees.
+;
+#q69=
+Use of APL capability of Tektronix 4012 terminal in producing graphics.
+;
+#q70=
+My primary interest are in the numerical solution of integral equations.
+Integral equations are frequently classified as either Volterra or Fredhohn
+equations.
+I am NOT interested in Volterra equations.
+Those of Fredhohn type are further subdivided into First and Second Kind.
+In addition the equations may be linear or nonlinear and may have singular
+kernels.
+I am most specifically interested the following areas:
+1, Integral equations of the first kind.
+Problems involving these equations are often referred to as ill-posed problems.
+2, Nonlinear equations.  These include Hammerstein and Urysohn equations.
+3, Equations with singular kernels.  These kernels include the Hilbert-Schmidt
+kernels.
+;
+#q71=
+Scheduling computer tasks, performance evaluation of computers and computer
+communication systems.
+Solution to large scale system of linear equations by traditional and parallel
+processors.
+;
+#q72=
+Effectiveness of Management Information Systems ,MIS,.
+Do MIS perform as planned?
+Do they meet stated goals?
+or
+Performance appraisal systems for software employees ,programmers,.
+;
+#q73=
+I am interested in obtaining a bibliography on concurrency control mechanisms
+designed for use in distributed systems.
+The area should include both process synchronization and distributed data base
+access synchronization with special emphasis on citations describing
+implementations or designs using the same synchronization printings for both
+functions.
+I am interested both in software based implementations ,specialized languages
+or operating systems, and in hardware based implementations.
+I would also be interested in more abstract treatments dealing with current
+synchronization theory ,e.g. communication port, eventcounts, message passing,
+etc.,.
+;
+#q74=
+Would like a bibliography on current I/O devices used for interactive
+information retrieval.
+;
+#q75=
+Videotex ,variously known at Viewdata, Prestel, Videotext, Teletex, Teletext,
+etc.,.
+These systems provide low-cost, easy to use, two-way  information services by
+linking computer data bases to adapted TV sets using either telephone networks
+radio or TV broadcast, or broadband cable ,cable TV, for distribution.
+Particularly interested in details of host computer, system software, and
+decoded ,TV adapter,.
+;
+#q76=
+I am interested in videodisc-based information storage and retrieval systems.
+I would like information regarding existing systems in which a microcomputer is
+interfaced to a videodisc player.
+More generally, any information regarding the application of videodisc
+technology to library-oriented requirements would be useful to me.
+;
+#q77=
+Character string or name comparison and correction, esp. using bigram,
+digram, trigrams, binary n-grams or microstructure information.
+;
+#q78=
+'Microprocessor-based motor controller' i.e. servo-systems using 
+microprocessors as a signal processor instead of the traditional amplifier 
+circuits ,either linear or digital ones,.
+Related to specific topic stated above are 'the use of microprocessor in data
+acquisition systems' 'interfacing microprocessor with analog systems'.
+;
+#q79=
+Computer applications for toxicology data collection, formatting and reporting.
+Specifically, data analysis programs used to analyze toxicology tests.
+Use of touch screens, menus on CRT for data display would prove interesting.
+Toxicology Data Management would be another key word for this search.
+;
+#q80=
+I am interested in information about file structures and supporting software of
+computer systems which have been successfully used for thesaurus-controlled
+information retrieval with large-scale integrated data bases.
+;
+#q81=
+The decision to select database management system software/architecture for a
+computer information system:  factors involved in making the decision,
+analyses performed to support the decision process - cost/benefit, etc., post-
+implementation evaluation of the architecture chosen.
+;
+#q82=
+ED--THIS ONE WAS VERY HARD TO READ
+All data and information relevant to understanding the present and future
+impact on: 1, the Scientific Administration Regulating Committees in government
+and non government ,a, technical ,b, administrative ,c, legal ,d, political
+approach to handling problems identified under their mandates.
+BY the rapidly increasing sophistications in the electronic identifying,
+accessing, communicative analyzing of data and information - especially as driven
+by distributed data base management technology
+ALSO the effect of this technology on the relationships between government
+and the information industry
+ALSO the responsibilities of "resource owners" or network administrators on 
+issues of QA/AC administrations of interpretation
+;
+#q83=
+Computer techniques/methodologies for universal transaction drivers used in
+interfacing screen driver software to data base management update modules.
+Interest is in isolation handlers between terminal/screen operation and
+selected DBMS.
+;
+#q84=
+Interested in information on systems networking ,general, and user billing
+mechanisms, to include algorithms.
+
+
+;

@@ -93,7 +93,7 @@ public class PseudoRelevanceFeedback {
         StringTokenizer token = new StringTokenizer(thisQuery.getQueryContent(), " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
         while (token.hasMoreTokens()) {
             String keyTerm = token.nextToken();
-            String filteredWord = "";
+            String filteredWord;
             if (invertedFileQuery.isStemmingApplied()) {
                 filteredWord = StemmingPorter.stripAffixes(keyTerm);
             } else {
@@ -105,12 +105,10 @@ public class PseudoRelevanceFeedback {
                     double oldWeight = relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).getWeight();
                     double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,filteredWord,oldWeight);
                     if (newWeight > 0) {
-                        newQueryComposition.put(filteredWord, newWeight);
+                        newQueryComposition.put(keyTerm, newWeight);
                         relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(newWeight);
-                        System.out.println("woh");
                     } else {
                         relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).setWeight(0.0);
-                        System.out.println("wah");
                     }
                 }
             } catch (Exception e) {
@@ -130,7 +128,13 @@ public class PseudoRelevanceFeedback {
             if (!isTermAppearInQuery(keyTerm)) {
                 double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,keyTerm,0.0);
                 if (newWeight > 0) {
-                    newQueryComposition.put(keyTerm,newWeight);
+                    String filteredWord = "";
+                    if (invertedFile.isStemmingApplied()) {
+                        filteredWord = invertedFile.getMappingStemmedTermToNormalTerm().get(keyTerm);
+                    } else {
+                        filteredWord = keyTerm;
+                    }
+                    newQueryComposition.put(filteredWord,newWeight);
                     invertedFileQuery.insertRowTable(keyTerm,thisQueryIndex,newWeight);
                     normalFileQuery.insertElement(thisQueryIndex,keyTerm);
                 }
@@ -208,17 +212,34 @@ public class PseudoRelevanceFeedback {
 
     public static void main(String[] arg) {
         PreprocessWords wordProcessor = new PreprocessWords();
+        // CISI
        /* EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
         EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        // ADI
+       /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        // CRAN
+      /*  EksternalFile.setPathDocumentsFile("test\\CRAN\\CRAN.all");
+        EksternalFile.setPathQueriesFile("test\\CRAN\\QUERYADG");
+        EksternalFile.setPathQrelsFile("test\\CRAN\\QRELSADE");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        // MED
+       /* EksternalFile.setPathDocumentsFile("test\\MED\\MED.all");
+        EksternalFile.setPathQueriesFile("test\\MED\\QUERYABW");
+        EksternalFile.setPathQrelsFile("test\\MED\\QRELSABT");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        // NPL
+        EksternalFile.setPathDocumentsFile("test\\NPL\\NPL.all");
+        EksternalFile.setPathQueriesFile("test\\NPL\\QUERYACB");
+        EksternalFile.setPathQrelsFile("test\\NPL\\QRELSACA");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
-        wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus dokumen)
         TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
@@ -228,8 +249,13 @@ public class PseudoRelevanceFeedback {
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 
         // PROSES BUAT INVERTED FILE BUAT QUERY (INTERACTIVE)
+<<<<<<< HEAD
        /* String contentQuery = "computer science";
         wordProcessor.loadIndexTabelForManualQuery(contentQuery,false); // True : stemming diberlakukan
+=======
+        String contentQuery = "computer science";
+        wordProcessor.loadIndexTabelForManualQuery(contentQuery,true); // True : stemming diberlakukan
+>>>>>>> cbff79ec066aed5a8f93b2702363325e792ab872
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query */
 
@@ -242,9 +268,14 @@ public class PseudoRelevanceFeedback {
         exp.evaluate(false);
        /* query manualQuery = new query(0,contentQuery);
         InputQuery iq = new InputQuery();
-        iq.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
+        iq.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
         iq.setNormalFile(wordProcessor.getNormalFile());
+<<<<<<< HEAD
         iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false); */
+=======
+        iq.setQueryMode(1,1,true);;
+        iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false);
+>>>>>>> cbff79ec066aed5a8f93b2702363325e792ab872
 
         /*
         =======================================RELEVANCE FEEDBACK (NEW EKSPERIMENT) ============================================
@@ -276,14 +307,23 @@ public class PseudoRelevanceFeedback {
         // RELEVANCE FEEDBACK (SEMUA QUERY)
         ArrayList<PseudoRelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
         for (documentsPseudoRelevanceFeedback relevance : listFeedbacksEachQueries) {
+<<<<<<< HEAD
             // EKSPERIMENT
             PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQuery(),
                     wordProcessor.getNormalFileQuery(),relevance);
             // INTERACTIVE
         /*    PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQueryManual(),
                     wordProcessor.getNormalFileQueryManual(),relevance); */
+=======
+            // EKSPERIMEN SAJA
+            /*PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQuery(),
+                    wordProcessor.getNormalFileQuery(),relevance); */
+            // INTERACTIVE SAJA
+            PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQueryManual(),
+                    wordProcessor.getNormalFileQueryManual(),relevance);
+>>>>>>> cbff79ec066aed5a8f93b2702363325e792ab872
             feedback.updateTermInThisQuery(1);
-            //feedback.updateUnseenTermInThisQuery(1);
+            feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
         }
 

@@ -24,15 +24,22 @@ public class DocumentRanking {
     public static double countSimilarityDocument(query Query, indexTabel invertedFileQuery, document Document, indexTabel invertedFile, normalTabel normalFile, normalTabel normalFileQuery, boolean isNormalized) {
         double dotProduct = 0.0;
         try {
-            Iterator listTermsInQuery = normalFileQuery.getNormalFile().get(Query.getIndex()).iterator();
-            while (listTermsInQuery.hasNext()) {
-                String keyTerm = (String) listTermsInQuery.next();
-                termWeightingDocument relation = invertedFileQuery.getListTermWeights().get(keyTerm);
-                counterWeightPair counter = relation.getDocumentWeightCounterInOneTerm().get(Query.getIndex());
-                if (counter != null) {
-                    double weightThisTermQuery = counter.getWeight();
-                    double weightThisTermDocument = getWeightTermInDocument(Document.getIndex(), keyTerm, invertedFile);
-                    dotProduct += weightThisTermDocument * weightThisTermQuery;
+            Iterator listTermsInQuery = null;
+            try {
+                listTermsInQuery = normalFileQuery.getNormalFile().get(Query.getIndex()).iterator();
+            } catch (NullPointerException e) {
+
+            }
+            if (listTermsInQuery != null) {
+                while (listTermsInQuery.hasNext()) {
+                    String keyTerm = (String) listTermsInQuery.next();
+                    termWeightingDocument relation = invertedFileQuery.getListTermWeights().get(keyTerm);
+                    counterWeightPair counter = relation.getDocumentWeightCounterInOneTerm().get(Query.getIndex());
+                    if (counter != null) {
+                        double weightThisTermQuery = counter.getWeight();
+                        double weightThisTermDocument = getWeightTermInDocument(Document.getIndex(), keyTerm, invertedFile);
+                        dotProduct += weightThisTermDocument * weightThisTermQuery;
+                    }
                 }
             }
         } catch (Exception e) {
