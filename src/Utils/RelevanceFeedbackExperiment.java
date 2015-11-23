@@ -125,9 +125,13 @@ public class RelevanceFeedbackExperiment extends Experiment {
         ArrayList<query> listOldQuery = new ArrayList<>();
 
         // ISI FORM PSEUDO RELEVANCE FEEDBACK (EKSPERIMENT)
+        wordProcessor.loadQueryRelevancesFinal();
+        queryRelevances thisQueryRelevances = wordProcessor.getListQueryRelevancesFinal();
+
+        // menandai dokumen yang relevan dan yang tidak
         for (query q : resultMap.keySet()) {
-            query Query = (query) wordProcessor.getListQueriesFinal().get(counter);
-            documentsPseudoRelevanceFeedback relevances = new documentsPseudoRelevanceFeedback(topN,Query);
+            listOldQuery.add(q);
+            documentsPseudoRelevanceFeedback relevances = new documentsPseudoRelevanceFeedback(topN,q);
             for (document d : resultMap.get(q).keySet()) {
                 relevances.insertDocumentRetrieved(d.getIndex());
             }
@@ -198,7 +202,6 @@ public class RelevanceFeedbackExperiment extends Experiment {
         // ISI FORM RELEVANCE FEEDBACK (EKSPERIMENT)
         wordProcessor.loadQueryRelevancesFinal();
         queryRelevances thisQueryRelevances = wordProcessor.getListQueryRelevancesFinal();
-        int counter = 0;
 
         // menandai dokumen yang relevan dan yang tidak
         for(query q : resultMap.keySet()) {
