@@ -18,7 +18,6 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
     int topS, topN;
     boolean isPseudo, useSameCollection, useQueryExpansion, isNormalize;
-    RelevanceFeedback feedback;
 
     ConcurrentHashMap<query, ConcurrentHashMap<document, Double> > resultMap2;
     ArrayList<SingleQueryEvaluation> evals2;
@@ -75,10 +74,10 @@ public class RelevanceFeedbackExperiment extends Experiment {
             if(docweightMap.size() > topS) {
                 int counter = 1;
                 for(document d : docweightMap.keySet()) {
-                    counter++;
                     if(counter > topS) {
                         docweightMap.remove(d);
                     }
+                    counter++;
                 }
             }
 
@@ -117,12 +116,14 @@ public class RelevanceFeedbackExperiment extends Experiment {
         System.out.println("Evaluating result done in " + (finish-start) + " ms.\n");
     }
 
+    public void secondRetrieval(int tipe) {
+        if(isPseudo) pseudoFeedback(tipe);
+        else feedback(tipe);
+    }
+
     private void pseudoFeedback(int tipe) {
         // ARRAYLIST PSEUDO FEEDBACK
         ArrayList<documentsPseudoRelevanceFeedback> listFeedbacksEachQueries = new ArrayList<>();
-
-        // array menyimpan query lama
-        ArrayList<query> listOldQuery = new ArrayList<>();
 
         // ISI FORM PSEUDO RELEVANCE FEEDBACK (EKSPERIMENT)
         wordProcessor.loadQueryRelevancesFinal();
@@ -130,7 +131,6 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
         // menandai dokumen yang relevan dan yang tidak
         for (query q : resultMap.keySet()) {
-            listOldQuery.add(q);
             documentsPseudoRelevanceFeedback relevances = new documentsPseudoRelevanceFeedback(topN,q);
             for (document d : resultMap.get(q).keySet()) {
                 relevances.insertDocumentRetrieved(d.getIndex());
@@ -152,7 +152,6 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
         // retrieval kedua
         resultMap2 = new ConcurrentHashMap<>();
-        int i=0;
         for (PseudoRelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
             ConcurrentHashMap<document, Double> docweightMap = new ConcurrentHashMap<>();
@@ -160,7 +159,7 @@ public class RelevanceFeedbackExperiment extends Experiment {
             while (listDocuments.hasNext()) {
                 document Document = (document) listDocuments.next();
                 if(!useSameCollection) {
-                    if( resultMap.get(listOldQuery.get(i)).containsKey(Document) ) continue;
+                    if( resultMap.get(feedback.getListDocumentRetrievedForThisQuery()).containsKey(Document) ) continue;
                 }
                 double weight = DocumentRanking.countSimilarityDocument(newQuery, feedback.getInvertedFile(),
                         Document, wordProcessor.getInvertedFile(), feedback.getNormalFileQuery(), wordProcessor.getNormalFileQuery(),
@@ -196,16 +195,12 @@ public class RelevanceFeedbackExperiment extends Experiment {
         // ARRAY MENYIMPAN HASIL RELEVANCE FEEDBACK PER QUERY
         ArrayList<documentsRelevancesFeedback> listFeedbacksEachQueries = new ArrayList<>();
 
-        // array menyimpan query lama
-        ArrayList<query> listOldQuery = new ArrayList<>();
-
         // ISI FORM RELEVANCE FEEDBACK (EKSPERIMENT)
         wordProcessor.loadQueryRelevancesFinal();
         queryRelevances thisQueryRelevances = wordProcessor.getListQueryRelevancesFinal();
 
         // menandai dokumen yang relevan dan yang tidak
         for(query q : resultMap.keySet()) {
-            listOldQuery.add(q);
             documentsRelevancesFeedback relevances = new documentsRelevancesFeedback(q);
             for(document d : resultMap.get(q).keySet()) {
                 if (wordProcessor.isDocumentRelevantForThisQuery(d.getIndex(),q.getIndex(),thisQueryRelevances)) {
@@ -231,24 +226,36 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
         // retrieval kedua
         resultMap2 = new ConcurrentHashMap<>();
-        int i=0;
         for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
+            System.out.println(feedback.getListDocumentRelevancesThisQuery().getQuery().getIndex());
+            System.out.println("Query lama : " + feedback.getListDocumentRelevancesThisQuery().getQuery().getQueryContent());
+            System.out.println("Query baru : " + newQuery.getQueryContent());
+            System.out.println("-----------------------------------------------------------------");
             ConcurrentHashMap<document, Double> docweightMap = new ConcurrentHashMap<>();
             Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
             while (listDocuments.hasNext()) {
                 document Document = (document) listDocuments.next();
                 if(!useSameCollection) {
-                    if( resultMap.get(listOldQuery.get(i)).containsKey(Document) ) continue;
+                    if(resultMap.get(feedback.getListDocumentRelevancesThisQuery().getQuery()).containsKey(Document) ) continue;
                 }
-                double weight = DocumentRanking.countSimilarityDocument(newQuery, feedback.getInvertedFile(),
-                        Document, wordProcessor.getInvertedFile(), feedback.getNormalFileQueryManual(), wordProcessor.getNormalFileQuery(),
+                double weight = DocumentRanking.countSimilarityDocument(newQuery, feedback.getInvertedFileQueryManual(),
+                        Document, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile(), feedback.getNormalFileQueryManual(),
                         isNormalize);
                 docweightMap.put(Document, weight);
-                i++;
             }
             docweightMap = DocumentRanking.rankDocuments(docweightMap);
-            resultMap.put(newQuery, docweightMap);
+            // potong sebanyak S
+//            if(docweightMap.size() > topS) {
+//                int counter = 1;
+//                for(document d : docweightMap.keySet()) {
+//                    if(counter > topS) {
+//                        docweightMap.remove(d);
+//                    }
+//                    counter++;
+//                }
+//            }
+            resultMap2.put(newQuery, docweightMap);
         }
 
         // Build Query Evaluation
@@ -271,5 +278,52 @@ public class RelevanceFeedbackExperiment extends Experiment {
         Collections.sort(evals2);
     }
 
+    public String getSummary2() {
+        StringBuilder sb = new StringBuilder();
+        double sumNonAVG = 0.0;
+        for(SingleQueryEvaluation sqe : evals2) {
+            sb.append(sqe.getEvalSummary());
+            sb.append("\n");
+            sumNonAVG += sqe.nonInterpolatedAvgPrecision;
+        }
+        sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        PreprocessWords wordProcessor = new PreprocessWords();
+        // CISI
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+
+        // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
+        wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
+        TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus dokumen)
+        TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
+
+        // PROSES BUAT INVERTED FILE BUAT QUERY (EKSPERIMENT)
+        wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
+        TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
+        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
+
+        // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (EKSPERIMENT)
+        RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment(false);
+        exp.setTopS(10);
+        exp.setUseQueryExpansion(true);
+        exp.setUseSameCollection(true);
+        exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
+        exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, true);
+        exp.setNormalFile(wordProcessor.getNormalFile());
+        exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
+        exp.evaluate(true);
+        System.out.println(exp.getSummary());
+
+        System.out.println("\nSecond retrieval : \n");
+
+        exp.secondRetrieval(1);
+        System.out.println(exp.getSummary2());
+    }
 
 }
