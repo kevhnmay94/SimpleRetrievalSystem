@@ -1,7 +1,6 @@
-package Feedback.Interactive;
+package Feedback;
 
 import Utils.*;
-import jdk.internal.util.xml.impl.Input;
 import model.*;
 
 import java.util.*;
