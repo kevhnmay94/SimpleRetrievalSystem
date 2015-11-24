@@ -17,7 +17,7 @@ public class RelevanceFeedbackInteractive {
     int qTfMode, qIdfMode;
     boolean isStem;
     PreprocessWords wordProcessor;
-    Map<document, Double> result;
+    public Map<document, Double> result;
     String query;
     query newQuery;
     double exectime;
@@ -25,7 +25,7 @@ public class RelevanceFeedbackInteractive {
     RelevanceFeedback relevanceFeedback;
     PseudoRelevanceFeedback pseudoFeedback;
 
-    documentsRelevancesFeedback documentsRelevances;
+    public documentsRelevancesFeedback documentsRelevances;
 
     int topS, topN;
     boolean isPseudo, useSameCollection, useQueryExpansion, isNormalize;
