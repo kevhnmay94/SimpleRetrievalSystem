@@ -17,11 +17,11 @@ public class InputQuery {
     int qTfMode, qIdfMode;
     boolean isStem;
     PreprocessWords wordProcessor;
-    static ConcurrentHashMap<document, Double> result;
+    static HashMap<document, Double> result;
     String query;
     double exectime;
 
-    public static ConcurrentHashMap<document, Double> getResult() {
+    public static HashMap<document, Double> getResult() {
         return result;
     }
 
@@ -59,7 +59,7 @@ public class InputQuery {
     public void SearchDocumentsUsingQuery(String query, boolean isNormalize) {
         double start, finish;
         this.query = query;
-        result = new ConcurrentHashMap<>();
+        result = new HashMap<>();
 
         // Proses query
         System.out.println("Indexing queries...");
@@ -86,7 +86,7 @@ public class InputQuery {
                     Document, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile(), wordProcessor.getNormalFileQueryManual(), isNormalize);
             result.put(Document, weight);
         }
-        result = DocumentRanking.rankDocuments(result);
+        result = (HashMap)DocumentRanking.rankDocuments(result);
 
 
         finish = System.currentTimeMillis();

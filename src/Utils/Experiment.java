@@ -22,10 +22,10 @@ public class Experiment {
     protected normalTabel normalFileQuery;
     protected indexTabel invertedFile;
     protected indexTabel invertedFileQuery;
-    protected ConcurrentHashMap<query, ConcurrentHashMap<document, Double> > resultMap;
+    protected Map<query, Map<document, Double> > resultMap;
 
     // GETTER - GETTER
-    public ConcurrentHashMap<query, ConcurrentHashMap<document, Double>> getResultMap() {
+    public Map<query, Map<document, Double>> getResultMap() {
         return resultMap;
     }
 
@@ -36,7 +36,7 @@ public class Experiment {
     public Experiment() {
         evals = new ArrayList<>();
         wordProcessor = new PreprocessWords();
-        resultMap = new ConcurrentHashMap<>();
+        resultMap = new HashMap<>();
     }
 
     public indexTabel getInvertedFile() {
@@ -104,7 +104,7 @@ public class Experiment {
         Iterator listQueries = wordProcessor.getListQueriesFinal().iterator();
         while (listQueries.hasNext()) {
             query q = (query) listQueries.next();
-            ConcurrentHashMap<document, Double> docweightMap = new ConcurrentHashMap<>();
+            Map<document, Double> docweightMap = new HashMap<>();
             Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
             while (listDocuments.hasNext()) {
                 document Document = (document) listDocuments.next();
@@ -113,7 +113,7 @@ public class Experiment {
                 docweightMap.put(Document, weight);
             }
             docweightMap = DocumentRanking.rankDocuments(docweightMap);
-            resultMap.put(q, docweightMap);
+            resultMap.put(q, (HashMap)docweightMap);
         }
 
         finish = System.currentTimeMillis();
