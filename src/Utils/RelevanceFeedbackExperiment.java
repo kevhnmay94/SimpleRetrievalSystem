@@ -291,7 +291,8 @@ public class RelevanceFeedbackExperiment extends Experiment {
                 docsNum.add(m.getKey().getIndex());
                 docsSim.add(m.getValue());
             }
-            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
+            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null ||
+                    wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size() > 0)
                 evals2.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
         }
 
