@@ -306,10 +306,12 @@ public class RelevanceFeedbackExperiment extends Experiment {
     public static void main(String[] args) {
         PreprocessWords wordProcessor = new PreprocessWords();
         // CISI
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
-        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
-        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
+        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+        EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+
+
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
@@ -324,8 +326,8 @@ public class RelevanceFeedbackExperiment extends Experiment {
         // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (EKSPERIMENT)
         RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment();
         exp.setIsPseudo(false);
-        exp.setTopS(10);
-        exp.setTopN(5);
+        exp.setTopS(1000);
+        exp.setTopN(10);
         exp.setUseQueryExpansion(true);
         exp.setUseSameCollection(true);
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);

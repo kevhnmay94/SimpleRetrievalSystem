@@ -154,8 +154,8 @@ public class RelevanceFeedbackInteractive {
 
     private void feedback(int tipe) {
         // query reweighting & query expansion
-        RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQuery(),
-                wordProcessor.getNormalFileQuery(), documentsRelevances);
+        RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQueryManual(),
+                wordProcessor.getNormalFileQueryManual(), documentsRelevances);
         feedback.updateTermInThisQuery(tipe);
         if(useQueryExpansion)
             feedback.updateUnseenTermInThisQuery(tipe);
@@ -185,8 +185,8 @@ public class RelevanceFeedbackInteractive {
         }
 
         // query reweighting & query expansion
-        PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQuery(),
-                wordProcessor.getNormalFileQuery(),relevance);
+        PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQueryManual(),
+                wordProcessor.getNormalFileQueryManual(),relevance);
         feedback.updateTermInThisQuery(tipe);
         if(useQueryExpansion)
             feedback.updateUnseenTermInThisQuery(tipe);
@@ -238,8 +238,8 @@ public class RelevanceFeedbackInteractive {
 
     public static void main(String[] args) {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
-        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
+        EksternalFile.setPathDocumentsFile("test\\CACM\\CACM.ALL");
+        EksternalFile.setPathQueriesFile("test\\CACM\\QUERYAAF");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         RelevanceFeedbackInteractive rfi = new RelevanceFeedbackInteractive();
