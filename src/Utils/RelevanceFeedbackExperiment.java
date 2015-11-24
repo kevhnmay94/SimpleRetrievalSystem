@@ -348,10 +348,10 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
         // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (EKSPERIMENT)
         RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment();
-        exp.setIsPseudo(true);
-        exp.setTopS(10);
+        exp.setIsPseudo(false);
+        exp.setTopS(20);
         exp.setTopN(5);
-        exp.setUseQueryExpansion(false);
+        exp.setUseQueryExpansion(true);
         exp.setUseSameCollection(false);
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
         exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, true);
