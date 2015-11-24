@@ -20,6 +20,7 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
     ArrayList<document> retrievedDocuments;
     int queryNum;
     ArrayList<Integer> retDocNums;
+    ArrayList<Double> docsSimilarity;
     queryRelevances qRelevances;
 
     // Retrieved document yg relevan
@@ -56,6 +57,12 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
         this.retDocNums = docNums;
         this.qRelevances = qRel;
     }
+    public SingleQueryEvaluation(int qNum, ArrayList<Integer> docNums, ArrayList<Double> sims, queryRelevances qRel) {
+        this.queryNum = qNum;
+        this.retDocNums = docNums;
+        this.qRelevances = qRel;
+        this.docsSimilarity = sims;
+    }
 
     // Setter
     public void setQuery(query query) {
@@ -75,6 +82,12 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
     }
     public void setRetDocNums(ArrayList<Integer> docNums) {
         this.retDocNums = docNums;
+    }
+
+    // Getter
+    public query getQuery() {
+
+        return this.query;
     }
 
     public void evaluate() {
@@ -183,6 +196,41 @@ public class SingleQueryEvaluation implements Comparable<SingleQueryEvaluation> 
         }
         return sb.toString();
     }
+
+    public String getEvalSummaryWithSimilarity() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Query number : "); sb.append(queryNum); sb.append("\n");
+        sb.append("Retrieved document numbers : ");
+        for(int i=0; i<retDocNums.size(); i++) {
+            sb.append(retDocNums.get(i)).append("(").append(docsSimilarity.get(i)).append(") ");
+        }
+        sb.append("\nRelevant document numbers in collection : ");
+
+        try {
+            ArrayList<Integer> docRels = qRelevances.getListQueryRelevances().get(queryNum);
+
+            for (int dnum : docRels) {
+                sb.append(dnum);
+                sb.append(" ");
+            }
+            sb.append("\nRelevant retrieved document numbers : ");
+            for (int dnum : relDocMap.keySet()) {
+                sb.append(dnum);
+                sb.append(" ");
+            }
+            sb.append("\nRecall : ");
+            sb.append(recall);
+            sb.append("\nPrecision : ");
+            sb.append(precision);
+            sb.append("\nNon Interpolated Average Precision : ");
+            sb.append(nonInterpolatedAvgPrecision);
+            sb.append("\n");
+        } catch (Exception e) {
+
+        }
+        return sb.toString();
+    }
+
 
     public static void main(String [] args) {
         /*ArrayList<Integer> docNums = new ArrayList<Integer> ();

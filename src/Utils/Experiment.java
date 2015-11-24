@@ -129,11 +129,13 @@ public class Experiment {
         // Build Query Evaluation
         for (query q : resultMap.keySet()) {
             ArrayList<Integer> docsNum = new ArrayList<>();
-            for (document doc : resultMap.get(q).keySet()) {
-                docsNum.add(doc.getIndex());
+            ArrayList<Double> docsSim = new ArrayList<>();
+            for (Map.Entry<document, Double> m : resultMap.get(q).entrySet()) {
+                docsNum.add(m.getKey().getIndex());
+                docsSim.add(m.getValue());
             }
             if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
-                evals.add( new SingleQueryEvaluation(q.getIndex(), docsNum, wordProcessor.getListQueryRelevancesFinal()) );
+                evals.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
         }
 
         // Evaluate all results
@@ -159,6 +161,19 @@ public class Experiment {
         sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
         return sb.toString();
     }
+
+    public String getSummaryWithSimilarity() {
+        StringBuilder sb = new StringBuilder();
+        double sumNonAVG = 0.0;
+        for(SingleQueryEvaluation sqe : evals) {
+            sb.append(sqe.getEvalSummaryWithSimilarity());
+            sb.append("\n");
+            sumNonAVG += sqe.nonInterpolatedAvgPrecision;
+        }
+        sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
+        return sb.toString();
+    }
+
 
     public static void main(String[] args) {
         // Setting awal awal

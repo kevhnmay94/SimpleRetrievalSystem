@@ -106,11 +106,13 @@ public class RelevanceFeedbackExperiment extends Experiment {
         // Build Query Evaluation
         for (query q : resultMap.keySet()) {
             ArrayList<Integer> docsNum = new ArrayList<>();
-            for (document doc : resultMap.get(q).keySet()) {
-                docsNum.add(doc.getIndex());
+            ArrayList<Double> docsSim = new ArrayList<>();
+            for (Map.Entry<document, Double> m : resultMap.get(q).entrySet()) {
+                docsNum.add(m.getKey().getIndex());
+                docsSim.add(m.getValue());
             }
             if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
-                evals.add( new SingleQueryEvaluation(q.getIndex(), docsNum, wordProcessor.getListQueryRelevancesFinal()) );
+                evals.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
         }
 
         // Evaluate all results
@@ -179,12 +181,14 @@ public class RelevanceFeedbackExperiment extends Experiment {
         evals2 = new ArrayList<>();
         for (query q : resultMap2.keySet()) {
             ArrayList<Integer> docsNum = new ArrayList<>();
-            for (document doc : resultMap2.get(q).keySet()) {
-                docsNum.add(doc.getIndex());
+            ArrayList<Double> docsSim = new ArrayList<>();
+            for (Map.Entry<document, Double> m : resultMap2.get(q).entrySet()) {
+                docsNum.add(m.getKey().getIndex());
+                docsSim.add(m.getValue());
             }
             if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null ||
                     wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size() > 0)
-                evals2.add( new SingleQueryEvaluation(q.getIndex(), docsNum, wordProcessor.getListQueryRelevancesFinal()) );
+                evals2.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
         }
 
         // Evaluate all results
@@ -237,10 +241,17 @@ public class RelevanceFeedbackExperiment extends Experiment {
         resultMap2 = new HashMap<>();
         for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
+
+//            System.out.println(feedback.getListDocumentRelevancesThisQuery().getQuery().getIndex());
+//            System.out.println("Query lama : " + feedback.getListDocumentRelevancesThisQuery().getQuery().getQueryContent());
+//            System.out.println("Query baru : " + newQuery.getQueryContent());
+//            System.out.println("-----------------------------------------------------------------");
+
            /* System.out.println(feedback.getListDocumentRelevancesThisQuery().getQuery().getIndex());
             System.out.println("Query lama : " + feedback.getListDocumentRelevancesThisQuery().getQuery().getQueryContent());
             System.out.println("Query baru : " + newQuery.getQueryContent());
             System.out.println("-----------------------------------------------------------------"); */
+
             Map<document, Double> docweightMap = new HashMap<>();
             Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
             while (listDocuments.hasNext()) {
@@ -275,11 +286,13 @@ public class RelevanceFeedbackExperiment extends Experiment {
         evals2 = new ArrayList<>();
         for (query q : resultMap2.keySet()) {
             ArrayList<Integer> docsNum = new ArrayList<>();
-            for (document doc : resultMap2.get(q).keySet()) {
-                docsNum.add(doc.getIndex());
+            ArrayList<Double> docsSim = new ArrayList<>();
+            for (Map.Entry<document, Double> m : resultMap2.get(q).entrySet()) {
+                docsNum.add(m.getKey().getIndex());
+                docsSim.add(m.getValue());
             }
             if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
-                evals2.add( new SingleQueryEvaluation(q.getIndex(), docsNum, wordProcessor.getListQueryRelevancesFinal()) );
+                evals2.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
         }
 
         // Evaluate all results
@@ -302,15 +315,21 @@ public class RelevanceFeedbackExperiment extends Experiment {
         sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
         return sb.toString();
     }
+    public String getSummary2WithSimilarity() {
+        StringBuilder sb = new StringBuilder();
+        double sumNonAVG = 0.0;
+        for(SingleQueryEvaluation sqe : evals2) {
+            sb.append(sqe.getEvalSummaryWithSimilarity());
+            sb.append("\n");
+            sumNonAVG += sqe.nonInterpolatedAvgPrecision;
+        }
+        sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
+        return sb.toString();
+    }
 
     public static void main(String[] args) {
         PreprocessWords wordProcessor = new PreprocessWords();
-        // CISI
-       /* EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
-        EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
-        EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
-        // ADI
+
         EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
@@ -337,13 +356,13 @@ public class RelevanceFeedbackExperiment extends Experiment {
         exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, true);
         exp.setNormalFile(wordProcessor.getNormalFile());
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
-        exp.evaluate(false);
-        System.out.println(exp.getSummary());
+        exp.evaluate(true);
+        System.out.println(exp.getSummaryWithSimilarity());
 
         System.out.println("\nSecond retrieval : \n");
 
-        exp.secondRetrieval(3);
-        System.out.println(exp.getSummary2());
+        exp.secondRetrieval(1);
+        System.out.println(exp.getSummary2WithSimilarity());
     }
 
 }
