@@ -1,10 +1,9 @@
 package Utils;
 
-import Feedback.Interactive.PseudoRelevanceFeedback;
-import Feedback.Interactive.RelevanceFeedback;
+import Feedback.PseudoRelevanceFeedback;
+import Feedback.RelevanceFeedback;
 import model.*;
 
-import javax.print.Doc;
 import java.util.*;
 
 /**

@@ -31,6 +31,13 @@ public class Interface2Controller implements Initializable {
     @FXML private Button searchButton;
     @FXML private TextArea resultText;
     @FXML private TextField searchTextField;
+    @FXML private TextField topN;
+    @FXML private TextField topS;
+    @FXML private RadioButton sameRetrieval;
+    @FXML private RadioButton diffRetrieval;
+    @FXML private RadioButton rocchio;
+    @FXML private RadioButton ideregular;
+    @FXML private RadioButton idedechi;
     private final ToggleGroup searchMethod = new ToggleGroup();
 
     @Override
@@ -76,5 +83,9 @@ public class Interface2Controller implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("interface1.fxml"));
         Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
+    }
+
+    public void handleRelevanceFeedbackButton(ActionEvent actionEvent){
+
     }
 }

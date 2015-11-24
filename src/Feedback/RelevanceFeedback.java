@@ -1,4 +1,4 @@
-package Feedback.Interactive;
+package Feedback;
 
 import Utils.*;
 import model.*;
@@ -8,37 +8,72 @@ import java.util.*;
 /**
  * Created by steve on 14/11/2015.
  */
-public class PseudoRelevanceFeedback {
+public class RelevanceFeedback {
     indexTabel invertedFile;
-    indexTabel invertedFileQuery;
-    normalTabel normalFileQuery;
-    ArrayList<Integer> listDocumentsRelevant;    // Top N of document retrieved
+    indexTabel invertedFileQueryManual;
+    normalTabel normalFileQueryManual;
+    ArrayList<Integer> listDocumentRelevant;
+    ArrayList<Integer> listDocumentIrrelevant;
+    documentsRelevancesFeedback listDocumentRelevancesThisQuery;
     HashMap<String,Double> newQueryComposition;
-    documentsPseudoRelevanceFeedback listDocumentRetrievedForThisQuery;
 
-    // GETTER-GETTER
+    // GETTER ATTRIBUTE
+
+    public HashMap<String, Double> getNewQueryComposition() {
+        return newQueryComposition;
+    }
+
+    public indexTabel getInvertedFileQueryManual() {
+        return invertedFileQueryManual;
+    }
+
+    public ArrayList<Integer> getListDocumentRelevant() {
+        return listDocumentRelevant;
+    }
+
     public indexTabel getInvertedFile() {
         return invertedFile;
     }
 
-    public documentsPseudoRelevanceFeedback getListDocumentRetrievedForThisQuery() {
-        return listDocumentRetrievedForThisQuery;
+    public normalTabel getNormalFileQueryManual() {
+        return normalFileQueryManual;
     }
 
-    public indexTabel getInvertedFileQuery() {
-        return invertedFileQuery;
+    public ArrayList<Integer> getListDocumentIrrelevant() {
+        return listDocumentIrrelevant;
     }
 
-    public normalTabel getNormalFileQuery() {
-        return normalFileQuery;
+    public documentsRelevancesFeedback getListDocumentRelevancesThisQuery() {
+        return listDocumentRelevancesThisQuery;
     }
 
-    public ArrayList<Integer> getListDocumentsRelevant() {
-        return listDocumentsRelevant;
-    }
-
-    public HashMap<String, Double> getNewQueryComposition() {
-        return newQueryComposition;
+    /**
+     * Constructor before Relevance Feedback Method implemented
+     * @param invertedFile
+     * @param invertedFileQueryManual
+     * @param normalFileQueryManual
+     * @param listDocumentRelevances
+     */
+    public RelevanceFeedback(indexTabel invertedFile, indexTabel invertedFileQueryManual, normalTabel normalFileQueryManual,
+                             documentsRelevancesFeedback listDocumentRelevances) //, queryRelevances updatedQueryRelevances)
+    {
+        this.invertedFile = invertedFile;
+        this.invertedFileQueryManual = invertedFileQueryManual;
+        this.normalFileQueryManual = normalFileQueryManual;
+        this.listDocumentRelevancesThisQuery = listDocumentRelevances;
+        newQueryComposition = new HashMap<>();
+        listDocumentRelevant = new ArrayList<>();
+        listDocumentIrrelevant = new ArrayList<>();
+        // Split relevant and irrelevant document from all user feedback
+        for (Map.Entry m : listDocumentRelevances.getIsDocumentsRelevantList().entrySet()) {
+            int indexDocument = (Integer) m.getKey();
+            boolean isRelevant = (Boolean) m.getValue();
+            if (isRelevant) {
+                listDocumentRelevant.add(indexDocument);
+            } else {
+                listDocumentIrrelevant.add(indexDocument);
+            }
+        }
     }
 
     /**
@@ -46,7 +81,7 @@ public class PseudoRelevanceFeedback {
      * @return
      */
     public query convertNewQueryComposition() {
-        int index = listDocumentRetrievedForThisQuery.getQuery().getIndex();
+        int index = listDocumentRelevancesThisQuery.getQuery().getIndex();
         StringBuffer queryContent = new StringBuffer();
         for (Map.Entry m : newQueryComposition.entrySet()) {
             String keyTerm = (String) m.getKey();
@@ -57,50 +92,22 @@ public class PseudoRelevanceFeedback {
     }
 
     /**
-     * Constructor
-     * @param invertedFile
-     * @param invertedFileQuery
-     * @param normalFileQuery
-     * @param listDocumentRetrievedForThisQuery
-     */
-    public PseudoRelevanceFeedback(indexTabel invertedFile, indexTabel invertedFileQuery, normalTabel normalFileQuery, documentsPseudoRelevanceFeedback listDocumentRetrievedForThisQuery) {
-        this.invertedFile = invertedFile;
-        this.invertedFileQuery = invertedFileQuery;
-        this.normalFileQuery = normalFileQuery;
-        this.listDocumentRetrievedForThisQuery = listDocumentRetrievedForThisQuery;
-        newQueryComposition = new HashMap<>();
-        // Isi top document relevant ke list dokumen relevant
-        listDocumentsRelevant = new ArrayList<>();
-        int topDocumentRelevant = listDocumentRetrievedForThisQuery.getTopDocumentsRelevant();
-        ArrayList<Integer> listDocumentRetrieved = listDocumentRetrievedForThisQuery.getListDocumentsRetrieved();
-        int counter = 0;
-        Iterator iterator = listDocumentRetrieved.iterator();
-        while (iterator.hasNext()) {
-            int indexDocument = (Integer) iterator.next();
-            if (counter < topDocumentRelevant) {
-                listDocumentsRelevant.add(indexDocument);
-            }
-            counter++;
-        }
-    }
-
-    /**
      * Create new query composition from inverted file query
-     * with 3 options Pseudo Relevance Feedback Method
+     * with 3 options Relevance Feedback Method
      */
     public void updateTermInThisQuery(int relevanceFeedbackMethod) {
-        query thisQuery = listDocumentRetrievedForThisQuery.getQuery();
+        query thisQuery = listDocumentRelevancesThisQuery.getQuery();
         StringTokenizer token = new StringTokenizer(thisQuery.getQueryContent(), " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
         while (token.hasMoreTokens()) {
             String keyTerm = token.nextToken();
             String filteredWord;
-            if (invertedFileQuery.isStemmingApplied()) {
+            if (invertedFileQueryManual.isStemmingApplied()) {
                 filteredWord = StemmingPorter.stripAffixes(keyTerm);
             } else {
                 filteredWord = keyTerm;
             }
             try {
-                termWeightingDocument relation = invertedFileQuery.getListTermWeights().get(filteredWord);
+                termWeightingDocument relation = invertedFileQueryManual.getListTermWeights().get(filteredWord);
                 if (relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()) != null) {
                     double oldWeight = relation.getDocumentWeightCounterInOneTerm().get(thisQuery.getIndex()).getWeight();
                     double newWeight = computeNewWeightTerm(relevanceFeedbackMethod,filteredWord,oldWeight);
@@ -122,7 +129,7 @@ public class PseudoRelevanceFeedback {
      * in inverted file document with Relevance Feedback Method
      */
     public void updateUnseenTermInThisQuery(int relevanceFeedbackMethod) {
-        int thisQueryIndex = listDocumentRetrievedForThisQuery.getQuery().getIndex();
+        int thisQueryIndex = listDocumentRelevancesThisQuery.getQuery().getIndex();
         for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
             String keyTerm = (String) m.getKey();
             if (!isTermAppearInQuery(keyTerm)) {
@@ -135,8 +142,8 @@ public class PseudoRelevanceFeedback {
                         filteredWord = keyTerm;
                     }
                     newQueryComposition.put(filteredWord,newWeight);
-                    invertedFileQuery.insertRowTable(keyTerm,thisQueryIndex,newWeight);
-                    normalFileQuery.insertElement(thisQueryIndex,keyTerm);
+                    invertedFileQueryManual.insertRowTable(keyTerm,thisQueryIndex,newWeight);
+                    normalFileQueryManual.insertElement(thisQueryIndex,keyTerm);
                 }
             }
         }
@@ -150,29 +157,53 @@ public class PseudoRelevanceFeedback {
      * @return
      */
     private double computeNewWeightTerm(int relevanceFeedbackMethod, String term, double oldWeight) {
-        double sumWeightDocumentRelevant = computeSumWeightDocuments(term, listDocumentsRelevant);
-        double sumDocumentRelevant = listDocumentRetrievedForThisQuery.getTopDocumentsRelevant();
+        double sumWeightDocumentRelevant = computeSumWeightDocuments(term,listDocumentRelevant);
+        double sumWeightDocumentIrrelevant = computeSumWeightDocuments(term,listDocumentIrrelevant);
+        double weightTopDocumentIrrelevant = findWeightTopIrrelevantDocument(term,listDocumentIrrelevant);
+        double sumDocumentRelevant = (double) listDocumentRelevant.size();
+        double sumDocumentIrrelevant = (double) listDocumentIrrelevant.size();
         double newWeight;
         switch (relevanceFeedbackMethod) {
-            case 1  :   newWeight = oldWeight + (sumWeightDocumentRelevant / sumDocumentRelevant);
-                break;
-            case 2  :   newWeight = oldWeight + sumWeightDocumentRelevant;
-                break;
-            case 3  :   newWeight = oldWeight + sumWeightDocumentRelevant;
-                break;
+            case 1  :   newWeight = oldWeight + (sumWeightDocumentRelevant / sumDocumentRelevant) - (sumWeightDocumentIrrelevant / sumDocumentIrrelevant);
+                        break;
+            case 2  :   newWeight = oldWeight + sumWeightDocumentRelevant - sumWeightDocumentIrrelevant;
+                        break;
+            case 3  :   newWeight = oldWeight + sumWeightDocumentRelevant - weightTopDocumentIrrelevant;
+                        break;
             default :   newWeight = oldWeight;
         }
         return newWeight;
     }
 
     /**
-     * Check term in inverted file query appears or not
+     * Find weight a term in top irrelevant document
+     * from inverted file document
+     * @param term
+     * @param listDocumentsIrrelevant
+     * @return
+     */
+    private double findWeightTopIrrelevantDocument(String term,ArrayList<Integer> listDocumentsIrrelevant) {
+        int topIndexDocumentIrrelevant = listDocumentsIrrelevant.get(0);
+        double weight = 0.0;
+
+        try {
+            if (invertedFile.getListTermWeights().get(term).getDocumentWeightCounterInOneTerm().get(topIndexDocumentIrrelevant) != null) {
+                weight = invertedFile.getListTermWeights().get(term).getDocumentWeightCounterInOneTerm().get(topIndexDocumentIrrelevant).getWeight();
+            }
+        } catch (Exception e) {
+
+        }
+        return weight;
+    }
+
+    /**
+     * Check each term in inverted file document
      * @param term
      * @return
      */
     private boolean isTermAppearInQuery(String term) {
         boolean isTermAppear = false;
-        query thisQuery = listDocumentRetrievedForThisQuery.getQuery();
+        query thisQuery = listDocumentRelevancesThisQuery.getQuery();
         StringTokenizer token = new StringTokenizer(thisQuery.getQueryContent(), " %&\"*#@$^_<>|`+=-1234567890'(){}[]/.:;?!,\n");
         while (token.hasMoreTokens()) {
             String keyTerm = token.nextToken();
@@ -218,15 +249,15 @@ public class PseudoRelevanceFeedback {
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
         // ADI
-       /* EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
         // CRAN
-        EksternalFile.setPathDocumentsFile("test\\CRAN\\CRAN.all");
+        /* EksternalFile.setPathDocumentsFile("test\\CRAN\\CRAN.all");
         EksternalFile.setPathQueriesFile("test\\CRAN\\QUERYADG");
         EksternalFile.setPathQrelsFile("test\\CRAN\\QRELSADE");
-        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
         // MED
        /* EksternalFile.setPathDocumentsFile("test\\MED\\MED.all");
         EksternalFile.setPathQueriesFile("test\\MED\\QUERYABW");
@@ -249,83 +280,91 @@ public class PseudoRelevanceFeedback {
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 
         // PROSES BUAT INVERTED FILE BUAT QUERY (INTERACTIVE)
-        String contentQuery = "computer science";
+        /* String contentQuery = "computer science";
         wordProcessor.loadIndexTabelForManualQuery(contentQuery,true); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
         TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQueryManual(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query */
 
-        // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY
+        // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (EKSPERIMENT)
         Experiment exp = new Experiment();
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
-        exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, true);
+        exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false,true);
         exp.setNormalFile(wordProcessor.getNormalFile());
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
         exp.evaluate(false);
-        /* query manualQuery = new query(0,contentQuery);
+
+        // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (INTERACTIVE)
+       /* query manualQuery = new query(0,contentQuery);
         InputQuery iq = new InputQuery();
         iq.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
         iq.setNormalFile(wordProcessor.getNormalFile());
-<<<<<<< HEAD
-        iq.setQueryMode(1,1,true);;
-=======
-        iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false);
         iq.setQueryMode(1,1,true);
->>>>>>> 7252d0e22b79d66136c0fe57ab94411a5dce2b30
-        iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false); */
+        iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false);
 
         /*
         =======================================RELEVANCE FEEDBACK (NEW EKSPERIMENT) ============================================
          */
 
-        // ARRAYLIST PSEUDO FEEDBACK
-        ArrayList<documentsPseudoRelevanceFeedback> listFeedbacksEachQueries = new ArrayList<>();
+        // ARRAY MENYIMPAN HASIL RELEVANCE FEEDBACK PER QUERY
+        ArrayList<documentsRelevancesFeedback> listFeedbacksEachQueries = new ArrayList<>();
 
-        // ISI FORM PSEUDO RELEVANCE FEEDBACK (EKSPERIMENT)
+        // ISI FORM RELEVANCE FEEDBACK (EKSPERIMENT)
+        wordProcessor.loadQueryRelevancesFinal();
+        queryRelevances thisQueryRelevances = wordProcessor.getListQueryRelevancesFinal();
         int counter = 0;
         for (SingleQueryEvaluation m : exp.getEvals()) {
             query Query = (query) wordProcessor.getListQueriesFinal().get(counter);
-            documentsPseudoRelevanceFeedback relevances = new documentsPseudoRelevanceFeedback(3,Query);    // 3 TOP DOCUMENT RELEVANT
+            documentsRelevancesFeedback relevances = new documentsRelevancesFeedback(Query);
             for (Integer index : m.getRetDocNums()) {
-                relevances.insertDocumentRetrieved(index);
+                if (wordProcessor.isDocumentRelevantForThisQuery(index,Query.getIndex(),thisQueryRelevances)) {
+                    relevances.insertDocumentRelevance(index, true);
+                } else {
+                    relevances.insertDocumentRelevance(index, false);
+                }
             }
             listFeedbacksEachQueries.add(relevances);
             counter++;
         }
 
-        // ISI FORM PSEUDO RELEVANCE FEEDBACK (INTERACTIVE)
-       /* documentsPseudoRelevanceFeedback relevances = new documentsPseudoRelevanceFeedback(2,manualQuery);
+        // ISI FORM RELEVANCE FEEDBACK (INTERACTIVE)
+       /* documentsRelevancesFeedback relevances = new documentsRelevancesFeedback(manualQuery);
         for (Map.Entry m : InputQuery.getResult().entrySet()) {
             document Document = (document) m.getKey();
-            relevances.insertDocumentRetrieved(Document.getIndex());
+            if (Document.getIndex() % 2 == 0) {         // Index dokumen genap : relevant (Asumsi)
+                relevances.insertDocumentRelevance(Document.getIndex(),true);
+            } else {                                    // Index dokumen ganjil : irrelevant (Asumsi)
+                relevances.insertDocumentRelevance(Document.getIndex(),false);
+            }
         }
         listFeedbacksEachQueries.add(relevances); */
 
-        // RELEVANCE FEEDBACK (SEMUA QUERY)
-        ArrayList<PseudoRelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
-        for (documentsPseudoRelevanceFeedback relevance : listFeedbacksEachQueries) {
-            // EKSPERIMEN SAJA
-            PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQuery(),
-                    wordProcessor.getNormalFileQuery(),relevance);
+        // RELEVANCE FEEDBACK (EKSPERIMENT DAN INTERACTIVE SAMA)
+        ArrayList<RelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
+        for (documentsRelevancesFeedback relevance : listFeedbacksEachQueries) {
+            // EKSPERIMENT SAJA
+            RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQuery(),
+                    wordProcessor.getNormalFileQuery(), relevance);
             // INTERACTIVE SAJA
-           /* PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQueryManual(),
-                    wordProcessor.getNormalFileQueryManual(),relevance); */
+           /* RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQueryManual(),
+                    wordProcessor.getNormalFileQueryManual(), relevance); */
             feedback.updateTermInThisQuery(1);
-            // feedback.updateUnseenTermInThisQuery(1);
+            //feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
         }
 
         // LIST NEW QUERIES BASED ON RELEVANCE FEEDBACK
-        for (PseudoRelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
+        for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
             System.out.println("Nomor Query : " + newQuery.getIndex());
-            System.out.println("Konten Query : " + newQuery.getQueryContent());
-            System.out.println("Bobot tiap term di query ini : ");
+            System.out.println("Konten Query Baru : " + newQuery.getQueryContent());
+
+           /* System.out.println("Bobot tiap term di query ini : ");
             for (Map.Entry m : feedback.getNewQueryComposition().entrySet()) {
                 String term = (String) m.getKey();
                 double bobot = (Double) m.getValue();
                 System.out.println("Term : " + term);
                 System.out.println("Bobot : " + bobot);
-            }
+            } */
             System.out.println("===================================================================");
         }
 

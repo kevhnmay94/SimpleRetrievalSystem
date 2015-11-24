@@ -1,14 +1,13 @@
 package Utils;
 
-import Feedback.Interactive.PseudoRelevanceFeedback;
-import Feedback.Interactive.RelevanceFeedback;
+import Feedback.PseudoRelevanceFeedback;
+import Feedback.RelevanceFeedback;
 import model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by khaidzir on 11/23/2015.
