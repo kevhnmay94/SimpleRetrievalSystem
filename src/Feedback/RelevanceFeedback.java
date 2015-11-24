@@ -273,6 +273,9 @@ public class RelevanceFeedback {
         wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus dokumen)
         TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
+        EksternalFile file = new EksternalFile();
+        file.writeInvertedFile("test\\invertedFile.csv",wordProcessor.getInvertedFile());
+
 
         // PROSES BUAT INVERTED FILE BUAT QUERY (EKSPERIMENT)
         wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
