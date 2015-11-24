@@ -175,18 +175,31 @@ public class EksternalFile {
      * @param invertedFile
      */
     public  void writeInvertedFile(String path, indexTabel invertedFile) {
+        // Sorting array of key term
+        int invertedFileSize = invertedFile.getListTermWeights().size();
+        String[] listKeyTerms = new String[invertedFileSize];
+        Enumeration enumString = invertedFile.getListTermWeights().keys();
+        int counter = 0;
+        while (enumString.hasMoreElements()) {
+            String keyTerm = (String) enumString.nextElement();
+            listKeyTerms[counter] = keyTerm;
+            counter++;
+        }
+        Arrays.sort(listKeyTerms);
+        // Write sorted inverted file into external file
         FileOutputStream fout = null;
         try {
             fout = new FileOutputStream(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
-            String keyTerm = (String) m.getKey();
-            for (Map.Entry n : ((termWeightingDocument) m.getValue()).getDocumentWeightCounterInOneTerm().entrySet()) {
+        for (int i=0;i<listKeyTerms.length;i++) {
+            String keyTerm = listKeyTerms[i];
+            termWeightingDocument relation = invertedFile.getListTermWeights().get(keyTerm);
+            for (Map.Entry n : relation.getDocumentWeightCounterInOneTerm().entrySet()) {
                 int indexDocument = (Integer) n.getKey();
                 double weightTermInDocument = ((counterWeightPair) n.getValue()).getWeight();
-                new PrintStream(fout).print(/*"~" + */keyTerm + "," + indexDocument + "," + weightTermInDocument + "," + "\n");
+                new PrintStream(fout).print(keyTerm + "," + indexDocument + "," + weightTermInDocument + "," + "\n");
             }
         }
     }
