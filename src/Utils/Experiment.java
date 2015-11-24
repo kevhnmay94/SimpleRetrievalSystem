@@ -135,7 +135,9 @@ public class Experiment {
                 docsSim.add(m.getValue());
             }
             if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
+                    if (wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size() > 0)
                 evals.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
+
         }
 
         // Evaluate all results

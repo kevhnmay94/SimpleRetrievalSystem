@@ -112,6 +112,7 @@ public class RelevanceFeedbackExperiment extends Experiment {
                 docsSim.add(m.getValue());
             }
             if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
+                if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size()>0)
                 evals.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
         }
 
@@ -186,8 +187,8 @@ public class RelevanceFeedbackExperiment extends Experiment {
                 docsNum.add(m.getKey().getIndex());
                 docsSim.add(m.getValue());
             }
-            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null ||
-                    wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size() > 0)
+            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
+                if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size()>0)
                 evals2.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
         }
 
@@ -291,8 +292,8 @@ public class RelevanceFeedbackExperiment extends Experiment {
                 docsNum.add(m.getKey().getIndex());
                 docsSim.add(m.getValue());
             }
-            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null ||
-                    wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size() > 0)
+            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
+                if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size()>0)
                 evals2.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
         }
 
@@ -350,14 +351,14 @@ public class RelevanceFeedbackExperiment extends Experiment {
         RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment();
         exp.setIsPseudo(false);
         exp.setTopS(20);
-        exp.setTopN(5);
+        exp.setTopN(10);
         exp.setUseQueryExpansion(true);
         exp.setUseSameCollection(false);
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
         exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, true);
         exp.setNormalFile(wordProcessor.getNormalFile());
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
-        exp.evaluate(true);
+        exp.evaluate(false);
         System.out.println(exp.getSummaryWithSimilarity());
 
         System.out.println("\nSecond retrieval : \n");
