@@ -33,6 +33,7 @@ public class RelevanceFeedbackInteractive {
     public Map<document, Double> getResult() {
         return result;
     }
+    public query getNewQuery() { return newQuery; }
 
     public RelevanceFeedbackInteractive() {
         wordProcessor = new PreprocessWords();
@@ -52,6 +53,7 @@ public class RelevanceFeedbackInteractive {
     public void setUseQueryExpansion(boolean q) {
         useQueryExpansion = q;
     }
+    public void setIsPseudo(boolean p) { isPseudo = p; }
 
     public void setDocumentMode(int tfmode, int idfmode, boolean stem){
         System.out.println("Indexing documents...");
@@ -118,15 +120,20 @@ public class RelevanceFeedbackInteractive {
         result = DocumentRanking.rankDocuments(result);
 
         // potong sebanyak S
-//        if(result.size() > topS) {
-//            int counter = 1;
-//            for(document d : result.keySet()) {
-//                counter++;
-//                if(counter > topS) {
-//                    result.remove(d);
-//                }
-//            }
-//        }
+        if(result.size()>topS) {
+            ArrayList<document> deletedEl=new ArrayList<>();
+            int counter=1;
+            for(document d : result.keySet()) {
+                if(counter>topS) {
+                    deletedEl.add(d);
+                }
+                counter++;
+            }
+            for(document d : deletedEl) {
+                result.remove(d);
+            }
+        }
+
         for(document d : result.keySet()) {
             documentsRelevances.insertDocumentRelevance(d.getIndex(), false);
         }
@@ -163,8 +170,8 @@ public class RelevanceFeedbackInteractive {
             if(!useSameCollection) {
                 if( result.containsKey(Document) ) continue;
             }
-            double weight = DocumentRanking.countSimilarityDocument(newQuery, feedback.getInvertedFile(),
-                    Document, wordProcessor.getInvertedFile(), feedback.getNormalFileQueryManual(), wordProcessor.getNormalFileQuery(),
+            double weight = DocumentRanking.countSimilarityDocument(newQuery, feedback.getInvertedFileQueryManual(),
+                    Document, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile(), feedback.getNormalFileQueryManual(),
                     isNormalize);
             result2.put(Document, weight);
         }
@@ -181,7 +188,7 @@ public class RelevanceFeedbackInteractive {
         // query reweighting & query expansion
         PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQuery(),
                 wordProcessor.getNormalFileQuery(),relevance);
-        feedback.updateTermInThisQuery(1);
+        feedback.updateTermInThisQuery(tipe);
         if(useQueryExpansion)
             feedback.updateUnseenTermInThisQuery(tipe);
 
@@ -194,8 +201,8 @@ public class RelevanceFeedbackInteractive {
             if(!useSameCollection) {
                 if( result.containsKey(Document) ) continue;
             }
-            double weight = DocumentRanking.countSimilarityDocument(newQuery, feedback.getInvertedFile(),
-                    Document, wordProcessor.getInvertedFile(), feedback.getNormalFileQuery(), wordProcessor.getNormalFileQuery(),
+            double weight = DocumentRanking.countSimilarityDocument(newQuery, feedback.getInvertedFileQuery(),
+                    Document, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile(), feedback.getNormalFileQuery(),
                     isNormalize);
             result2.put(Document, weight);
         }
@@ -216,24 +223,51 @@ public class RelevanceFeedbackInteractive {
         return sb.toString();
     }
 
+    public String getSummaryResult2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(result2.size());
+        sb.append(result2.size() > 1 ? " results" : " result");
+        sb.append("(" + (exectime/1000) + " seconds)\n\n");
+        for(document doc : result2.keySet()) {
+            sb.append("Title : " + doc.getJudul());       //sb.append("\n");
+            sb.append("Author : " + doc.getAuthor());     //sb.append("\n");
+            sb.append("Content : \n" + doc.getKonten());  sb.append("\n");
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
     public static void main(String[] args) {
         // Setting awal awal
         EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
-        InputQuery iq = new InputQuery();
+        RelevanceFeedbackInteractive rfi = new RelevanceFeedbackInteractive();
 
         // Setting mode
-        iq.setDocumentMode(1, 0, true);
-        iq.setQueryMode(1, 0, true);
+        rfi.setDocumentMode(1, 0, true);
+        rfi.setQueryMode(1, 0, true);
+        rfi.setTopS(20);
+        rfi.setTopN(10);
+        rfi.setUseSameCollection(true);
+        rfi.setUseQueryExpansion(false);
+        rfi.setIsPseudo(true);
 
         // Query dan hasil
-        String query = "computer";
-        iq.SearchDocumentsUsingQuery(query, false);
+        String query = "computer science in medical research";
+        rfi.SearchDocumentsUsingQuery(query, false);
 
         // Print
-        System.out.println(iq.getSummaryResult());
+        System.out.println(rfi.getSummaryResult());
+
+        System.out.println("Second retrieval : ");
+
+        rfi.secondRetrieval(1);
+        System.out.println(rfi.getSummaryResult2());
+
+        System.out.println("\nQuery lama : " + rfi.query);
+        System.out.println("\nQuery baru : " + rfi.newQuery.getQueryContent());
     }
 
 }
