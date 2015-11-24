@@ -5,7 +5,9 @@ import Feedback.Interactive.RelevanceFeedback;
 import model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -16,7 +18,7 @@ public class RelevanceFeedbackInteractive {
     int qTfMode, qIdfMode;
     boolean isStem;
     PreprocessWords wordProcessor;
-    ConcurrentHashMap<document, Double> result;
+    Map<document, Double> result;
     String query;
     query newQuery;
     double exectime;
@@ -26,9 +28,9 @@ public class RelevanceFeedbackInteractive {
     int topS, topN;
     boolean isPseudo, useSameCollection, useQueryExpansion, isNormalize;
 
-    ConcurrentHashMap<document, Double> result2;
+    Map<document, Double> result2;
 
-    public ConcurrentHashMap<document, Double> getResult() {
+    public Map<document, Double> getResult() {
         return result;
     }
 
@@ -86,7 +88,7 @@ public class RelevanceFeedbackInteractive {
         double start, finish;
         this.query = query;
         documentsRelevances.setQuery(new query(0,query));
-        result = new ConcurrentHashMap<>();
+        result = new HashMap<>();
 
         // Proses query
         System.out.println("Indexing queries...");
@@ -153,7 +155,7 @@ public class RelevanceFeedbackInteractive {
             feedback.updateUnseenTermInThisQuery(tipe);
 
         // retrieval kedua
-        result2 = new ConcurrentHashMap<>();
+        result2 = new HashMap<>();
         newQuery = feedback.convertNewQueryComposition();
         Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
         while (listDocuments.hasNext()) {
@@ -166,7 +168,7 @@ public class RelevanceFeedbackInteractive {
                     isNormalize);
             result2.put(Document, weight);
         }
-        result2 = DocumentRanking.rankDocuments(result2);
+        result2 = (HashMap)DocumentRanking.rankDocuments(result2);
     }
 
     private void pseudoFeedback(int tipe) {
@@ -184,7 +186,7 @@ public class RelevanceFeedbackInteractive {
             feedback.updateUnseenTermInThisQuery(tipe);
 
         // retrieval kedua
-        result2 = new ConcurrentHashMap<>();
+        result2 = new HashMap<>();
         newQuery = feedback.convertNewQueryComposition();
         Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
         while (listDocuments.hasNext()) {
@@ -197,7 +199,7 @@ public class RelevanceFeedbackInteractive {
                     isNormalize);
             result2.put(Document, weight);
         }
-        result2 = DocumentRanking.rankDocuments(result2);
+        result2 = (HashMap)DocumentRanking.rankDocuments(result2);
     }
 
     public String getSummaryResult() {

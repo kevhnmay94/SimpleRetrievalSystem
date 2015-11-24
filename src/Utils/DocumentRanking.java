@@ -124,11 +124,11 @@ public class DocumentRanking {
      * @param weightedDocs unsorted HashMap of document and its weight
      * @return
      */
-    public static ConcurrentHashMap<document, Double> rankDocuments(ConcurrentHashMap<document, Double> weightedDocs) {
-        return (ConcurrentHashMap<document, Double>) sortByComparator(weightedDocs);
+    public static Map<document, Double> rankDocuments(/*ConcurrentHash*/Map<document, Double> weightedDocs) {
+        return /*(ConcurrentHashMap<document, Double>)*/ sortByComparator(weightedDocs);
     }
 
-    private static ConcurrentHashMap<document, Double> sortByComparator(Map<document, Double> unsortMap) {
+    private static Map<document, Double> sortByComparator(Map<document, Double> unsortMap) {
 
         // Convert Map to List
         List<Map.Entry<document, Double>> list =
@@ -143,7 +143,7 @@ public class DocumentRanking {
         });
 
         // Convert sorted map back to a Map
-        ConcurrentHashMap<document, Double> sortedMap = new ConcurrentHashMap<document, Double>();
+        Map<document, Double> sortedMap = new LinkedHashMap<document, Double>();
         int counter=0;
         double val;
         for (Iterator<Map.Entry<document, Double>> it = list.iterator(); it.hasNext();) {
