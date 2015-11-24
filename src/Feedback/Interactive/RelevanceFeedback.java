@@ -349,20 +349,16 @@ public class RelevanceFeedback {
            /* RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQueryManual(),
                     wordProcessor.getNormalFileQueryManual(), relevance); */
             feedback.updateTermInThisQuery(1);
-            feedback.updateUnseenTermInThisQuery(1);
+            //feedback.updateUnseenTermInThisQuery(1);
             listRelevanceFeedbackExperiment.add(feedback);
         }
 
         // LIST NEW QUERIES BASED ON RELEVANCE FEEDBACK
-        int i=0;
         for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
-            indexTabel newInvertedFile = feedback.getInvertedFile();
-            normalTabel jjj = feedback.getNormalFileQueryManual();
             System.out.println("Nomor Query : " + newQuery.getIndex());
             System.out.println("Konten Query Baru : " + newQuery.getQueryContent());
-            System.out.println("Konten Query Lama : " + ((query) wordProcessor.getListQueriesFinal().get(i)).getQueryContent());
-            i++;
+
            /* System.out.println("Bobot tiap term di query ini : ");
             for (Map.Entry m : feedback.getNewQueryComposition().entrySet()) {
                 String term = (String) m.getKey();
