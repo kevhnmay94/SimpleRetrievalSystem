@@ -283,7 +283,8 @@ public class RelevanceFeedbackInteractive {
 
     public static void main(String[] args) {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\CACM\\CACM.ALL");
+//        EksternalFile.setPathDocumentsFile("test\\CACM\\CACM.ALL");
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         RelevanceFeedbackInteractive rfi = new RelevanceFeedbackInteractive();
@@ -295,10 +296,13 @@ public class RelevanceFeedbackInteractive {
         rfi.setTopN(5);
         rfi.setUseSameCollection(false);
         rfi.setUseQueryExpansion(false);
-        rfi.setIsPseudo(true);
+        rfi.setIsPseudo(false);
 
         // Query dan hasil
-        String query = "computer science in medical research";
+        String query = "What problems and concerns are there in making up descriptive titles?  \n" +
+                "What difficulties are involved in automatically retrieving articles from \n" +
+                "approximate titles?  \n" +
+                "What is the usual relevance of the content of articles to their titles?";
         rfi.SearchDocumentsUsingQuery(query, false);
 
         // Print
@@ -306,7 +310,12 @@ public class RelevanceFeedbackInteractive {
 
         System.out.println("Second retrieval : ");
 
-        rfi.setRelevanceDocuments(new ArrayList<Integer>());
+
+        ArrayList<Integer> d = new ArrayList<>();
+        d.add(17);
+        d.add(46);
+        d.add(62);
+        rfi.setRelevanceDocuments(d);
         rfi.secondRetrieval(1);
         System.out.println(rfi.getSummaryResult2WithWeight());
 
