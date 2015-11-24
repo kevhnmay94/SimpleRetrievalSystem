@@ -253,7 +253,7 @@ public class RelevanceFeedbackInteractive {
         rfi.setTopS(10);
         rfi.setTopN(5);
         rfi.setUseSameCollection(false);
-        rfi.setUseQueryExpansion(true);
+        rfi.setUseQueryExpansion(false);
         rfi.setIsPseudo(true);
 
         // Query dan hasil
