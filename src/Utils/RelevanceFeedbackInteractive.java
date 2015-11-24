@@ -283,18 +283,18 @@ public class RelevanceFeedbackInteractive {
 
     public static void main(String[] args) {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathDocumentsFile("test\\CACM\\CACM.ALL");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         RelevanceFeedbackInteractive rfi = new RelevanceFeedbackInteractive();
 
         // Setting mode
-        rfi.setDocumentMode(1, 0, true);
-        rfi.setQueryMode(1, 0, true);
-        rfi.setTopS(20);
-        rfi.setTopN(10);
+        rfi.setDocumentMode(1, 1, true);
+        rfi.setQueryMode(1, 1, true);
+        rfi.setTopS(10);
+        rfi.setTopN(5);
         rfi.setUseSameCollection(false);
-        rfi.setUseQueryExpansion(false);
+        rfi.setUseQueryExpansion(true);
         rfi.setIsPseudo(true);
 
         // Query dan hasil

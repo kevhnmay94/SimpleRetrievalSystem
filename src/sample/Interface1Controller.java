@@ -53,6 +53,7 @@ public class Interface1Controller implements Initializable {
     @FXML private RadioButton queryIDF;
     @FXML private RadioButton queryNoStem;
     @FXML private RadioButton queryStem;
+    @FXML private Button search;
     private final ToggleGroup documenttf;
     private final ToggleGroup documentidf;
     private final ToggleGroup norm;
@@ -286,5 +287,23 @@ public class Interface1Controller implements Initializable {
             relevanceTextField.setText(Vars.rellocation);
         }
 
+    }
+
+    public void handleSearch(ActionEvent actionEvent) throws IOException {
+        Vars.documentidf = (Integer) documentidf.getSelectedToggle().getUserData();
+        Vars.documenttf = (Integer) documenttf.getSelectedToggle().getUserData();
+        Vars.documentstem = (Boolean) documentstem.getSelectedToggle().getUserData();
+        Vars.queryidf = (Integer) queryidf.getSelectedToggle().getUserData();
+        Vars.querytf = (Integer) querytf.getSelectedToggle().getUserData();
+        Vars.querystem = (Boolean) querystem.getSelectedToggle().getUserData();
+        Vars.norm = (Boolean) norm.getSelectedToggle().getUserData();
+        Vars.documentlocation = documentTextField.getText();
+        Vars.stoplocation = stopwordsTextField.getText();
+        Vars.querylocation = queryTextField.getText();
+        Vars.rellocation = relevanceTextField.getText();
+
+        Parent root = FXMLLoader.load(getClass().getResource("interface2.fxml"));
+        Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
     }
 }
