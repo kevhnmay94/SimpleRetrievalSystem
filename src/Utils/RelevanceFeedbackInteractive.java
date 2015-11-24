@@ -238,19 +238,22 @@ public class RelevanceFeedbackInteractive {
 
     public static void main(String[] args) {
         // Setting awal awal
-        EksternalFile.setPathDocumentsFile("test\\CACM\\CACM.ALL");
+       /* EksternalFile.setPathDocumentsFile("test\\CACM\\CACM.ALL");
         EksternalFile.setPathQueriesFile("test\\CACM\\QUERYAAF");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        EksternalFile.setPathDocumentsFile("test\\ADI\\ADI.all");
+        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         RelevanceFeedbackInteractive rfi = new RelevanceFeedbackInteractive();
 
         // Setting mode
-        rfi.setDocumentMode(1, 0, true);
-        rfi.setQueryMode(1, 0, true);
-        rfi.setTopS(20);
-        rfi.setTopN(10);
-        rfi.setUseSameCollection(true);
-        rfi.setUseQueryExpansion(false);
+        rfi.setDocumentMode(1, 1, true);
+        rfi.setQueryMode(1, 1, true);
+        rfi.setTopS(10);
+        rfi.setTopN(5);
+        rfi.setUseSameCollection(false);
+        rfi.setUseQueryExpansion(true);
         rfi.setIsPseudo(true);
 
         // Query dan hasil
@@ -262,7 +265,7 @@ public class RelevanceFeedbackInteractive {
 
         System.out.println("Second retrieval : ");
 
-        rfi.secondRetrieval(1);
+        rfi.secondRetrieval(3);
         System.out.println(rfi.getSummaryResult2());
 
         System.out.println("\nQuery lama : " + rfi.query);

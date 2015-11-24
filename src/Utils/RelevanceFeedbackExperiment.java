@@ -237,10 +237,10 @@ public class RelevanceFeedbackExperiment extends Experiment {
         resultMap2 = new HashMap<>();
         for (RelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
-            System.out.println(feedback.getListDocumentRelevancesThisQuery().getQuery().getIndex());
+           /* System.out.println(feedback.getListDocumentRelevancesThisQuery().getQuery().getIndex());
             System.out.println("Query lama : " + feedback.getListDocumentRelevancesThisQuery().getQuery().getQueryContent());
             System.out.println("Query baru : " + newQuery.getQueryContent());
-            System.out.println("-----------------------------------------------------------------");
+            System.out.println("-----------------------------------------------------------------"); */
             Map<document, Double> docweightMap = new HashMap<>();
             Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
             while (listDocuments.hasNext()) {
@@ -306,12 +306,15 @@ public class RelevanceFeedbackExperiment extends Experiment {
     public static void main(String[] args) {
         PreprocessWords wordProcessor = new PreprocessWords();
         // CISI
-        EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
+       /* EksternalFile.setPathDocumentsFile("test\\CISI\\cisi.all");
         EksternalFile.setPathQueriesFile("test\\CISI\\query.text");
         EksternalFile.setPathQrelsFile("test\\CISI\\qrels.text");
+        EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt"); */
+        // ADI
+        EksternalFile.setPathDocumentsFile("test\\ADI\\adi.all");
+        EksternalFile.setPathQueriesFile("test\\ADI\\query.text");
+        EksternalFile.setPathQrelsFile("test\\ADI\\qrels.text");
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
-
-
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
         wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
@@ -325,21 +328,21 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
         // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (EKSPERIMENT)
         RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment();
-        exp.setIsPseudo(false);
-        exp.setTopS(1000);
-        exp.setTopN(10);
-        exp.setUseQueryExpansion(true);
-        exp.setUseSameCollection(true);
+        exp.setIsPseudo(true);
+        exp.setTopS(10);
+        exp.setTopN(5);
+        exp.setUseQueryExpansion(false);
+        exp.setUseSameCollection(false);
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
         exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, true);
         exp.setNormalFile(wordProcessor.getNormalFile());
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
-        exp.evaluate(true);
+        exp.evaluate(false);
         System.out.println(exp.getSummary());
 
         System.out.println("\nSecond retrieval : \n");
 
-        exp.secondRetrieval(1);
+        exp.secondRetrieval(3);
         System.out.println(exp.getSummary2());
     }
 
