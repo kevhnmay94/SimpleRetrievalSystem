@@ -1,6 +1,8 @@
 package sample;
 
 import Utils.Experiment;
+import Utils.RelevanceFeedbackExperiment;
+import Utils.RelevanceFeedbackInteractive;
 import javafx.stage.Stage;
 import model.indexTabel;
 import model.normalTabel;
@@ -25,4 +27,11 @@ public class Vars {
     public static indexTabel queryinvertedfile;
     public static normalTabel documentnormalfile;
     public static normalTabel querynormalfile;
+    public static Experiment exp;
+    public static RelevanceFeedbackExperiment rexp;
+    public static boolean isPseudo;
+    public static int topS;
+    public static int topN;
+    public static boolean useQueryExpansion;
+    public static boolean useSameCollection;
 }

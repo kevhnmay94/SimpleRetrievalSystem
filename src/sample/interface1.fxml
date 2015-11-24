@@ -46,7 +46,8 @@
         <RadioButton fx:id="queryNoStem" layoutX="378.0" layoutY="583.0" mnemonicParsing="false" text="No Stemming" />
         <Label layoutX="377.0" layoutY="560.0" text="Stemming" underline="true" />
         <RadioButton fx:id="queryStem" layoutX="378.0" layoutY="607.0" mnemonicParsing="false" text="Using Stemming" />
-        <Button onAction="#handleStartIndex" fx:id="startIndex" layoutX="254.0" layoutY="646.0" mnemonicParsing="false" text="Start Indexing" />
+        <Button onAction="#handleStartIndex" fx:id="startIndex" layoutX="154.0" layoutY="646.0" mnemonicParsing="false" text="Start Indexing" />
+        <Button onAction="#handleSearch" fx:id="search" layoutX="354.0" layoutY="646.0" mnemonicParsing="false" text="Search >" />
         <Button onAction="#handleChooseQuery" fx:id="chooseQuery" layoutX="487.0" layoutY="78.0" mnemonicParsing="false" text="Choose file..." />
         <TextField id="stopwordsTextField" fx:id="stopwordsTextField" layoutX="185.0" layoutY="148.0" prefHeight="25.0" prefWidth="385.0" />
         <Label layoutX="38.0" layoutY="152.0" text="Stop words location" />
