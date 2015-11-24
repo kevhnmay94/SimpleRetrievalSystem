@@ -34,9 +34,10 @@ public class queryRelevances {
     public void removeDocumentFromQrels (ArrayList<Integer> listIndexDocument, int indexQuery) {
         ArrayList<Integer> listDocumentThisQuery = listQueryRelevances.get(indexQuery);
         ArrayList<Integer> listDocumentRemoved = new ArrayList<>();
+        if(listDocumentThisQuery == null) return;
         for (Integer indexDocument : listDocumentThisQuery) {
             if (isDocumentContainedInList(indexDocument,listIndexDocument)) {
-                listDocumentRemoved.add(indexDocument); break;
+                listDocumentRemoved.add(indexDocument);
             }
         }
         if (!listDocumentRemoved.isEmpty()) {

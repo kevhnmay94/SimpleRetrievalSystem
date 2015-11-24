@@ -265,8 +265,12 @@ public class PseudoRelevanceFeedback {
         InputQuery iq = new InputQuery();
         iq.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
         iq.setNormalFile(wordProcessor.getNormalFile());
+<<<<<<< HEAD
+        iq.setQueryMode(1,1,true);;
+=======
         iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false);
         iq.setQueryMode(1,1,true);
+>>>>>>> 7252d0e22b79d66136c0fe57ab94411a5dce2b30
         iq.SearchDocumentsUsingQuery(manualQuery.getQueryContent(),false); */
 
         /*

@@ -16,7 +16,24 @@
         <Separator layoutX="73.0" layoutY="134.0" prefHeight="2.0" prefWidth="502.0" />
       <TextField fx:id="searchTextField" layoutX="48.0" layoutY="90.0" prefHeight="25.0" prefWidth="281.0" />
       <Button fx:id="searchButton" layoutX="499.0" layoutY="47.0" mnemonicParsing="false" onAction="#handleSearchButton" text="Search" />
-      <TextArea fx:id="resultText" layoutX="25.0" layoutY="152.0" prefHeight="397.0" prefWidth="539.0" />
-      <Button fx:id="backButton" layoutX="269.0" layoutY="581.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back" />
+      <TextArea fx:id="resultText" layoutX="25.0" layoutY="152.0" prefHeight="199.0" prefWidth="539.0" />
+      <Button fx:id="backButton" layoutX="196.0" layoutY="581.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back" />
+      <TextField fx:id="topN" layoutX="86.0" layoutY="461.0" prefHeight="25.0" prefWidth="90.0" />
+      <Label layoutX="31.0" layoutY="465.0" text="Top-N" />
+      <Label layoutX="30.0" layoutY="497.0" text="Document Collection" underline="true" />
+      <RadioButton fx:id="sameRetrieval" layoutX="38.0" layoutY="519.0" mnemonicParsing="false" text="The same as first retrieval" />
+      <RadioButton fx:id="diffRetrieval" layoutX="38.0" layoutY="544.0" mnemonicParsing="false" text="Different document collection" />
+      <RadioButton fx:id="idedechi" layoutX="217.0" layoutY="417.0" mnemonicParsing="false" text="Ide Dec-Hi" />
+      <RadioButton fx:id="ideregular" layoutX="116.0" layoutY="417.0" mnemonicParsing="false" text="Ide Regular" />
+      <RadioButton fx:id="rocchio" layoutX="36.0" layoutY="417.0" mnemonicParsing="false" text="Rocchio" />
+      <Label layoutX="28.0" layoutY="395.0" text="Method" underline="true" />
+      <Label layoutX="28.0" layoutY="368.0" text="Relevance Feedback Settings" />
+      <Button fx:id="setRelevanceFeedback" layoutX="300.0" layoutY="581.0" mnemonicParsing="false" onAction="#handleRelevanceFeedbackButton" text="Set Relevance Feedback" />
+      <Separator layoutX="188.0" layoutY="375.0" prefHeight="4.0" prefWidth="384.0" />
+      <Label layoutX="198.0" layoutY="465.0" text="Top-S" />
+      <TextField fx:id="topS" layoutX="253.0" layoutY="461.0" prefHeight="25.0" prefWidth="90.0" />
+      <Label layoutX="300.0" layoutY="497.0" text="Relevance Feedback" underline="true" />
+      <RadioButton fx:id="diffRetrieval1" layoutX="310.0" layoutY="548.0" mnemonicParsing="false" text="Pseudo" />
+      <RadioButton fx:id="sameRetrieval1" layoutX="310.0" layoutY="523.0" mnemonicParsing="false" text="Non-pseudo" />
     </children>
 </AnchorPane>
