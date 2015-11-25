@@ -10,13 +10,13 @@ public class TableResult {
     public SimpleIntegerProperty rank;
     public SimpleIntegerProperty docNo;
     public SimpleDoubleProperty similiarity;
-    public boolean relevant;
+    public SimpleBooleanProperty relevant;
 
     public TableResult(int rank, int docNo, double similiarity) {
         this.rank = new SimpleIntegerProperty(rank);
         this.docNo = new SimpleIntegerProperty(docNo);
         this.similiarity = new SimpleDoubleProperty(similiarity);
-        this.relevant = true;
+        this.relevant = new SimpleBooleanProperty(false);
     }
 
     public int getRank() {
@@ -56,10 +56,22 @@ public class TableResult {
     }
 
     public boolean isRelevant() {
-        return relevant;
+        return relevant.get();
     }
 
     public void setRelevant(boolean relevant) {
-        this.relevant = relevant;
+        this.relevant.set(relevant);
+    }
+
+    public SimpleBooleanProperty relevantProperty() {
+        return this.relevant;
+    }
+
+    public Boolean getRelevant() {
+        return this.relevantProperty().get();
+    }
+
+    public void setChecked(final Boolean checked) {
+        this.relevantProperty().set(checked);
     }
 }

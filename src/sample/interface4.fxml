@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="478.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Button fx:id="interactiveSearchButton" layoutX="155.0" layoutY="421.0" mnemonicParsing="false" onAction="#handleInteractiveSearchButton" text="Search" />
+        <Button fx:id="interactiveSearchAgain" layoutX="356.0" layoutY="421.0" mnemonicParsing="false" onAction="#handleInteractiveSearchAgain" text="Search Again" />
+        <TableView fx:id="interactiveTable" layoutX="14.0" layoutY="14.0" prefHeight="319.0" prefWidth="563.0">
+            <columns>
+                <TableColumn fx:id="interactiveRank" prefWidth="75.0" text="Rank" />
+                <TableColumn fx:id="interactiveDocNo" prefWidth="75.0" text="Doc No" />
+                <TableColumn fx:id="interactiveRelevance" prefWidth="75.0" text="Relevant" />
+            </columns>
+        </TableView>
+      <Label layoutX="181.0" layoutY="363.0" text="Query:" />
+      <TextField fx:id="searchQuery" layoutX="226.0" layoutY="359.0" prefHeight="25.0" prefWidth="182.0" />
+    </children>
+</AnchorPane>
