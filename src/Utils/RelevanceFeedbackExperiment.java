@@ -308,24 +308,32 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
     public String getSummary2() {
         StringBuilder sb = new StringBuilder();
-        double sumNonAVG = 0.0;
+        double sumNonAVG = 0.0, precision=0.0, recall=0.0;
         for(SingleQueryEvaluation sqe : evals2) {
             sb.append(sqe.getEvalSummary());
             sb.append("\n");
             sumNonAVG += sqe.nonInterpolatedAvgPrecision;
+            precision += sqe.precision;
+            recall += sqe.recall;
         }
-        sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
+        sb.append("Recall Mean : ").append((recall / (double) evals.size())).append("\n");
+        sb.append("Precision Mean : ").append(precision / (double) evals.size()).append("\n");
+        sb.append("NIAP Mean : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
         return sb.toString();
     }
     public String getSummary2WithSimilarity() {
         StringBuilder sb = new StringBuilder();
-        double sumNonAVG = 0.0;
+        double sumNonAVG = 0.0, precision=0.0, recall=0.0;
         for(SingleQueryEvaluation sqe : evals2) {
             sb.append(sqe.getEvalSummaryWithSimilarity());
             sb.append("\n");
             sumNonAVG += sqe.nonInterpolatedAvgPrecision;
+            precision += sqe.precision;
+            recall += sqe.recall;
         }
-        sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
+        sb.append("Recall Mean : ").append((recall / (double) evals.size())).append("\n");
+        sb.append("Precision Mean : ").append(precision / (double) evals.size()).append("\n");
+        sb.append("NIAP Mean : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
         return sb.toString();
     }
 
@@ -350,10 +358,10 @@ public class RelevanceFeedbackExperiment extends Experiment {
         // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (EKSPERIMENT)
         RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment();
         exp.setIsPseudo(false);
-        exp.setTopS(20);
+        exp.setTopS(10);
         exp.setTopN(5);
-        exp.setUseQueryExpansion(false);
-        exp.setUseSameCollection(true);
+        exp.setUseQueryExpansion(true);
+        exp.setUseSameCollection(false);
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
         exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, true);
         exp.setNormalFile(wordProcessor.getNormalFile());
@@ -363,7 +371,7 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
         System.out.println("\nSecond retrieval : \n");
 
-        exp.secondRetrieval(1);
+        exp.secondRetrieval(2);
         System.out.println(exp.getSummary2WithSimilarity());
     }
 

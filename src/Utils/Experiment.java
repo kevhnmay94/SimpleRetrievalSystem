@@ -154,25 +154,33 @@ public class Experiment {
 
     public String getSummary() {
         StringBuilder sb = new StringBuilder();
-        double sumNonAVG = 0.0;
+        double sumNonAVG = 0.0, precision=0.0, recall=0.0;
         for(SingleQueryEvaluation sqe : evals) {
             sb.append(sqe.getEvalSummary());
             sb.append("\n");
             sumNonAVG += sqe.nonInterpolatedAvgPrecision;
+            precision += sqe.precision;
+            recall += sqe.recall;
         }
-        sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
+        sb.append("Recall Mean : ").append((recall / (double) evals.size())).append("\n");
+        sb.append("Precision Mean : ").append(precision / (double) evals.size()).append("\n");
+        sb.append("NIAP Mean : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
         return sb.toString();
     }
 
     public String getSummaryWithSimilarity() {
         StringBuilder sb = new StringBuilder();
-        double sumNonAVG = 0.0;
+        double sumNonAVG = 0.0, precision=0.0, recall=0.0;
         for(SingleQueryEvaluation sqe : evals) {
             sb.append(sqe.getEvalSummaryWithSimilarity());
             sb.append("\n");
             sumNonAVG += sqe.nonInterpolatedAvgPrecision;
+            precision += sqe.precision;
+            recall += sqe.recall;
         }
-        sb.append("Noninterpollated Precision Average : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
+        sb.append("Recall Mean : ").append((recall / (double) evals.size())).append("\n");
+        sb.append("Precision Mean : ").append(precision / (double) evals.size()).append("\n");
+        sb.append("NIAP Mean : " + (sumNonAVG / (double) wordProcessor.getListQueriesFinal().size()));
         return sb.toString();
     }
 
