@@ -351,9 +351,9 @@ public class RelevanceFeedbackExperiment extends Experiment {
         RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment();
         exp.setIsPseudo(false);
         exp.setTopS(20);
-        exp.setTopN(10);
-        exp.setUseQueryExpansion(true);
-        exp.setUseSameCollection(false);
+        exp.setTopN(5);
+        exp.setUseQueryExpansion(false);
+        exp.setUseSameCollection(true);
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
         exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, true);
         exp.setNormalFile(wordProcessor.getNormalFile());
