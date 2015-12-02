@@ -122,6 +122,8 @@ public class PseudoRelevanceFeedback {
      * in inverted file document with Relevance Feedback Method
      */
     public void updateUnseenTermInThisQuery(int relevanceFeedbackMethod) {
+        System.out.println("Nomor Query Lama : " + listDocumentRetrievedForThisQuery.getQuery().getIndex());
+        System.out.println("Isi Query Lama : " + listDocumentRetrievedForThisQuery.getQuery().getQueryContent());
         int thisQueryIndex = listDocumentRetrievedForThisQuery.getQuery().getIndex();
         for (Map.Entry m : invertedFile.getListTermWeights().entrySet()) {
             String keyTerm = (String) m.getKey();
@@ -140,6 +142,8 @@ public class PseudoRelevanceFeedback {
                 }
             }
         }
+        System.out.println("Nomor Query Baru : " + convertNewQueryComposition().getIndex());
+        System.out.println("Isi Query Baru : " + convertNewQueryComposition().getQueryContent());
     }
 
     /**
