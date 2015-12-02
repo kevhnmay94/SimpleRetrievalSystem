@@ -193,6 +193,13 @@ public class RelevanceFeedbackInteractive {
         pseudoFeedback.updateTermInThisQuery(tipe);
         if(useQueryExpansion)
             pseudoFeedback.updateUnseenTermInThisQuery(tipe);
+        if (relevance.getQuery().getIndex() == 8) {
+            String path = "test\\invertedFile2.csv", path2 = "test\\invertedFileQuery2.csv", path3 = "test\\normalFile2.csv", path4 = "test\\normalFileQuery2.csv";
+            EksternalFile file = new EksternalFile();
+            file.writeInvertedFile(path, pseudoFeedback.getInvertedFile());
+            file.writeInvertedFileQuery(path2, pseudoFeedback.getInvertedFileQuery());
+            file.writeNormalFileQuery(path4, pseudoFeedback.getNormalFileQuery());
+        }
 
         // retrieval kedua
         result2 = new HashMap<>();

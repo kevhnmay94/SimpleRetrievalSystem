@@ -166,6 +166,13 @@ public class RelevanceFeedbackExperiment extends Experiment {
             feedback.updateTermInThisQuery(tipe);
             if(useQueryExpansion)
                 feedback.updateUnseenTermInThisQuery(tipe);
+            if (relevance.getQuery().getIndex() == 8) {
+                String path = "test\\invertedFile2.csv", path2 = "test\\invertedFileQuery2.csv", path3 = "test\\normalFile2.csv", path4 = "test\\normalFileQuery2.csv";
+                EksternalFile file = new EksternalFile();
+                file.writeInvertedFile(path, feedback.getInvertedFile());
+                file.writeInvertedFileQuery(path2, feedback.getInvertedFileQuery());
+                file.writeNormalFileQuery(path4, feedback.getNormalFileQuery());
+            }
             listPseudoFeedbackExperiment.add(feedback);
         }
 
@@ -247,8 +254,16 @@ public class RelevanceFeedbackExperiment extends Experiment {
             feedback.updateTermInThisQuery(tipe);
             if(useQueryExpansion)
                 feedback.updateUnseenTermInThisQuery(tipe);
+            if (relevance.getQuery().getIndex() == 8) {
+                String path = "test\\invertedFile2.csv", path2 = "test\\invertedFileQuery2.csv", path3 = "test\\normalFile2.csv", path4 = "test\\normalFileQuery2.csv";
+                EksternalFile file = new EksternalFile();
+                file.writeInvertedFile(path, feedback.getInvertedFile());
+                file.writeInvertedFileQuery(path2, feedback.getInvertedFileQueryManual());
+                file.writeNormalFileQuery(path4, feedback.getNormalFileQueryManual());
+            }
             listRelevanceFeedbackExperiment.add(feedback);
         }
+
 
         // retrieval kedua
         resultMap2 = new HashMap<>();

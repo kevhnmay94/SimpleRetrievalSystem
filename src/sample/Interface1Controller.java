@@ -263,7 +263,6 @@ public class Interface1Controller implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("interface2.fxml"));
         Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
-
     }
 
     public void handleChooseQuery(ActionEvent actionEvent) {
