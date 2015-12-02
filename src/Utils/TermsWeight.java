@@ -249,7 +249,7 @@ public class TermsWeight {
             System.out.println("====================================================================================");
         } */
 
-        ArrayList<Integer> listInteger = new ArrayList<>();
+       /* ArrayList<Integer> listInteger = new ArrayList<>();
         listInteger.add(66);
         listInteger.add(67);
         listInteger.add(68);
@@ -267,6 +267,14 @@ public class TermsWeight {
         Iterator iterator2 = listInteger2.iterator();
         while (iterator2.hasNext()) {
             System.out.println((Integer) iterator2.next());
+        } */
+        List<Double> doubleList = new ArrayList<>();
+        doubleList.add(23.0);
+        doubleList.add(12.0);
+        doubleList.add(15.0);
+        Collections.sort(doubleList);
+        for (Double b : doubleList) {
+            System.out.println(b);
         }
     }
 }
