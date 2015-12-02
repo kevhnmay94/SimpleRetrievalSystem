@@ -19,6 +19,8 @@ public class RelevanceFeedbackExperiment extends Experiment {
     private ArrayList<RelevanceFeedback> listRelevanceFeedbackExperiment;
     private ArrayList<PseudoRelevanceFeedback> listPseudoFeedbackExperiment;
 
+    private ArrayList<query> newQueryList;
+
     public RelevanceFeedbackExperiment() {
         super();
     }
@@ -113,9 +115,13 @@ public class RelevanceFeedbackExperiment extends Experiment {
                 docsNum.add(m.getKey().getIndex());
                 docsSim.add(m.getValue());
             }
-            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
-                if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size()>0)
-                evals.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
+            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null) {
+                if (wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size() > 0) {
+                    SingleQueryEvaluation sqe = new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal());
+                    sqe.setQuery(q);
+                    evals.add(sqe);
+                }
+            }
         }
 
         // Evaluate all results
@@ -205,9 +211,13 @@ public class RelevanceFeedbackExperiment extends Experiment {
                 docsNum.add(m.getKey().getIndex());
                 docsSim.add(m.getValue());
             }
-            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
-                if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size()>0)
-                evals2.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
+            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null) {
+                if (wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size() > 0) {
+                    SingleQueryEvaluation sqe = new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal());
+                    sqe.setQuery(q);
+                    evals2.add(sqe);
+                }
+            }
         }
 
         // Evaluate all results
@@ -319,9 +329,13 @@ public class RelevanceFeedbackExperiment extends Experiment {
                 docsNum.add(m.getKey().getIndex());
                 docsSim.add(m.getValue());
             }
-            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null)
-                if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size()>0)
-                evals2.add( new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal()) );
+            if(wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex())!=null) {
+                if (wordProcessor.getListQueryRelevancesFinal().getListQueryRelevances().get(q.getIndex()).size() > 0) {
+                    SingleQueryEvaluation sqe = new SingleQueryEvaluation(q.getIndex(), docsNum, docsSim, wordProcessor.getListQueryRelevancesFinal());
+                    sqe.setQuery(q);
+                    evals2.add(sqe);
+                }
+            }
         }
 
         // Evaluate all results
@@ -338,11 +352,11 @@ public class RelevanceFeedbackExperiment extends Experiment {
         double sumNonAVG = 0.0, precision=0.0, recall=0.0;
         int counter = 0;
         for(SingleQueryEvaluation sqe : evals2) {
-            if (isPseudo) {
-                sb.append("New Query : ").append(listPseudoFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
-            } else {
-                sb.append("New Query : ").append(listRelevanceFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
-            }
+            //if (isPseudo) {
+                sb.append("New Query : ").append(sqe.getQuery().getQueryContent());
+            //} else {
+//                sb.append("New Query : ").append(listRelevanceFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
+  //          }
             sb.append("\n");
             sb.append(sqe.getEvalSummary());
             sb.append("\n");
@@ -361,11 +375,11 @@ public class RelevanceFeedbackExperiment extends Experiment {
         double sumNonAVG = 0.0, precision=0.0, recall=0.0;
         int counter = 0;
         for(SingleQueryEvaluation sqe : evals2) {
-            if (isPseudo) {
-                sb.append("New Query : ").append(listPseudoFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
-            } else {
-                sb.append("New Query : ").append(listRelevanceFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
-            }
+    //        if (isPseudo) {
+                sb.append("New Query : ").append(sqe.getQuery().getQueryContent());
+      //      } else {
+          //      sb.append("New Query : ").append(listRelevanceFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
+        //    }
             sb.append("\n");
             sb.append(sqe.getEvalSummaryWithSimilarity());
             sb.append("\n");
@@ -389,24 +403,24 @@ public class RelevanceFeedbackExperiment extends Experiment {
         EksternalFile.setPathStopWordsFile("test\\stopwords_en.txt");
 
         // PROSES BIKIN INVERTED FILE BUAT DOCUMENT
-        wordProcessor.loadIndexTabel(true); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabel(false); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus dokumen)
-        TermsWeight.inverseDocumentWeighting(1, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
+        TermsWeight.inverseDocumentWeighting(0, wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS dengan with IDS (log N/Ntfi) (khusus dokumen)
 
         // PROSES BUAT INVERTED FILE BUAT QUERY (EKSPERIMENT)
-        wordProcessor.loadIndexTabelForQueries(true); // True : stemming diberlakukan
+        wordProcessor.loadIndexTabelForQueries(false); // True : stemming diberlakukan
         TermsWeight.termFrequencyWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getNormalFile()); // TF dengan logarithmic TF (khusus query)
-        TermsWeight.inverseDocumentWeightingQuery(1, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
+        TermsWeight.inverseDocumentWeightingQuery(0, wordProcessor.getInvertedFileQuery(), wordProcessor.getInvertedFile(), wordProcessor.getNormalFile()); // IDS khusus query
 
         // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (EKSPERIMENT)
         RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment();
-        exp.setIsPseudo(true);
+        exp.setIsPseudo(false);
         exp.setTopS(10);
         exp.setTopN(4);
         exp.setUseQueryExpansion(true);
         exp.setUseSameCollection(false);
         exp.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
-        exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, false);
+        exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(),false,false);
         exp.setNormalFile(wordProcessor.getNormalFile());
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
         exp.evaluate(false);
@@ -414,7 +428,7 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
         System.out.println("\nSecond retrieval : \n");
 
-        exp.secondRetrieval(2);
+        exp.secondRetrieval(1);
         System.out.println(exp.getSummary2WithSimilarity());
     }
 

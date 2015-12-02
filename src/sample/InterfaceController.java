@@ -103,7 +103,7 @@ public class InterfaceController implements Initializable {
     private final ToggleGroup feedbackMethod;
     private final ToggleGroup docCollection;
     private final ToggleGroup pseudo;
-    RelevanceFeedbackExperiment exp;
+    RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment();
     RelevanceFeedbackInteractive rfi = new RelevanceFeedbackInteractive();
 
 
@@ -406,10 +406,10 @@ public class InterfaceController implements Initializable {
         rfi.setQueryMode(Vars.querytf, Vars.queryidf, Vars.querystem);
         rfi.setTopS(Vars.topS);
         rfi.setTopN(Vars.topN);
-        rfi.setUseSameCollection(Vars.useQueryExpansion);
-        rfi.setUseQueryExpansion(Vars.useSameCollection);
+        rfi.setUseSameCollection(Vars.useSameCollection);
+        rfi.setUseQueryExpansion(Vars.useQueryExpansion);
         rfi.setIsPseudo(Vars.isPseudo);
-        rfi.SearchDocumentsUsingQuery(searchQuery.getText(), false);
+        rfi.SearchDocumentsUsingQuery(searchQuery.getText(), Vars.norm);
 
         if(!Vars.isPseudo){
             interactiveRelevance.setVisible(true);
@@ -444,8 +444,8 @@ public class InterfaceController implements Initializable {
     public void handleInteractiveSearchAgain(ActionEvent actionEvent) {
         rfi.setTopS(Vars.topS);
         rfi.setTopN(Vars.topN);
-        rfi.setUseSameCollection(Vars.useQueryExpansion);
-        rfi.setUseQueryExpansion(Vars.useSameCollection);
+        rfi.setUseSameCollection(Vars.useSameCollection);
+        rfi.setUseQueryExpansion(Vars.useQueryExpansion);
         rfi.setIsPseudo(Vars.isPseudo);
         if(!Vars.isPseudo){
             ArrayList<Integer> hm = new ArrayList<>();
