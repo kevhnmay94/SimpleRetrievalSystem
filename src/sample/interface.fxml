@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.cell.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="508.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.InterfaceController">
+  <tabs>
+    <Tab fx:id="searchTab" onSelectionChanged="#handleSearchTab" text="Search Method">
+         <content>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0">
+               <content>
+                   <AnchorPane prefHeight="700.0" prefWidth="598.0">
+                       <children>
+                           <TextField id="documentTextField" fx:id="documentTextField" layoutX="185.0" layoutY="43.0" prefHeight="25.0" prefWidth="385.0" />
+                           <Label layoutX="38.0" layoutY="47.0" text="Document location" />
+                           <Label layoutX="38.0" layoutY="82.0" text="Query location" />
+                           <TextField id="queryTextField" fx:id="queryTextField" layoutX="185.0" layoutY="78.0" prefHeight="25.0" prefWidth="385.0" />
+                           <Label layoutX="38.0" layoutY="117.0" text="Relevance judgement" />
+                           <TextField id="relevanceTextField" fx:id="relevanceTextField" layoutX="185.0" layoutY="113.0" prefHeight="25.0" prefWidth="385.0" />
+                           <Separator layoutX="123.0" layoutY="209.0" prefHeight="4.0" prefWidth="446.0" />
+                           <Label layoutX="62.0" layoutY="257.0" text="TF" underline="true" />
+                           <RadioButton fx:id="documentNoTF" layoutX="60.0" layoutY="282.0" mnemonicParsing="false" text="No TF" />
+                           <RadioButton fx:id="documentRawTF" layoutX="60.0" layoutY="306.0" mnemonicParsing="false" text="Raw TF" />
+                           <RadioButton fx:id="documentBinaryTF" layoutX="60.0" layoutY="329.0" mnemonicParsing="false" text="Binary TF" />
+                           <RadioButton fx:id="documentAugTF" layoutX="60.0" layoutY="352.0" mnemonicParsing="false" text="Augmented TF" />
+                           <RadioButton fx:id="documentLogTF" layoutX="60.0" layoutY="377.0" mnemonicParsing="false" text="Logarithmic TF" />
+                           <Label layoutX="358.0" layoutY="231.0" text="Query" underline="true" />
+                           <Button fx:id="chooseDocument" layoutX="487.0" layoutY="43.0" mnemonicParsing="false" onAction="#handleChooseDocument" text="Choose file..." />
+                           <Label layoutX="40.0" layoutY="231.0" text="Document" underline="true" />
+                           <RadioButton fx:id="queryAugTF" layoutX="375.0" layoutY="351.0" mnemonicParsing="false" text="Augmented TF" />
+                           <RadioButton fx:id="queryLogTF" layoutX="375.0" layoutY="376.0" mnemonicParsing="false" text="Logarithmic TF" />
+                           <RadioButton fx:id="queryRawTF" layoutX="375.0" layoutY="305.0" mnemonicParsing="false" text="Raw TF" />
+                           <RadioButton fx:id="queryNoTF" layoutX="375.0" layoutY="281.0" mnemonicParsing="false" text="No TF" />
+                           <RadioButton fx:id="queryBinaryTF" layoutX="375.0" layoutY="328.0" mnemonicParsing="false" text="Binary TF" />
+                           <Label layoutX="377.0" layoutY="256.0" text="TF" underline="true" />
+                           <Label layoutX="61.0" layoutY="408.0" text="IDF" underline="true" />
+                           <RadioButton fx:id="documentNoIDF" layoutX="62.0" layoutY="431.0" mnemonicParsing="false" text="No IDF" />
+                           <RadioButton fx:id="documentIDF" layoutX="62.0" layoutY="455.0" mnemonicParsing="false" text="Using IDF" />
+                           <RadioButton fx:id="queryIDF" layoutX="376.0" layoutY="452.0" mnemonicParsing="false" text="Using IDF" />
+                           <RadioButton fx:id="queryNoIDF" layoutX="376.0" layoutY="428.0" mnemonicParsing="false" text="No IDF" />
+                           <Label layoutX="375.0" layoutY="405.0" text="IDF" underline="true" />
+                           <RadioButton fx:id="Norm" layoutX="207.0" layoutY="532.0" mnemonicParsing="false" text="Using Normalization" textAlignment="CENTER" />
+                           <RadioButton fx:id="NoNorm" layoutX="214.0" layoutY="507.0" mnemonicParsing="false" text="No Normalization" textAlignment="CENTER" />
+                           <Label layoutX="234.0" layoutY="482.0" text="Normalization" textAlignment="CENTER" underline="true" />
+                           <RadioButton fx:id="documentStem" layoutX="64.0" layoutY="609.0" mnemonicParsing="false" text="Using Stemming" />
+                           <RadioButton fx:id="documentNoStem" layoutX="64.0" layoutY="585.0" mnemonicParsing="false" text="No Stemming" />
+                           <Label layoutX="63.0" layoutY="562.0" text="Stemming" underline="true" />
+                           <RadioButton fx:id="queryNoStem" layoutX="378.0" layoutY="583.0" mnemonicParsing="false" text="No Stemming" />
+                           <Label layoutX="377.0" layoutY="560.0" text="Stemming" underline="true" />
+                           <RadioButton fx:id="queryStem" layoutX="378.0" layoutY="607.0" mnemonicParsing="false" text="Using Stemming" />
+                           <Button fx:id="startIndex" layoutX="254.0" layoutY="646.0" mnemonicParsing="false" onAction="#handleStartIndex" text="Start Indexing" />
+                           <Button fx:id="chooseQuery" layoutX="487.0" layoutY="78.0" mnemonicParsing="false" onAction="#handleChooseQuery" text="Choose file..." />
+                           <TextField id="stopwordsTextField" fx:id="stopwordsTextField" layoutX="185.0" layoutY="148.0" prefHeight="25.0" prefWidth="385.0" />
+                           <Label layoutX="38.0" layoutY="152.0" text="Stop words location" />
+                           <Button fx:id="chooseStopwords" layoutX="487.0" layoutY="148.0" mnemonicParsing="false" onAction="#handleChooseStopwords" text="Choose file..." />
+                           <Label layoutX="25.0" layoutY="202.0" text="Indexing Settings" />
+                           <Separator layoutX="64.0" layoutY="22.0" prefHeight="3.0" prefWidth="505.0" />
+                           <Label layoutX="25.0" layoutY="14.0" text="Input" />
+                           <Button fx:id="chooseRelevance" layoutX="487.0" layoutY="113.0" mnemonicParsing="false" onAction="#handleChooseRelevance" text="Choose file..." />
+                       </children>
+                   </AnchorPane>
+               </content>
+            </ScrollPane>
+         </content>
+    </Tab>
+    <Tab fx:id="relevanceFeedbackTab" onSelectionChanged="#handleRelevanceTab" text="Relevance Feedback">
+         <content>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0">
+               <content>
+                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="600.0">
+                       <children>
+                           <TextField fx:id="topN" layoutX="86.0" layoutY="126.0" prefHeight="25.0" prefWidth="90.0" />
+                           <Label layoutX="31.0" layoutY="130.0" text="Top-N" />
+                           <Label layoutX="30.0" layoutY="162.0" text="Document Collection" underline="true" />
+                           <RadioButton fx:id="sameRetrieval" layoutX="38.0" layoutY="184.0" mnemonicParsing="false" text="The same as first retrieval" />
+                           <RadioButton fx:id="diffRetrieval" layoutX="38.0" layoutY="209.0" mnemonicParsing="false" text="Different document collection" />
+                           <RadioButton fx:id="idedechi" layoutX="217.0" layoutY="82.0" mnemonicParsing="false" text="Ide Dec-Hi" />
+                           <RadioButton fx:id="ideregular" layoutX="116.0" layoutY="82.0" mnemonicParsing="false" text="Ide Regular" />
+                           <RadioButton fx:id="rocchio" layoutX="36.0" layoutY="82.0" mnemonicParsing="false" text="Rocchio" />
+                           <Label layoutX="28.0" layoutY="60.0" text="Method" underline="true" />
+                           <Label layoutX="28.0" layoutY="33.0" text="Relevance Feedback Settings" />
+                           <Button fx:id="setRelevanceFeedback" layoutX="71.0" layoutY="297.0" mnemonicParsing="false" onAction="#handleRelevanceFeedbackButton" text="Set Relevance Feedback" />
+                           <Separator layoutX="188.0" layoutY="40.0" prefHeight="4.0" prefWidth="384.0" />
+                           <Label layoutX="198.0" layoutY="130.0" text="Top-S" />
+                           <TextField fx:id="topS" layoutX="253.0" layoutY="126.0" prefHeight="25.0" prefWidth="90.0" />
+                           <Label layoutX="300.0" layoutY="162.0" text="Relevance Feedback" underline="true" />
+                           <RadioButton fx:id="pseudoFeedback" layoutX="310.0" layoutY="213.0" mnemonicParsing="false" text="Pseudo" />
+                           <RadioButton fx:id="nonPseudoFeedback" layoutX="310.0" layoutY="188.0" mnemonicParsing="false" text="Non-pseudo" />
+                           <ScrollPane layoutX="28.0" layoutY="152.0" prefHeight="200.0" prefWidth="539.0" visible="false">
+                               <content>
+                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                               </content>
+                           </ScrollPane>
+                        <CheckBox fx:id="queryExpension" layoutX="36.0" layoutY="244.0" mnemonicParsing="false" text="Use query expension?" />
+                        <Label fx:id="notifRelevance" layoutX="256.0" layoutY="335.0" />
+                       </children>
+                   </AnchorPane>
+               </content>
+            </ScrollPane>
+         </content>
+    </Tab>
+      <Tab fx:id="experimentTab" onSelectionChanged="#handleExperimentTab" text="Experiment">
+         <content>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0">
+               <content>
+                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="426.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+                       <children>
+                           <TextArea fx:id="searchResult" layoutX="42.0" layoutY="45.0" prefHeight="318.0" prefWidth="517.0" />
+                           <Button fx:id="experimentSearchButton" layoutX="156.0" layoutY="385.0" mnemonicParsing="false" onAction="#handleExperimentSearchButton" text="Search" />
+                           <Button fx:id="experimentSearchAgain" layoutX="357.0" layoutY="385.0" mnemonicParsing="false" onAction="#handleExperimentSearchAgain" text="Search Again" />
+                       </children>
+                   </AnchorPane>
+               </content>
+            </ScrollPane>
+         </content>
+      </Tab>
+      <Tab fx:id="interactiveTab" onSelectionChanged="#handleInteractiveTab" text="Interactive">
+         <content>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0">
+               <content>
+                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="478.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+                       <children>
+                           <Button fx:id="interactiveSearchButton" layoutX="155.0" layoutY="421.0" mnemonicParsing="false" onAction="#handleInteractiveSearchButton" text="Search" />
+                           <Button fx:id="interactiveSearchAgain" layoutX="356.0" layoutY="421.0" mnemonicParsing="false" onAction="#handleInteractiveSearchAgain" text="Search Again" />
+                           <TableView fx:id="interactiveTable" editable="true" layoutX="14.0" layoutY="14.0" prefHeight="319.0" prefWidth="563.0">
+                               <columns>
+                                   <TableColumn fx:id="interactiveRank" editable="false" prefWidth="75.0" text="Rank" />
+                                   <TableColumn fx:id="interactiveDocNo" editable="false" prefWidth="75.0" text="Doc No" />
+                                    <TableColumn fx:id="interactiveSimiliarity" editable="false" prefWidth="75.0" text="Similiarity" />
+                                   <TableColumn fx:id="interactiveRelevance" prefWidth="75.0" text="Relevant">
+                                       <cellValueFactory><PropertyValueFactory property="checked" /></cellValueFactory>
+                                       <cellFactory><sample.CheckBoxCellFactory /></cellFactory>
+                                   </TableColumn>
+                               </columns>
+                           </TableView>
+                           <Label layoutX="181.0" layoutY="363.0" text="Query:" />
+                           <TextField fx:id="searchQuery" layoutX="226.0" layoutY="359.0" prefHeight="25.0" prefWidth="182.0" />
+                       </children>
+                   </AnchorPane>
+               </content>
+            </ScrollPane>
+         </content>
+      </Tab>
+  </tabs>
+</TabPane>

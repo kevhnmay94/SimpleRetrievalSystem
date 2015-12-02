@@ -16,6 +16,7 @@ import model.document;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -263,14 +264,16 @@ public class InterfaceController implements Initializable {
         interactiveSimiliarity.setCellValueFactory(new PropertyValueFactory<TableResult,Double>("similiarity"));
         interactiveRelevance.setVisible(false);
         interactiveRelevance.setCellValueFactory(new PropertyValueFactory<TableResult,Boolean>("relevant"));
-        interactiveRelevance.setCellFactory(new Callback<TableColumn<TableResult,Boolean>,TableCell<TableResult,Boolean>>() {
+        /* interactiveRelevance.setCellFactory(new Callback<TableColumn<TableResult,Boolean>,TableCell<TableResult,Boolean>>() {
             @Override
             public TableCell<TableResult, Boolean> call(TableColumn<TableResult, Boolean> p) {
 
                 return new CheckBoxTableCell<TableResult, Boolean>();
 
             }
-        });
+        }); */
+        interactiveSearchAgain.setDisable(true);
+        experimentSearchAgain.setDisable(true);
     }
 
     public void handleStartIndex(ActionEvent actionEvent) {
@@ -383,6 +386,7 @@ public class InterfaceController implements Initializable {
         exp.setUseSameCollection(Vars.useSameCollection);
         exp.evaluate(Vars.norm);
         searchResult.setText(exp.getSummaryWithSimilarity());
+        experimentSearchAgain.setDisable(false);
     }
 
     public void handleExperimentSearchAgain(ActionEvent actionEvent) {
@@ -393,6 +397,7 @@ public class InterfaceController implements Initializable {
         exp.setUseSameCollection(Vars.useSameCollection);
         exp.secondRetrieval((Integer) feedbackMethod.getSelectedToggle().getUserData());
         searchResult.setText(exp.getSummary2WithSimilarity());
+        experimentSearchAgain.setDisable(true);
     }
 
     public void handleInteractiveSearchButton(ActionEvent actionEvent) {
@@ -431,6 +436,7 @@ public class InterfaceController implements Initializable {
             }
             interactiveTable.setItems(ol);
         }
+        interactiveSearchAgain.setDisable(false);
     }
 
     public void handleInteractiveSearchAgain(ActionEvent actionEvent) {
@@ -440,16 +446,18 @@ public class InterfaceController implements Initializable {
         rfi.setUseQueryExpansion(Vars.useSameCollection);
         rfi.setIsPseudo(Vars.isPseudo);
         if(!Vars.isPseudo){
-            Map<Integer,Boolean> hm = new HashMap<>();
+            ArrayList<Integer> hm = new ArrayList<>();
             ObservableList<TableResult> obs = interactiveTable.getItems();
             for(TableResult t : obs){
-                hm.put(t.getDocNo(),t.isRelevant());
+                if(t.isRelevant())
+                    hm.add(t.getDocNo());
             }
+            rfi.setRelevanceDocuments(hm);
             rfi.secondRetrieval((Integer) feedbackMethod.getSelectedToggle().getUserData());
             interactiveRelevance.setVisible(true);
             ObservableList<TableResult> ol = FXCollections.observableArrayList();
             int count = 1;
-            for(Map.Entry<document, Double> m : rfi.result.entrySet()) {
+            for(Map.Entry<document, Double> m : rfi.result2.entrySet()) {
                 TableResult tr = new TableResult(count,m.getKey().getIndex(),m.getValue());
                 ol.add(tr);
                 count++;
@@ -472,6 +480,7 @@ public class InterfaceController implements Initializable {
             }
             interactiveTable.setItems(ol);
         }
+        interactiveSearchAgain.setDisable(true);
     }
 
     public void handleSearchTab(Event event) {

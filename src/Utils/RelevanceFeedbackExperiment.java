@@ -16,6 +16,8 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
     Map<query, Map<document, Double> > resultMap2;
     ArrayList<SingleQueryEvaluation> evals2;
+    private ArrayList<RelevanceFeedback> listRelevanceFeedbackExperiment;
+    private ArrayList<PseudoRelevanceFeedback> listPseudoFeedbackExperiment;
 
     public RelevanceFeedbackExperiment() {
         super();
@@ -147,7 +149,7 @@ public class RelevanceFeedbackExperiment extends Experiment {
         }
 
         // query reweighting & query expansion
-        ArrayList<PseudoRelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
+        listPseudoFeedbackExperiment = new ArrayList<>();
         for (documentsPseudoRelevanceFeedback relevance : listFeedbacksEachQueries) {
             // EKSPERIMENT
             PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback(wordProcessor.getInvertedFile(),wordProcessor.getInvertedFileQuery(),
@@ -155,12 +157,12 @@ public class RelevanceFeedbackExperiment extends Experiment {
             feedback.updateTermInThisQuery(tipe);
             if(useQueryExpansion)
                 feedback.updateUnseenTermInThisQuery(tipe);
-            listRelevanceFeedbackExperiment.add(feedback);
+            listPseudoFeedbackExperiment.add(feedback);
         }
 
         // retrieval kedua
         resultMap2 = new HashMap<>();
-        for (PseudoRelevanceFeedback feedback : listRelevanceFeedbackExperiment) {
+        for (PseudoRelevanceFeedback feedback : listPseudoFeedbackExperiment) {
             query newQuery = feedback.convertNewQueryComposition();
             Map<document, Double> docweightMap = new HashMap<>();
             Iterator listDocuments = wordProcessor.getListDocumentsFinal().iterator();
@@ -227,7 +229,7 @@ public class RelevanceFeedbackExperiment extends Experiment {
         }
 
         // query reweighting & query expansion
-        ArrayList<RelevanceFeedback> listRelevanceFeedbackExperiment = new ArrayList<>();
+        listRelevanceFeedbackExperiment = new ArrayList<>();
         for (documentsRelevancesFeedback relevance : listFeedbacksEachQueries) {
             // EKSPERIMENT SAJA
             RelevanceFeedback feedback = new RelevanceFeedback(wordProcessor.getInvertedFile(), wordProcessor.getInvertedFileQuery(),
@@ -309,12 +311,20 @@ public class RelevanceFeedbackExperiment extends Experiment {
     public String getSummary2() {
         StringBuilder sb = new StringBuilder();
         double sumNonAVG = 0.0, precision=0.0, recall=0.0;
+        int counter = 0;
         for(SingleQueryEvaluation sqe : evals2) {
+            if (isPseudo) {
+                sb.append("New Query : ").append(listPseudoFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
+            } else {
+                sb.append("New Query : ").append(listRelevanceFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
+            }
+            sb.append("\n");
             sb.append(sqe.getEvalSummary());
             sb.append("\n");
             sumNonAVG += sqe.nonInterpolatedAvgPrecision;
             precision += sqe.precision;
             recall += sqe.recall;
+            counter++;
         }
         sb.append("Recall Mean : ").append((recall / (double) evals.size())).append("\n");
         sb.append("Precision Mean : ").append(precision / (double) evals.size()).append("\n");
@@ -324,12 +334,20 @@ public class RelevanceFeedbackExperiment extends Experiment {
     public String getSummary2WithSimilarity() {
         StringBuilder sb = new StringBuilder();
         double sumNonAVG = 0.0, precision=0.0, recall=0.0;
+        int counter = 0;
         for(SingleQueryEvaluation sqe : evals2) {
+            if (isPseudo) {
+                sb.append("New Query : ").append(listPseudoFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
+            } else {
+                sb.append("New Query : ").append(listRelevanceFeedbackExperiment.get(counter).convertNewQueryComposition().getQueryContent());
+            }
+            sb.append("\n");
             sb.append(sqe.getEvalSummaryWithSimilarity());
             sb.append("\n");
             sumNonAVG += sqe.nonInterpolatedAvgPrecision;
             precision += sqe.precision;
             recall += sqe.recall;
+            counter++;
         }
         sb.append("Recall Mean : ").append((recall / (double) evals.size())).append("\n");
         sb.append("Precision Mean : ").append(precision / (double) evals.size()).append("\n");

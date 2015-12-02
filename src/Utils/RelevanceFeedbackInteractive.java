@@ -30,7 +30,7 @@ public class RelevanceFeedbackInteractive {
     int topS, topN;
     boolean isPseudo, useSameCollection, useQueryExpansion, isNormalize;
 
-    Map<document, Double> result2;
+    public Map<document, Double> result2;
 
     public Map<document, Double> getResult() {
         return result;
