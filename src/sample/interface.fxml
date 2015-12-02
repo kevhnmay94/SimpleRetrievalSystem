@@ -125,7 +125,7 @@
                        <children>
                            <Button fx:id="interactiveSearchButton" layoutX="155.0" layoutY="421.0" mnemonicParsing="false" onAction="#handleInteractiveSearchButton" text="Search" />
                            <Button fx:id="interactiveSearchAgain" layoutX="356.0" layoutY="421.0" mnemonicParsing="false" onAction="#handleInteractiveSearchAgain" text="Search Again" />
-                           <TableView fx:id="interactiveTable" editable="true" layoutX="14.0" layoutY="14.0" prefHeight="319.0" prefWidth="563.0">
+                           <TableView fx:id="interactiveTable" editable="true" layoutX="14.0" layoutY="14.0" prefHeight="180.0" prefWidth="563.0">
                                <columns>
                                    <TableColumn fx:id="interactiveRank" editable="false" prefWidth="75.0" text="Rank" />
                                    <TableColumn fx:id="interactiveDocNo" editable="false" prefWidth="75.0" text="Doc No" />
@@ -138,6 +138,7 @@
                            </TableView>
                            <Label layoutX="181.0" layoutY="363.0" text="Query:" />
                            <TextField fx:id="searchQuery" layoutX="226.0" layoutY="359.0" prefHeight="25.0" prefWidth="182.0" />
+                            <TextArea fx:id="resultInteractive" layoutX="14.0" layoutY="214.0" prefHeight="135.0" prefWidth="563.0" />
                        </children>
                    </AnchorPane>
                </content>

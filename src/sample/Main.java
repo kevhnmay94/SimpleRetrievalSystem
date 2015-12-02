@@ -14,6 +14,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("interface.fxml"));
         stage.setScene(new Scene(root));
+        stage.setTitle("Simple Information Retrieval");
         stage.show();
 
         Vars.savedstage = stage;

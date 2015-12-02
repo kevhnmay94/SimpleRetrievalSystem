@@ -43,6 +43,7 @@ public class InterfaceController implements Initializable {
     public Tab searchTab;
     public TextField searchQuery;
     public TableColumn interactiveSimiliarity;
+    public TextArea resultInteractive;
     @FXML private Label notifRelevance;
     @FXML private CheckBox queryExpension;
     @FXML private Button setRelevanceFeedback;
@@ -437,6 +438,7 @@ public class InterfaceController implements Initializable {
             interactiveTable.setItems(ol);
         }
         interactiveSearchAgain.setDisable(false);
+        resultInteractive.setText(rfi.getSummaryResultWithWeight());
     }
 
     public void handleInteractiveSearchAgain(ActionEvent actionEvent) {
@@ -481,6 +483,7 @@ public class InterfaceController implements Initializable {
             interactiveTable.setItems(ol);
         }
         interactiveSearchAgain.setDisable(true);
+        resultInteractive.setText(rfi.getSummaryResult2WithWeight());
     }
 
     public void handleSearchTab(Event event) {
