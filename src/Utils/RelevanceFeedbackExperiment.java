@@ -139,12 +139,21 @@ public class RelevanceFeedbackExperiment extends Experiment {
         // ARRAYLIST PSEUDO FEEDBACK
         ArrayList<documentsPseudoRelevanceFeedback> listFeedbacksEachQueries = new ArrayList<>();
 
+        queryRelevances thisQueryRelevances = wordProcessor.getListQueryRelevancesFinal();
+
         // menandai dokumen yang relevan dan yang tidak
         for (query q : resultMap.keySet()) {
+            ArrayList<Integer> relevantDocs = new ArrayList<>();
             documentsPseudoRelevanceFeedback relevances = new documentsPseudoRelevanceFeedback(topN,q);
             for (document d : resultMap.get(q).keySet()) {
                 relevances.insertDocumentRetrieved(d.getIndex());
+                if (wordProcessor.isDocumentRelevantForThisQuery(d.getIndex(),q.getIndex(),thisQueryRelevances)) {
+                    relevantDocs.add(d.getIndex());
+                }
             }
+            if(!useSameCollection)
+                wordProcessor.getListQueryRelevancesFinal().removeDocumentFromQrels(relevantDocs, q.getIndex());
+
             listFeedbacksEachQueries.add(relevances);
         }
 
@@ -225,6 +234,7 @@ public class RelevanceFeedbackExperiment extends Experiment {
             }
             if(!useSameCollection)
                 wordProcessor.getListQueryRelevancesFinal().removeDocumentFromQrels(relevantDocs, q.getIndex());
+
             listFeedbacksEachQueries.add(relevances);
         }
 
@@ -375,13 +385,13 @@ public class RelevanceFeedbackExperiment extends Experiment {
 
         // DO EKSPERIMENT FOR GETTING RETRIEVED DOCUMENTS FOR EACH QUERY (EKSPERIMENT)
         RelevanceFeedbackExperiment exp = new RelevanceFeedbackExperiment();
-        exp.setIsPseudo(false);
+        exp.setIsPseudo(true);
         exp.setTopS(10);
-        exp.setTopN(5);
+        exp.setTopN(4);
         exp.setUseQueryExpansion(true);
         exp.setUseSameCollection(false);
-        exp.setInvertedFile(wordProcessor.getInvertedFile(),false,true);
-        exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, true);
+        exp.setInvertedFile(wordProcessor.getInvertedFile(),false,false);
+        exp.setInvertedFileQuery(wordProcessor.getInvertedFileQuery(), false, false);
         exp.setNormalFile(wordProcessor.getNormalFile());
         exp.setNormalFileQuery(wordProcessor.getNormalFileQuery());
         exp.evaluate(false);
